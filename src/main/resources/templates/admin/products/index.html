@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Quản lý sản phẩm • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+</head>
+<body><div class="app">
+  <aside th:replace="~{admin/fragments/nav :: menu('products')}"></aside>
+  <main>
+    <div class="top"><div><p class="eyebrow">Hàng hóa / Danh mục</p><h1>Quản lý sản phẩm</h1>
+<!--      <div class="hint">Danh sách vòng tay, giá và tồn kho được lưu theo từng biến thể.</div>-->
+    </div>
+      <a class="btn" th:if="${isAdmin}" th:href="@{/admin/san-pham/them}">＋ Thêm sản phẩm</a></div>
+    <div class="notice" th:if="${success}" th:text="${success}"></div>
+    <div class="panel">
+      <form class="toolbar" method="get" th:action="@{/admin/san-pham}">
+        <input type="search" name="q" placeholder="Tìm tên vòng tay..." th:value="${q}">
+        <select name="active" style="max-width:175px"><option value="" th:selected="${active == null}">Tất cả trạng thái</option>
+          <option value="true" th:selected="${active != null and active}">Đang bán</option>
+          <option value="false" th:selected="${active != null and !active}">Đã ẩn</option></select>
+        <button type="submit">Lọc</button><a class="btn secondary" th:href="@{/admin/san-pham}">Xóa lọc</a>
+      </form>
+      <div class="table-scroll"><table>
+        <thead><tr><th>Ảnh</th><th>ID</th><th>Tên sản phẩm</th><th>Loại / Thương hiệu</th><th>Biến thể</th><th>Tổng tồn</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+        <tbody><tr th:each="item : ${items}">
+          <td><img th:if="${item.thumbnail != null}" class="preview" th:src="${item.thumbnail}" alt="Ảnh sản phẩm">
+              <span th:if="${item.thumbnail == null}" class="muted">Chưa có</span></td>
+          <td class="num" th:text="|#${item.product.idSanPham}|">#1</td>
+          <td><strong th:text="${item.product.tenSanPham}">Vòng tay</strong></td>
+          <td><span th:text="${item.category}">Loại</span><small th:text="${item.brand}">Thương hiệu</small></td>
+          <td class="num" th:text="${item.variants}">0</td><td class="num" th:text="${item.stock}">0</td>
+          <td><span class="pill" th:classappend="${item.product.trangThai} ? ' on' : ' off'" th:text="${item.product.trangThai} ? 'Đang bán' : 'Đã ẩn'">Đang bán</span></td>
+          <td><div class="actions">
+            <a class="btn tiny secondary" th:href="@{/admin/san-pham/{id}/bien-the(id=${item.product.idSanPham})}">Biến thể</a>
+            <a class="btn tiny secondary" th:href="@{/admin/san-pham/{id}/hinh-anh(id=${item.product.idSanPham})}">Ảnh</a>
+            <a class="btn tiny secondary" th:if="${isAdmin}" th:href="@{/admin/san-pham/{id}/sua(id=${item.product.idSanPham})}">Sửa</a>
+            <form method="post" th:if="${isAdmin}" th:action="@{/admin/san-pham/{id}/trang-thai(id=${item.product.idSanPham})}">
+              <input type="hidden" name="active" th:value="${!item.product.trangThai}">
+              <button class="tiny" th:classappend="${item.product.trangThai} ? ' danger' : ' secondary'" type="submit" th:text="${item.product.trangThai} ? 'Ẩn' : 'Khôi phục'">Ẩn</button>
+            </form>
+          </div></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(items)}"><td colspan="8" class="empty">Chưa có sản phẩm phù hợp.</td></tr>
+        </tbody></table></div>
+      <div class="pagination" th:if="${page.totalPages > 1}">
+        <a class="btn tiny secondary" th:if="${page.hasPrevious()}" th:href="@{/admin/san-pham(q=${q},active=${active},page=${page.number - 1})}">← Trước</a>
+        <span th:text="|Trang ${page.number + 1}/${page.totalPages}|">Trang 1/1</span>
+        <a class="btn tiny secondary" th:if="${page.hasNext()}" th:href="@{/admin/san-pham(q=${q},active=${active},page=${page.number + 1})}">Tiếp →</a>
+      </div>
+<!--      <div class="hint">Nút “Ẩn” là xóa mềm để giữ nguyên lịch sử đơn hàng và đánh giá.</div>-->
+    </div>
+  </main>
+</div></body></html>

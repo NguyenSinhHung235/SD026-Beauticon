@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Form khuyen mai</title>
+    <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+</head>
+<body>
+<div class="app">
+    <aside th:replace="~{admin/fragments/nav :: menu('promotions')}"></aside>
+    <main>
+        <div class="breadcrumb"><a th:href="@{/admin/khuyen-mai}">Khuy&#7871;n m&#227;i</a><span>/</span><span
+                th:text="${promotionId == null} ? 'Them' : 'Sua'">Them</span></div>
+        <div class="top"><h1
+                th:text="${promotionId == null} ? 'Th&#234;m khuy&#7871;n m&#227;i' : 'S&#7917;a khuy&#7871;n m&#227;i'">
+            Them</h1></div>
+        <div class="notice error" th:if="${error}" th:text="${error}"></div>
+        <div class="panel">
+            <form method="post" th:object="${form}"
+                  th:action="${promotionId == null} ? @{/admin/khuyen-mai/them} : @{/admin/khuyen-mai/{id}/sua(id=${promotionId})}">
+                <div class="grid">
+                    <label class="field full">T&#234;n ch&#432;&#417;ng tr&#236;nh *<input th:field="*{tenKhuyenMai}"
+                                                                                           maxlength="200" required
+                                                                                           placeholder="VD: Giam 10% vong tay da"></label>
+                    <label class="field">Lo&#7841;i gi&#7843;m *<select th:field="*{loaiGiam}">
+                        <option value="PHAN_TRAM">Ph&#7847;n tr&#259;m (%)</option>
+                        <option value="CO_DINH">S&#7889; ti&#7873;n c&#7889; &#273;&#7883;nh (VND/chi&#7871;c)</option>
+                    </select></label>
+                    <label class="field">Gi&#225; tr&#7883; gi&#7843;m *<input type="number" min="0.01" step="0.01"
+                                                                               th:field="*{giaTriGiam}"
+                                                                               required></label>
+                    <label class="field">B&#7855;t &#273;&#7847;u (gi&#7901; Vi&#7879;t Nam) *<input
+                            type="datetime-local" th:field="*{ngayBatDau}" required></label>
+                    <label class="field">K&#7871;t th&#250;c (gi&#7901; Vi&#7879;t Nam) *<input type="datetime-local"
+                                                                                                th:field="*{ngayKetThuc}"
+                                                                                                required></label>
+                    <label class="field full">M&#244; t&#7843;<textarea th:field="*{moTa}" maxlength="500"
+                                                                        rows="2"></textarea></label>
+                    <label class="field">Tr&#7841;ng th&#225;i<select th:field="*{trangThai}">
+                        <option value="true">B&#7853;t</option>
+                        <option value="false">T&#7841;m d&#7915;ng</option>
+                    </select></label>
+                    <label class="field full">Ch&#7885;n bi&#7871;n th&#7875; &#225;p d&#7909;ng *
+                        <select th:field="*{variantIds}" multiple size="12" class="multi-select">
+                            <option th:each="v : ${variants}" th:value="${v.id}"
+                                    th:text="|#${v.id} - ${v.product} / ${v.color} / ${v.size} - ${v.price} VND|">Vong
+                                tay
+                            </option>
+                        </select>
+                        <small>Gi&#7919; Ctrl / Cmd &#273;&#7875; ch&#7885;n nhi&#7873;u bi&#7871;n th&#7875;. Ch&#7881;
+                            m&#7897;t khuy&#7871;n m&#227;i c&#243; l&#7907;i nh&#7845;t &#273;&#432;&#7907;c
+                            t&#237;nh.</small></label>
+                </div>
+                <div class="buttons">
+                    <button>L&#432;u ch&#432;&#417;ng tr&#236;nh</button>
+                    <a class="btn secondary" th:href="@{/admin/khuyen-mai}">H&#7911;y</a></div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

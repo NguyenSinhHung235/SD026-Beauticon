@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Chỉnh sửa thuộc tính • BeautIcon</title>
+    <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+</head>
+<body>
+<div class="app">
+    <aside th:replace="~{admin/fragments/nav :: menu('attributes')}"></aside>
+    <main>
+        <div class="breadcrumb"><a th:href="@{/admin/thuoc-tinh/{s}(s=${kind.slug})}" th:text="${kind.title}">Thuộc
+            tính</a><span>/</span><span th:text="${attrId == null} ? 'Thêm mới' : 'Chỉnh sửa'">Thêm mới</span></div>
+        <div class="top">
+            <div><h1 th:text="${(attrId == null ? 'Thêm ' : 'Sửa ') + kind.title}">Thêm thuộc tính</h1></div>
+        </div>
+        <div class="notice error" th:if="${error}" th:text="${error}"></div>
+        <section class="panel">
+            <form method="post" th:object="${form}"
+                  th:action="${attrId == null} ? @{/admin/thuoc-tinh/{s}/them(s=${kind.slug})} : @{/admin/thuoc-tinh/{s}/{id}/sua(s=${kind.slug},id=${attrId})}">
+                <div class="grid">
+                    <label class="field full">Tên *<input type="text" th:field="*{ten}" maxlength="200" required
+                                                          placeholder="Tên danh mục"></label>
+                    <label class="field" th:if="${kind.has('ma_mau')}">Mã màu (HEX)<input type="text"
+                                                                                          th:field="*{maMau}"
+                                                                                          maxlength="7"
+                                                                                          placeholder="#AABBCC"></label>
+                    <label class="field" th:if="${kind.has('quoc_gia')}">Quốc gia<input type="text"
+                                                                                        th:field="*{quocGia}"
+                                                                                        maxlength="100"></label>
+                    <label class="field" th:if="${kind.has('sdt')}">Số điện thoại<input type="tel" th:field="*{sdt}"
+                                                                                        maxlength="20"></label>
+                    <label class="field" th:if="${kind.has('email')}">Email<input type="email" th:field="*{email}"
+                                                                                  maxlength="254"></label>
+                    <label class="field full" th:if="${kind.has('dia_chi')}">Địa chỉ<input type="text"
+                                                                                           th:field="*{diaChi}"
+                                                                                           maxlength="500"></label>
+                    <label class="field full">Mô tả<textarea th:field="*{moTa}" maxlength="1000"></textarea></label>
+                    <label class="field">Trạng thái<select th:field="*{trangThai}">
+                        <option value="true">Đang sử dụng</option>
+                        <option value="false">Ẩn</option>
+                    </select></label>
+                </div>
+                <div class="buttons">
+                    <button type="submit">Lưu thuộc tính</button>
+                    <a class="btn secondary" th:href="@{/admin/thuoc-tinh/{s}(s=${kind.slug})}">Hủy</a></div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>

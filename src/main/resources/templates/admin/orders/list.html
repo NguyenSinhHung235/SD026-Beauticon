@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title th:text="${listing.invoicesOnly} ? 'Hoa don - BeautIcon' : 'Don hang online - BeautIcon'">Đơn hàng</title>
+  <link rel="stylesheet" th:href="@{/css/admin-catalog.css}"></head>
+<body><div class="app">
+<aside th:replace="~{admin/fragments/nav :: menu(${active})}"></aside>
+<main>
+  <div class="top"><div>
+    <p class="eyebrow">BeautIcon Admin / Quản lý bán hàng</p>
+    <h1 th:text="${listing.invoicesOnly} ? 'Hóa đơn hoàn thành' : 'Đơn hàng online'">Đơn hàng</h1>
+    <p class="hint" th:text="${listing.invoicesOnly} ? 'Tra cứu hóa đơn đã hoàn thành theo kênh bán' : 'Tiếp nhận, xử lý, xác nhận thu tiền và hủy đơn'">Mô tả</p>
+  </div><div class="actions">
+    <a class="btn secondary" th:href="@{/admin/don-hang-online}">Đơn online</a>
+    <a class="btn secondary" th:href="@{/admin/hoa-don}">Hóa đơn</a>
+  </div></div>
+  <div class="notice" th:if="${success}" th:text="${success}"></div>
+  <div class="notice error" th:if="${error}" th:text="${error}"></div>
+  <div class="panel">
+    <form method="get" class="toolbar" th:action="${listing.invoicesOnly} ? @{/admin/hoa-don} : @{/admin/don-hang-online}">
+      <label class="field" style="flex:2;min-width:210px">Tìm mã đơn hoặc tên khách
+        <input type="search" name="q" maxlength="80" placeholder="Ví dụ: 12 hoặc Nguyễn..." th:value="${listing.query}">
+      </label>
+      <label class="field" th:if="${listing.invoicesOnly}">Kênh bán
+        <select name="kenh"><option value="ALL" th:selected="${listing.channel == 'ALL'}">Tất cả</option>
+          <option value="ONLINE" th:selected="${listing.channel == 'ONLINE'}">Online</option>
+          <option value="OFFLINE" th:selected="${listing.channel == 'OFFLINE'}">Tại quầy</option>
+        </select>
+      </label>
+      <label class="field" th:unless="${listing.invoicesOnly}">Trạng thái
+        <select name="status">
+          <option value="ALL" th:selected="${listing.status == 'ALL'}">Tất cả</option>
+          <option value="CHUA_XU_LY" th:selected="${listing.status == 'CHUA_XU_LY'}">Chưa xử lý</option>
+          <option value="DANG_XU_LY" th:selected="${listing.status == 'DANG_XU_LY'}">Đang xử lý</option>
+          <option value="DA_XU_LY" th:selected="${listing.status == 'DA_XU_LY'}">Đã xử lý</option>
+          <option value="HOAN_THANH" th:selected="${listing.status == 'HOAN_THANH'}">Hoàn thành</option>
+          <option value="DA_HUY" th:selected="${listing.status == 'DA_HUY'}">Đã hủy</option>
+        </select>
+      </label>
+      <button type="submit">Lọc</button>
+      <a class="btn secondary" th:href="${listing.invoicesOnly} ? @{/admin/hoa-don} : @{/admin/don-hang-online}">Xóa lọc</a>
+    </form>
+    <p class="hint" th:text="|Tìm thấy ${listing.count} hóa đơn/đơn hàng. Hiển thị tối đa 15 dòng/trang.|">Kết quả</p>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Kênh</th><th>Ngày đặt</th><th>Trạng thái</th><th>Đã thu (VND)</th><th>Tổng (VND)</th><th>Thao tác</th></tr></thead>
+      <tbody>
+      <tr th:each="o : ${listing.rows}">
+        <td><strong th:text="|#${o.id}|">#1</strong></td>
+        <td><strong th:text="${o.customer}">Khách</strong><small th:text="${o.staff}">Nhân viên</small></td>
+        <td th:text="${o.channel == 'ONLINE'} ? 'Online' : 'Tại quầy'">Online</td>
+        <td th:text="${o.orderAt}">24/10/2026</td>
+        <td><span class="pill" th:classappend="${o.status}" th:text="${o.statusLabel}">Trạng thái</span></td>
+        <td class="num" th:text="${#numbers.formatDecimal(o.paidNet,1,'POINT',0,'COMMA')}">0</td>
+        <td class="num" th:text="${#numbers.formatDecimal(o.total,1,'POINT',0,'COMMA')}">0</td>
+        <td><a class="btn tiny secondary" th:href="${listing.invoicesOnly} ? @{/admin/hoa-don/{id}(id=${o.id})} : @{/admin/don-hang-online/{id}(id=${o.id})}">Chi tiết</a></td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(listing.rows)}"><td colspan="8" class="empty">Không có đơn hàng phù hợp.</td></tr>
+      </tbody></table></div>
+    <div class="pagination"><span th:text="|Trang ${listing.page}/${listing.pageCount}|"></span>
+      <a class="btn tiny secondary" th:if="${listing.page > 1}"
+         th:href="${listing.invoicesOnly} ? @{/admin/hoa-don(kenh=${listing.channel},q=${listing.query},page=${listing.page-1})} : @{/admin/don-hang-online(status=${listing.status},q=${listing.query},page=${listing.page-1})}">← Trước</a>
+      <a class="btn tiny secondary" th:if="${listing.page < listing.pageCount}"
+         th:href="${listing.invoicesOnly} ? @{/admin/hoa-don(kenh=${listing.channel},q=${listing.query},page=${listing.page+1})} : @{/admin/don-hang-online(status=${listing.status},q=${listing.query},page=${listing.page+1})}">Sau →</a>
+    </div>
+  </div>
+</main></div></body></html>

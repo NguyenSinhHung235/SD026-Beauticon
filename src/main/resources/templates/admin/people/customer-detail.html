@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chi tiết khách hàng • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}"></head>
+<body><div class="app"><aside th:replace="~{admin/fragments/nav :: menu('customers')}"></aside><main>
+<div class="top"><div><p class="eyebrow">CRM / Chi tiết khách hàng</p><h1 th:text="${customer.name}">Tên khách hàng</h1>
+<p class="hint" th:text="|Mã khách #${customer.id}|"></p></div><a class="btn secondary" th:href="@{/admin/khach-hang}">← Danh sách</a></div>
+<div class="notice" th:if="${success}" th:text="${success}"></div><div class="notice error" th:if="${error}" th:text="${error}"></div>
+<section class="panel"><div class="top"><h2>Thông tin khách hàng</h2><div class="actions">
+<a class="btn tiny secondary" th:href="@{/admin/khach-hang/{id}/sua(id=${customer.id})}">Sửa</a>
+<form th:if="${isAdmin}" method="post" th:action="@{/admin/khach-hang/{id}/trang-thai(id=${customer.id})}">
+<input type="hidden" name="active" th:value="${!customer.active}">
+<button class="tiny" th:classappend="${customer.active} ? ' danger' : ' secondary'" th:text="${customer.active} ? 'Ẩn khách' : 'Khôi phục'"
+ onclick="return confirm('Thay đổi trạng thái khách hàng?')">Ẩn</button></form></div></div>
+<div class="customer-info"><div><small>Họ và tên</small><strong th:text="${customer.name}">Tên</strong></div>
+<div><small>Email</small><strong th:text="${customer.email ?: '—'}">Email</strong></div>
+<div><small>Số điện thoại</small><strong th:text="${customer.phone ?: '—'}">SĐT</strong></div>
+<div><small>Ngày sinh</small><strong th:text="${customer.birthday ?: '—'}">Ngày sinh</strong></div>
+<div><small>Trạng thái</small><strong th:text="${customer.active ? 'Hoạt động' : 'Đã ẩn'}">Trạng thái</strong></div>
+</div></section>
+<section class="panel"><div class="top"><h2>Địa chỉ giao hàng</h2>
+<a class="btn tiny" th:if="${customer.active}" th:href="@{/admin/khach-hang/{id}/dia-chi/them(id=${customer.id})}">＋ Thêm địa chỉ</a></div>
+<div class="table-scroll"><table><thead><tr><th>Người nhận</th><th>SĐT</th><th>Địa chỉ</th><th>Mặc định</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody>
+<tr th:each="a : ${addresses}"><td th:text="${a.recipient}">Tên</td><td th:text="${a.phone}">SĐT</td>
+<td th:text="${a.detail}">Địa chỉ</td><td th:text="${a.isDefault ? 'Có' : 'Không'}"></td>
+<td th:text="${a.active ? 'Đang dùng' : 'Đã ẩn'}"></td><td><div class="actions">
+<a class="btn tiny secondary" th:if="${a.active and customer.active}" th:href="@{/admin/khach-hang/{c}/dia-chi/{a}/sua(c=${customer.id},a=${a.id})}">Sửa</a>
+<form method="post" th:action="@{/admin/khach-hang/{c}/dia-chi/{a}/trang-thai(c=${customer.id},a=${a.id})}">
+<input type="hidden" name="active" th:value="${!a.active}"><button class="btn tiny secondary" type="submit" th:text="${a.active ? 'Ẩn' : 'Khôi phục'}"></button>
+</form></div></td></tr>
+<tr th:if="${#lists.isEmpty(addresses)}"><td colspan="6" class="empty">Chưa có địa chỉ giao hàng.</td></tr>
+</tbody></table></div>
+<!--<p class="hint">Ẩn địa chỉ thay vì xóa để giữ tham chiếu và snapshot địa chỉ của đơn cũ.</p>-->
+</section>
+<section class="panel"><h2>Lịch sử đơn hàng gần nhất</h2>
+<div class="table-scroll"><table><thead><tr><th>Đơn hàng</th><th>Kênh</th><th>Ngày đặt (UTC)</th><th>Trạng thái</th><th>Tổng tiền</th></tr></thead><tbody>
+<tr th:each="o : ${orders}"><td><strong th:text="|#${o.id}|"></strong></td><td th:text="${o.channel}"></td>
+<td th:text="${o.orderedAt}"></td><td><span class="pill" th:classappend="${o.status}" th:text="${o.status}"></span></td>
+<td class="num" th:text="${#numbers.formatDecimal(o.total,1,'POINT',0,'COMMA')}"></td></tr>
+<tr th:if="${#lists.isEmpty(orders)}"><td colspan="5" class="empty">Khách hàng chưa có đơn hàng.</td></tr>
+</tbody></table></div></section>
+</main></div></body></html>

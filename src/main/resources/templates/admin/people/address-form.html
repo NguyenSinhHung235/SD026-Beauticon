@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Địa chỉ giao hàng • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}"></head>
+<body><div class="app"><aside th:replace="~{admin/fragments/nav :: menu('customers')}"></aside><main>
+<div class="top"><div><p class="eyebrow">Khách hàng / Địa chỉ</p>
+<h1 th:text="${addressId == null ? 'Thêm địa chỉ' : 'Sửa địa chỉ'}">Địa chỉ</h1><p class="hint" th:text="${customer.name}"></p></div>
+<a class="btn secondary" th:href="@{/admin/khach-hang/{id}(id=${customer.id})}">← Quay lại</a></div>
+<div class="notice error" th:if="${error}" th:text="${error}"></div>
+<section class="panel"><form method="post" th:object="${form}"
+ th:action="${addressId == null} ? @{/admin/khach-hang/{id}/dia-chi/them(id=${customer.id})} : @{/admin/khach-hang/{id}/dia-chi/{aid}/sua(id=${customer.id},aid=${addressId})}">
+<div class="grid"><label class="field">Người nhận *<input th:field="*{tenNguoiNhan}" required minlength="2" maxlength="150"></label>
+<label class="field">Số điện thoại nhận hàng *<input th:field="*{sdt}" required maxlength="20"></label>
+<label class="field full">Địa chỉ chi tiết *<textarea th:field="*{diaChiChiTiet}" required minlength="5" maxlength="500"></textarea></label>
+<label class="field full"><span><input type="checkbox" th:field="*{macDinh}" style="width:auto;min-height:auto"> Đặt làm địa chỉ mặc định</span></label></div>
+<div class="buttons"><button type="submit">Lưu địa chỉ</button><a class="btn secondary" th:href="@{/admin/khach-hang/{id}(id=${customer.id})}">Hủy</a></div>
+</form></section></main></div></body></html>

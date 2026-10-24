@@ -1,0 +1,23 @@
+/* Dashboard - GD6: use the same sidebar, typography and tables as all admin modules. */
+.dashboard-page .dash-cards {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}
+.dashboard-page .dash-card {background:#fff;border:1px solid var(--border);border-radius:13px;box-shadow:0 5px 15px #112d5108;padding:19px;min-width:0}
+.dashboard-page .dash-value {font-size:25px;font-weight:780;letter-spacing:-.6px;margin:8px 0 3px;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.dashboard-page .dash-two {display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);gap:16px;margin-bottom:16px;align-items:start}
+.dashboard-page .dash-panel {min-width:0;margin-bottom:0}
+.dashboard-page .dash-panel h2 {margin-bottom:14px}
+.dashboard-page .dash-bars {display:flex;align-items:end;gap:6px;height:226px;padding-top:10px;border-bottom:1px solid var(--border);overflow-x:auto}
+.dashboard-page .dash-bar-col {display:flex;flex-direction:column;align-items:center;flex:1;min-width:24px;max-width:70px;height:100%;justify-content:end}
+.dashboard-page .dash-bar {width:75%;min-height:2px;background:linear-gradient(180deg,#6aabf0,#2870c8);border-radius:5px 5px 0 0}
+.dashboard-page .dash-bar-col small {font-size:10px;white-space:nowrap;color:var(--muted);margin-top:5px}
+.dashboard-page .dash-legend {margin-top:10px;color:var(--muted);font-size:12px}
+.dashboard-page .dash-status-grid {display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.dashboard-page .dash-status-item {padding:12px;background:#f7faff;border-radius:9px}
+.dashboard-page .dash-status-item strong {font-size:22px;display:block;font-variant-numeric:tabular-nums}
+.dashboard-page .dash-status-item span {color:var(--muted);font-size:12px}
+.dashboard-page .dash-filter {display:flex;align-items:end;gap:9px;flex-wrap:wrap}
+.dashboard-page .dash-filter input {width:145px}
+.dashboard-page .table-scroll table {min-width:570px}
+.dashboard-page .table-scroll td {white-space:nowrap}
+.dashboard-page .table-scroll td:first-child {font-weight:650}
+@media(max-width:1180px) {.dashboard-page .dash-cards {grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-page .dash-two {grid-template-columns:1fr}}
+@media(max-width:530px) {.dashboard-page .dash-cards {gap:8px}.dashboard-page .dash-card {padding:12px}.dashboard-page .dash-value {font-size:20px}.dashboard-page .dash-status-grid {grid-template-columns:1fr 1fr}.dashboard-page .dash-filter input {width:125px}}

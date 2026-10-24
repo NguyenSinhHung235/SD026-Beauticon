@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard / Thống kê • BeautIcon</title>
+  <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+  <link rel="stylesheet" th:href="@{/css/admin-dashboard.css}">
+</head>
+<body>
+<div class="app">
+  <aside th:replace="~{admin/fragments/nav :: menu('dashboard')}"></aside>
+  <main class="dashboard-page">
+    <div class="top">
+      <div><p class="eyebrow">Tổng quan / Báo cáo</p><h1>Tổng quan kinh doanh</h1>
+        <p class="hint">Doanh thu thực thu theo ngày thanh toán; đơn hàng theo ngày đặt • VND</p></div>
+      <form class="dash-filter" method="get" th:action="@{/admin/dashboard}">
+        <label class="field">Từ ngày <input type="date" name="from" th:value="${from}" required></label>
+        <label class="field">Đến ngày <input type="date" name="to" th:value="${to}" required></label>
+        <button type="submit">Áp dụng</button>
+      </form>
+    </div>
+    <div th:if="${error}" class="notice error" th:text="${error}"></div>
+    <div class="dash-cards">
+      <section class="dash-card"><div class="muted">Doanh thu thực thu</div><div class="dash-value" th:text="${stats.revenue}">0</div><div class="hint">Thanh toán thành công − hoàn tiền</div></section>
+      <section class="dash-card"><div class="muted">Đơn hàng đã tạo</div><div class="dash-value" th:text="${stats.totalOrders}">0</div><div class="hint">Theo ngày đặt hàng</div></section>
+      <section class="dash-card"><div class="muted">Đơn hoàn thành</div><div class="dash-value" th:text="${stats.completed}">0</div><div class="hint">Trạng thái HOAN_THANH</div></section>
+      <section class="dash-card"><div class="muted">Biến thể tồn kho thấp</div><div class="dash-value" th:text="${stats.lowStock}">0</div><div class="hint">Còn ≤ 5 sản phẩm • toàn hệ thống</div></section>
+      <section class="dash-card"><div class="muted">Doanh thu Online</div><div class="dash-value" th:text="${stats.onlineRevenue}">0</div></section>
+      <section class="dash-card"><div class="muted">Doanh thu tại quầy</div><div class="dash-value" th:text="${stats.offlineRevenue}">0</div></section>
+      <section class="dash-card"><div class="muted">Khách mới</div><div class="dash-value" th:text="${stats.newCustomers}">0</div></section>
+      <section class="dash-card"><div class="muted">Đơn bị hủy</div><div class="dash-value" th:text="${stats.cancelled}">0</div></section>
+    </div>
+    <div class="dash-two">
+      <section class="panel dash-panel">
+        <h2>Doanh thu theo ngày</h2>
+        <div class="dash-bars">
+          <div class="dash-bar-col" th:each="b : ${chart}" th:title="${b.label + ': ' + b.amount}">
+            <div class="dash-bar" th:style="|height: ${b.height}%|"></div><small th:text="${b.label}">01/01</small>
+          </div>
+        </div>
+        <div class="dash-legend">Ngày thanh toán thành công (giờ Việt Nam). Di chuột lên cột để xem số tiền.</div>
+      </section>
+      <section class="panel dash-panel">
+        <h2>Trạng thái đơn hàng</h2>
+        <div class="dash-status-grid">
+          <div class="dash-status-item"><strong th:text="${stats.pending}">0</strong><span>Chưa xử lý</span></div>
+          <div class="dash-status-item"><strong th:text="${stats.processing}">0</strong><span>Đang xử lý</span></div>
+          <div class="dash-status-item"><strong th:text="${stats.processed}">0</strong><span>Đã xử lý</span></div>
+          <div class="dash-status-item"><strong th:text="${stats.completed}">0</strong><span>Hoàn thành</span></div>
+        </div>
+      </section>
+    </div>
+    <div class="dash-two">
+      <section class="panel dash-panel">
+        <h2>Đơn hàng gần đây</h2>
+        <div class="table-scroll"><table>
+          <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Kênh</th><th>Ngày đặt</th><th>Trạng thái</th><th>Tổng tiền</th></tr></thead>
+          <tbody>
+            <tr th:each="o : ${recentOrders}">
+              <td><a th:href="${o.channel == 'ONLINE'} ? @{/admin/don-hang-online/{id}(id=${o.id})} : @{/admin/hoa-don/{id}(id=${o.id})}" th:text="|#${o.id}|">#1</a></td><td th:text="${o.customer}">Nguyễn A</td>
+              <td th:text="${o.channel}">ONLINE</td><td th:text="${o.date}">01/01/2026</td>
+              <td><span class="pill" th:classappend="${o.status}" th:text="${o.statusLabel}">Hoàn thành</span></td>
+              <td th:text="${o.total}">0</td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(recentOrders)}"><td colspan="6" class="empty">Chưa có đơn hàng trong khoảng ngày đã chọn.</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+      <section class="panel dash-panel">
+        <h2>Top 5 sản phẩm bán chạy</h2>
+        <div class="table-scroll"><table style="min-width:0">
+          <thead><tr><th>Sản phẩm</th><th>SL bán</th><th>Tiền hàng</th></tr></thead>
+          <tbody>
+            <tr th:each="p : ${topProducts}"><td style="white-space:normal" th:text="${p.name}">Vòng tay</td><td th:text="${p.quantity}">0</td><td th:text="${p.gross}">0</td></tr>
+            <tr th:if="${#lists.isEmpty(topProducts)}"><td colspan="3" class="empty">Chưa có đơn hoàn thành.</td></tr>
+          </tbody>
+        </table></div>
+        <div class="dash-legend">Top theo số lượng trong các đơn hoàn thành (ngày đặt trong khoảng lọc).</div>
+      </section>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Không tìm thấy trang • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}"></head>
+<body class="auth-body">
+  <main class="auth-panel" role="main">
+    <p class="eyebrow">Lỗi 404</p>
+    <h1>Không tìm thấy trang</h1>
+    <p class="muted">Đường dẫn bạn mở không tồn tại trong phiên bản hiện tại. Kiểm tra địa chỉ hoặc quay lại Dashboard.</p>
+    <div class="buttons"><a class="btn" th:href="@{/admin/dashboard}">Về Dashboard</a>
+      <a class="btn secondary" th:href="@{/login}">Đăng nhập</a></div>
+    <p class="hint">Nếu vừa cập nhật mã nguồn, hãy dừng phiên bản Spring Boot cũ và khởi động lại dự án.</p>
+  </main>
+</body>
+</html>

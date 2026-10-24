@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Ban tai quay - BeautIcon</title>
+    <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+</head>
+<body>
+<div class="app">
+    <aside th:replace="~{admin/fragments/nav :: menu('pos')}"></aside>
+    <main>
+        <div class="top">
+            <div><p class="eyebrow">Ban hang / POS</p>
+                <h1>B&#225;n h&#224;ng t&#7841;i qu&#7847;y</h1>
+                <p class="hint">Ch&#7885;n v&#242;ng tay, &#225;p d&#7909;ng khuy&#7871;n m&#227;i + voucher, thu ti&#7873;n
+                    v&#224; t&#7841;o h&#243;a &#273;&#417;n.</p></div>
+            <a class="btn secondary" th:href="@{/admin/dashboard}">Dashboard</a></div>
+        <div class="notice error" th:if="${error}" th:text="${error}"></div>
+        <form id="posForm" method="post" th:action="@{/admin/ban-tai-quay/tao}"
+              th:attr="data-quote-url=@{/admin/ban-tai-quay/tam-tinh}" th:object="${form}">
+            <input type="hidden" th:field="*{requestToken}">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <div class="pos-grid">
+                <section class="panel">
+                    <h2>1. Ch&#7885;n s&#7843;n ph&#7849;m</h2>
+                    <p class="hint">Gi&#225; hi&#7875;n th&#7883; &#273;&#227; t&#237;nh khuy&#7871;n m&#227;i &#273;ang
+                        hi&#7879;u l&#7921;c. Ch&#7881; b&#225;n bi&#7871;n th&#7875; c&#242;n h&#224;ng.</p>
+                    <div class="toolbar"><input type="search" id="variantSearch"
+                                                placeholder="Tim ten vong tay / mau / size..."
+                                                aria-label="Tim bien the">
+                        <select id="variantPicker" aria-label="Chon bien the">
+                            <option value="">-- Ch&#7885;n bi&#7871;n th&#7875; --</option>
+                            <option th:each="v : ${variants}" th:value="${v.id}"
+                                    th:attr="data-price=${v.price},data-original=${v.original},data-stock=${v.stock},data-label=${v.label}"
+                                    th:text="|#${v.id} - ${v.label} - ${v.price} VND (ton ${v.stock})|">Vong tay
+                            </option>
+                        </select>
+                        <button type="button" id="addVariant">+ Th&#234;m</button>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="compact">
+                            <thead>
+                            <tr>
+                                <th>V&#242;ng tay</th>
+                                <th>Gi&#225; (VND)</th>
+                                <th>SL</th>
+                                <th>Th&#224;nh ti&#7873;n</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody id="saleRows"></tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="3"><strong>T&#7841;m t&#237;nh sau khuy&#7871;n m&#227;i</strong></td>
+                                <td class="num" id="previewSubtotal">0</td>
+                                <td></td>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <p class="hint" id="cartHint">Ch&#432;a ch&#7885;n bi&#7871;n th&#7875; n&#224;o.</p>
+                </section>
+                <section class="panel pos-checkout">
+                    <h2>2. Thanh to&#225;n</h2>
+                    <div class="field">Nhân viên bán: <strong th:text="${signedInStaff.fullName()}">Nhân viên đang đăng
+                        nhập</strong></div>
+                    <input type="hidden" th:field="*{staffId}">
+                    <label class="field">Kh&#225;ch h&#224;ng<select th:field="*{customerId}">
+                        <option value="">Kh&#225;ch v&#227;ng lai</option>
+                        <option th:each="c : ${customers}" th:value="${c.id}" th:text="|${c.name} - ${c.phone}|">Khach
+                            hang
+                        </option>
+                    </select></label>
+                    <label class="field">M&#227; voucher<input type="text" th:field="*{voucherCode}"
+                                                               placeholder="VD: WELCOME10" maxlength="40"></label>
+                    <label class="field">Ph&#432;&#417;ng th&#7913;c thanh to&#225;n *<select
+                            th:field="*{paymentMethod}" id="paymentMethod">
+                        <option value="TIEN_MAT">Ti&#7873;n m&#7863;t</option>
+                        <option value="CHUYEN_KHOAN">Chuy&#7875;n kho&#7843;n</option>
+                    </select></label>
+                    <div id="cashBox"><label class="field">Ti&#7873;n kh&#225;ch &#273;&#432;a (VND) *<input
+                            type="number" min="0" step="0.01" th:field="*{cashReceived}" id="cashReceived"
+                            placeholder="VD: 500000"></label>
+                        <p class="hint">Ti&#7873;n th&#7889;i d&#7921; ki&#7871;n: <strong id="previewChange">0</strong>
+                            VND</p></div>
+                    <label class="field" id="transferBox" style="display:none">
+                        <span><input type="checkbox" th:field="*{confirmedTransfer}" style="width:auto;min-height:auto"> &#272;&#227; ki&#7875;m tra ti&#7873;n chuy&#7875;n kho&#7843;n th&#7921;c nh&#7853;n</span>
+                        <small>Ch&#7881; &#273;&#225;nh d&#7845;u sau khi &#273;&#7889;i chi&#7871;u giao d&#7883;ch t&#7841;i
+                            ng&#226;n h&#224;ng.</small></label>
+                    <div class="pos-breakdown"><span>Gi&#7843;m voucher d&#7921; ki&#7871;n</span><strong
+                            id="previewVoucherDiscount">0 VND</strong></div>
+                    <div class="pos-total"><span>T&#7893;ng c&#7847;n thanh to&#225;n</span><strong id="previewTotal">0
+                        VND</strong></div>
+                    <p id="quoteError" class="notice error" style="display:none" role="alert"></p>
+                    <p class="hint">S&#7889; ti&#7873;n xem tr&#432;&#7899;c do m&#225;y ch&#7911; t&#237;nh. Khi ho&#224;n
+                        t&#7845;t s&#7869; ki&#7875;m tra l&#7841;i t&#7891;n kho, gi&#225; v&#224; h&#7841;n
+                        voucher.</p>
+                    <button id="checkoutButton" class="btn" type="submit" style="width:100%">Ho&#224;n t&#7845;t &amp;
+                        xu&#7845;t h&#243;a &#273;&#417;n
+                    </button>
+                    <p class="hint">H&#243;a &#273;&#417;n t&#7841;o ra s&#7869; c&#243; k&#234;nh OFFLINE v&#224; tr&#7841;ng
+                        th&#225;i HOAN_THANH.</p>
+                </section>
+            </div>
+        </form>
+    </main>
+</div>
+<script th:inline="javascript">
+    (function () {
+        'use strict';
+        const select = document.getElementById('variantPicker');
+        const rows = document.getElementById('saleRows');
+        const search = document.getElementById('variantSearch');
+        const oldRows = /*[[${form.items}]]*/ [];
+        const form = document.getElementById('posForm');
+        let quoteSequence = 0, quoteTimer = null, totalForChange = 0;
+        const money = value => Number(value || 0).toLocaleString('vi-VN', {maximumFractionDigits: 2});
+        const opts = () => Array.from(select.options).filter(o => o.value);
+
+        function td(content) {
+            const cell = document.createElement('td');
+            if (content instanceof Node) cell.appendChild(content);
+            else cell.textContent = String(content);
+            return cell;
+        }
+
+        function reindex() {
+            Array.from(rows.querySelectorAll('tr')).forEach((row, i) => {
+                row.querySelector('.variant-id').name = 'items[' + i + '].variantId';
+                row.querySelector('.quantity').name = 'items[' + i + '].quantity';
+            });
+        }
+
+        function changeText() {
+            const given = Number(document.getElementById('cashReceived').value || 0);
+            document.getElementById('previewChange').textContent = money(Math.max(0, given - totalForChange));
+        }
+
+        function recalc() {
+            let sum = 0;
+            const cart = [];
+            rows.querySelectorAll('tr').forEach(row => {
+                const qty = Number(row.querySelector('.quantity').value || 0);
+                const price = Number(row.dataset.price);
+                const subtotal = Math.max(0, qty) * price;
+                row.querySelector('.line-total').textContent = money(subtotal);
+                cart.push({variantId: Number(row.dataset.id), quantity: qty});
+                sum += subtotal;
+            });
+            const error = document.getElementById('quoteError');
+            error.style.display = 'none';
+            totalForChange = sum;
+            document.getElementById('previewSubtotal').textContent = money(sum);
+            document.getElementById('previewVoucherDiscount').textContent = '0 VND';
+            document.getElementById('previewTotal').textContent = money(sum) + ' VND';
+            document.getElementById('cartHint').style.display = cart.length ? 'none' : 'block';
+            changeText();
+            const thisRequest = ++quoteSequence;
+            if (quoteTimer) clearTimeout(quoteTimer);
+            if (!cart.length) return;
+            quoteTimer = setTimeout(async () => {
+                try {
+                    const response = await fetch(form.dataset.quoteUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': form.querySelector('[name=\"_csrf\"]')?.value || ''
+                        },
+                        body: JSON.stringify({
+                            items: cart,
+                            voucherCode: form.querySelector('[name="voucherCode"]').value
+                        })
+                    });
+                    if (!response.ok) throw new Error('Khong the tam tinh voi may chu.');
+                    const result = await response.json();
+                    if (thisRequest !== quoteSequence) return;
+                    if (result.error) throw new Error(result.error);
+                    totalForChange = Number(result.total);
+                    document.getElementById('previewSubtotal').textContent = money(result.subtotal);
+                    document.getElementById('previewVoucherDiscount').textContent = '-' + money(result.voucherDiscount) + ' VND';
+                    document.getElementById('previewTotal').textContent = money(totalForChange) + ' VND';
+                    changeText();
+                } catch (ex) {
+                    if (thisRequest !== quoteSequence) return;
+                    error.textContent = ex.message || 'Tam tinh that bai.';
+                    error.style.display = 'block';
+                }
+            }, 250);
+        }
+
+        function addLine(id, quantity) {
+            const opt = opts().find(o => Number(o.value) === Number(id));
+            if (!opt) return;
+            const stock = Number(opt.dataset.stock);
+            const qtyToAdd = Math.max(1, Number(quantity || 1));
+            const existing = Array.from(rows.querySelectorAll('tr')).find(r => Number(r.dataset.id) === Number(id));
+            if (existing) {
+                const input = existing.querySelector('.quantity');
+                input.value = Math.min(stock, Number(input.value || 0) + qtyToAdd);
+                recalc();
+                return;
+            }
+            const row = document.createElement('tr');
+            row.dataset.id = String(id);
+            row.dataset.price = opt.dataset.price;
+            const name = document.createElement('strong');
+            name.textContent = opt.dataset.label;
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.className = 'variant-id';
+            idInput.value = opt.value;
+            const nameCell = td(name);
+            nameCell.appendChild(idInput);
+            row.appendChild(nameCell);
+            row.appendChild(td(money(opt.dataset.price)));
+            const qty = document.createElement('input');
+            qty.type = 'number';
+            qty.className = 'quantity pos-qty';
+            qty.min = '1';
+            qty.max = String(stock);
+            qty.step = '1';
+            qty.value = String(Math.min(stock, qtyToAdd));
+            qty.addEventListener('input', recalc);
+            row.appendChild(td(qty));
+            const total = td('0');
+            total.className = 'line-total num';
+            row.appendChild(total);
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.className = 'tiny danger';
+            remove.textContent = 'X';
+            remove.addEventListener('click', () => {
+                row.remove();
+                reindex();
+                recalc();
+            });
+            row.appendChild(td(remove));
+            rows.appendChild(row);
+            reindex();
+            recalc();
+        }
+
+        document.getElementById('addVariant').addEventListener('click', () => {
+            if (!select.value) {
+                alert('Hay chon mot bien the.');
+                return;
+            }
+            addLine(Number(select.value), 1);
+        });
+        search.addEventListener('input', () => {
+            const q = search.value.toLocaleLowerCase('vi');
+            opts().forEach(o => o.hidden = !o.textContent.toLocaleLowerCase('vi').includes(q));
+        });
+
+        function showPayment() {
+            const cash = document.getElementById('paymentMethod').value === 'TIEN_MAT';
+            document.getElementById('cashBox').style.display = cash ? 'block' : 'none';
+            document.getElementById('transferBox').style.display = cash ? 'none' : 'flex';
+            document.getElementById('cashReceived').required = cash;
+        }
+
+        document.getElementById('paymentMethod').addEventListener('change', showPayment);
+        document.getElementById('cashReceived').addEventListener('input', changeText);
+        form.querySelector('[name="voucherCode"]').addEventListener('input', recalc);
+        document.getElementById('posForm').addEventListener('submit', e => {
+            if (!rows.children.length) {
+                alert('Hoa don chua co san pham.');
+                e.preventDefault();
+                return;
+            }
+            if (rows.querySelectorAll('tr').length > 30) {
+                alert('Toi da 30 dong hang.');
+                e.preventDefault();
+                return;
+            }
+            if (!confirm('Xac nhan da thu tien va tao hoa don?')) {
+                e.preventDefault();
+                return;
+            }
+            document.getElementById('checkoutButton').disabled = true;
+        });
+        if (Array.isArray(oldRows)) oldRows.forEach(x => {
+            if (x && x.variantId && x.quantity) addLine(Number(x.variantId), Number(x.quantity));
+        });
+        showPayment();
+        recalc();
+    })();
+</script>
+</body>
+</html>

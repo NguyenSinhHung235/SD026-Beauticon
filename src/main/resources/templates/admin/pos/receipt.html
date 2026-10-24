@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Hoa don POS</title>
+    <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+</head>
+<body>
+<div class="app">
+    <aside class="no-print" th:replace="~{admin/fragments/nav :: menu('pos')}"></aside>
+    <main>
+        <div class="top no-print">
+            <div><p class="eyebrow">POS / Thanh cong</p>
+                <h1>H&#243;a &#273;&#417;n b&#225;n t&#7841;i qu&#7847;y</h1></div>
+            <div class="actions"><a class="btn secondary" th:href="@{/admin/ban-tai-quay}">+ H&#243;a &#273;&#417;n m&#7899;i</a>
+                <button type="button" onclick="window.print()">In h&#243;a &#273;&#417;n</button>
+            </div>
+        </div>
+        <div class="notice no-print" th:if="${success}" th:text="${success}"></div>
+        <div class="panel print-paper">
+            <div class="receipt-head"><h2>BEAUTICON</h2><strong>H&#211;A &#272;&#416;N B&#193;N H&#192;NG</strong>
+                <div th:text="|#${receipt.id}|">#1</div>
+                <span th:text="${receipt.orderText}">24/10/2026</span></div>
+            <div class="receipt-meta">
+                <div>Kh&#225;ch h&#224;ng: <strong th:text="${receipt.customerName}">Khach vang lai</strong></div>
+                <div>Nh&#226;n vi&#234;n: <span th:text="${receipt.staffName}">Nhan vien</span></div>
+                <div>Thanh to&#225;n: <span
+                        th:text="${receipt.paymentMethod == 'TIEN_MAT'} ? 'Tien mat' : 'Chuyen khoan'">Tien mat</span>
+                </div>
+                <div th:if="${receipt.voucher != null}">Voucher: <strong th:text="${receipt.voucher}">WELCOME10</strong>
+                </div>
+            </div>
+            <div class="table-scroll">
+                <table class="compact receipt-table">
+                    <thead>
+                    <tr>
+                        <th>S&#7843;n ph&#7849;m</th>
+                        <th>SL</th>
+                        <th>&#272;&#417;n gi&#225;</th>
+                        <th>Th&#224;nh ti&#7873;n</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="x : ${receipt.items}">
+                        <td><strong th:text="${x.name}">Vong tay</strong><small th:text="|${x.color} / ${x.size}|">Mau /
+                            size</small></td>
+                        <td th:text="${x.quantity}">1</td>
+                        <td class="num" th:text="${#numbers.formatDecimal(x.price, 1, 'POINT', 0, 'COMMA')}">200000</td>
+                        <td class="num" th:text="${#numbers.formatDecimal(x.lineTotal, 1, 'POINT', 0, 'COMMA')}">
+                            200000
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="receipt-summary">
+                <div><span>Ti&#7873;n h&#224;ng sau khuy&#7871;n m&#227;i</span><strong
+                        th:text="|${#numbers.formatDecimal(receipt.subtotal,1,'POINT',0,'COMMA')} VND|">200000</strong>
+                </div>
+                <div><span>Gi&#7843;m b&#7857;ng voucher</span><strong
+                        th:text="|-${#numbers.formatDecimal(receipt.discount,1,'POINT',0,'COMMA')} VND|">0</strong>
+                </div>
+                <div class="grand"><span>T&#7893;ng thanh to&#225;n</span><strong
+                        th:text="|${#numbers.formatDecimal(receipt.total,1,'POINT',0,'COMMA')} VND|">200000</strong>
+                </div>
+                <div th:if="${receipt.given != null}"><span>Kh&#225;ch &#273;&#432;a</span><strong
+                        th:text="|${#numbers.formatDecimal(receipt.given,1,'POINT',0,'COMMA')} VND|">500000</strong>
+                </div>
+                <div th:if="${receipt.changeAmount != null}"><span>Ti&#7873;n th&#7889;i l&#7841;i</span><strong
+                        th:text="|${#numbers.formatDecimal(receipt.changeAmount,1,'POINT',0,'COMMA')} VND|">300000</strong>
+                </div>
+            </div>
+            <p class="receipt-thanks">C&#7843;m &#417;n qu&#253; kh&#225;ch &#273;&#227; mua s&#7855;m t&#7841;i
+                BeautIcon!</p>
+        </div>
+    </main>
+</div>
+</body>
+</html>

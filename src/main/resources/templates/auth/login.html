@@ -1,0 +1,17 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Đăng nhập quản trị • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}"></head>
+<body class="auth-body"><main class="auth-panel">
+  <div class="auth-brand">✦ BeautIcon</div>
+  <h1>Đăng nhập quản trị</h1>
+  <p class="hint">Dành cho tài khoản quản lý và nhân viên được cấp quyền.</p>
+  <div class="notice error" th:if="${param.error}">Email hoặc mật khẩu không đúng, hoặc tài khoản đã bị khóa.</div>
+  <div class="notice" th:if="${param.logout}">Bạn đã đăng xuất.</div>
+  <div class="notice error" th:if="${param.expired}">Phiên đăng nhập đã kết thúc vì tài khoản hoặc quyền đã thay đổi.</div>
+  <form method="post" th:action="@{/login}" class="auth-form">
+    <label class="field">Email nhân viên<input type="email" name="username" maxlength="254" autocomplete="username" required autofocus placeholder="admin@shop.vn"></label>
+    <label class="field">Mật khẩu<input type="password" name="password" autocomplete="current-password" required></label>
+    <button type="submit" class="btn">Đăng nhập</button>
+  </form>
+  <p class="hint">Nếu chưa có tài khoản quản lý, xem mục BOOTSTRAP_ADMIN_EMAIL trong README.</p>
+</main></body></html>

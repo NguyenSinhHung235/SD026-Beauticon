@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Thông tin sản phẩm • BeautIcon</title>
+    <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+</head>
+<body>
+<div class="app">
+    <aside th:replace="~{admin/fragments/nav :: menu('products')}"></aside>
+    <main>
+        <div class="breadcrumb"><a th:href="@{/admin/san-pham}">Sản phẩm</a><span>/</span><span
+                th:text="${productId == null} ? 'Thêm mới' : 'Chỉnh sửa'">Thêm mới</span></div>
+        <div class="top">
+            <div><h1 th:text="${productId == null} ? 'Thêm vòng tay mới' : 'Chỉnh sửa sản phẩm'">Thêm vòng tay mới</h1>
+<!--                <div class="hint">Thông tin chung; màu, kích thước, giá và tồn kho thiết lập sau trong mục Biến thể.-->
+<!--                </div>-->
+            </div>
+        </div>
+        <div class="notice error" th:if="${error}" th:text="${error}"></div>
+        <div class="panel">
+            <form method="post" th:object="${form}"
+                  th:action="${productId == null} ? @{/admin/san-pham/them} : @{/admin/san-pham/{id}/sua(id=${productId})}">
+                <div class="grid">
+                    <label class="field full">Tên sản phẩm *<input type="text" th:field="*{tenSanPham}" maxlength="200"
+                                                                   required placeholder="VD: Vòng tay bạc 925 đính đá"></label>
+                    <label class="field">Loại sản phẩm *<select th:field="*{idLoai}" required>
+                        <option value="">-- Chọn loại --</option>
+                        <option th:each="o : ${categories}" th:value="${o.id}"
+                                th:text="${o.label + (o.active ? '' : ' (đã ẩn)')}">Vòng tay
+                        </option>
+                    </select></label>
+                    <label class="field">Thương hiệu<select th:field="*{idThuongHieu}">
+                        <option value="">-- Không chọn --</option>
+                        <option th:each="o : ${brands}" th:value="${o.id}" th:text="${o.label}">BeautIcon</option>
+                    </select></label>
+                    <label class="field">Nhà cung cấp<select th:field="*{idNhaCungCap}">
+                        <option value="">-- Không chọn --</option>
+                        <option th:each="o : ${suppliers}" th:value="${o.id}" th:text="${o.label}">NCC</option>
+                    </select></label>
+                    <label class="field">Chất liệu<select th:field="*{idChatLieu}">
+                        <option value="">-- Không chọn --</option>
+                        <option th:each="o : ${materials}" th:value="${o.id}" th:text="${o.label}">Bạc</option>
+                    </select></label>
+                    <label class="field">Trọng lượng (gram)<input type="number" th:field="*{trongLuongGram}"
+                                                                  step="0.001" min="0.001" placeholder="12.500"></label>
+                    <label class="field">Ngày sản xuất<input type="date" th:field="*{ngaySanXuat}"></label>
+                    <label class="field full">Mô tả<textarea th:field="*{moTa}"
+                                                             placeholder="Giới thiệu sản phẩm, phong cách, cách bảo quản..."></textarea></label>
+                    <label class="field">Trạng thái<select th:field="*{trangThai}">
+                        <option value="true">Đang bán</option>
+                        <option value="false">Ẩn sản phẩm</option>
+                    </select></label>
+                </div>
+                <div class="buttons">
+                    <button type="submit" th:text="${productId == null} ? 'Lưu và thêm biến thể' : 'Lưu thay đổi'">Lưu
+                    </button>
+                    <a class="btn secondary" th:href="@{/admin/san-pham}">Quay lại</a>
+                    <a class="btn secondary" th:if="${productId != null}"
+                       th:href="@{/admin/san-pham/{id}/bien-the(id=${productId})}">Quản lý biến thể</a></div>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

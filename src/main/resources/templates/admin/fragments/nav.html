@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<aside class="sidebar" th:fragment="menu(active)">
+  <div class="brand">✦ BeautIcon Admin</div>
+  <div class="nav-label">TỔNG QUAN</div>
+  <a th:classappend="${active == 'dashboard'} ? ' active' : ''" th:href="@{/admin/dashboard}">▦ Dashboard / Thống kê</a>
+  <div class="nav-label">HÀNG HÓA</div>
+  <a th:classappend="${active == 'products'} ? ' active' : ''" th:href="@{/admin/san-pham}">▤ Quản lý sản phẩm</a>
+  <a class="sub" th:classappend="${active == 'attributes'} ? ' active' : ''" th:href="@{/admin/thuoc-tinh/loai}">Loại sản phẩm</a>
+  <a class="sub" th:classappend="${active == 'attributes'} ? ' active' : ''" th:href="@{/admin/thuoc-tinh/mau-sac}">Màu sắc</a>
+  <a class="sub" th:classappend="${active == 'attributes'} ? ' active' : ''" th:href="@{/admin/thuoc-tinh/kich-thuoc}">Kích thước</a>
+  <a class="sub" th:classappend="${active == 'attributes'} ? ' active' : ''" th:href="@{/admin/thuoc-tinh/chat-lieu}">Chất liệu</a>
+  <a class="sub" th:classappend="${active == 'attributes'} ? ' active' : ''" th:href="@{/admin/thuoc-tinh/thuong-hieu}">Thương hiệu</a>
+  <a class="sub" th:classappend="${active == 'attributes'} ? ' active' : ''" th:href="@{/admin/thuoc-tinh/nha-cung-cap}">Nhà cung cấp</a>
+  <div class="nav-label">BÁN HÀNG</div>
+  <a th:classappend="${active == 'promotions'} ? ' active' : ''" th:href="@{/admin/khuyen-mai}">Khuy&#7871;n m&#227;i</a>
+  <a th:classappend="${active == 'vouchers'} ? ' active' : ''" th:href="@{/admin/voucher}">Voucher / M&#227; gi&#7843;m gi&#225;</a>
+  <a th:classappend="${active == 'pos'} ? ' active' : ''" th:href="@{/admin/ban-tai-quay}">B&#225;n h&#224;ng t&#7841;i qu&#7847;y (POS)</a>
+  <a th:classappend="${active == 'online'} ? ' active' : ''" th:href="@{/admin/don-hang-online}">Đơn hàng online</a>
+  <a th:classappend="${active == 'invoices'} ? ' active' : ''" th:href="@{/admin/hoa-don}">Hóa đơn hoàn thành</a>
+  <div class="nav-label">ĐỐI TƯỢNG</div>
+  <a th:classappend="${active == 'customers'} ? ' active' : ''" th:href="@{/admin/khach-hang}">♙ Khách hàng</a>
+  <a th:if="${isAdmin}" th:classappend="${active == 'staff'} ? ' active' : ''" th:href="@{/admin/nhan-vien}">♙ Nhân viên / Phân quyền</a>
+  <div class="signed-in" th:if="${signedInStaff != null}">
+    <strong th:text="${signedInStaff.fullName()}">Nhân viên</strong>
+    <span th:text="${isAdmin ? 'Quản lý' : 'Nhân viên'}">Vai trò</span>
+    <form method="post" th:action="@{/logout}"><button class="logout-btn" type="submit">Đăng xuất</button></form>
+  </div>
+</aside>
+</body>
+</html>
