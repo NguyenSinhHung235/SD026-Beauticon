@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>V&#242;ng tay n&#7919; &amp; b&#7897; s&#432;u t&#7853;p | BeautIcon</title>
+  <meta name="description" content="Kh&#225;m ph&#225; b&#7897; s&#432;u t&#7853;p v&#242;ng tay BeautIcon theo ch&#7845;t li&#7879;u, m&#224;u s&#7855;c v&#224; ki&#7875;u d&#225;ng. Th&#244;ng tin gi&#225; v&#224; bi&#7871;n th&#7875; l&#7845;y tr&#7921;c ti&#7871;p t&#7915; danh m&#7909;c c&#7917;a h&#224;ng.">
+  <meta name="theme-color" content="#f8f5f0">
+  <link rel="stylesheet" th:href="@{/css/storefront.css}">
+  <script defer th:src="@{/js/storefront.js}"></script>
+<link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body>
+<a class="skip-link" href="#collection">B&#7887; qua menu</a>
+<div th:replace="~{shop/fragments/header :: header}"></div>
+<main>
+  <section class="store-hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="store-eyebrow">THE LITTLE THINGS / 2026</p>
+      <h1 id="hero-title">M&#7897;t ch&#250;t l&#7845;p l&#225;nh,<br><em>r&#7845;t ri&#234;ng.</em></h1>
+      <p class="hero-lead">C&#243; nh&#7919;ng m&#243;n ph&#7909; ki&#7879;n kh&#244;ng c&#7847;n n&#7893;i b&#7853;t, ch&#7881; c&#7847;n th&#7853;t h&#7907;p v&#7899;i b&#7841;n. Ch&#7885;n m&#7897;t chi&#7871;c v&#242;ng tay cho nh&#7919;ng ng&#224;y b&#236;nh th&#432;&#7901;ng &#8212; v&#224; c&#7843; nh&#7919;ng ng&#224;y &#273;&#225;ng nh&#7899;.</p>
+      <a href="#collection" class="store-primary">Kh&#225;m ph&#225; b&#7897; s&#432;u t&#7853;p <span aria-hidden="true">&#8599;</span></a>
+      <p class="hero-micro">MADE FOR THE MOMENTS THAT FEEL LIKE YOU</p>
+    </div>
+    <div class="hero-art" aria-hidden="true"><div class="art-paper">
+      <span class="art-index">FIG. 01 &nbsp; / &nbsp; THE EVERYDAY BRACELET</span>
+      <div class="art-bracelet art-ring-outer"><div class="art-bracelet art-ring-inner"></div></div>
+      <div class="art-pearls"><i></i><i></i><i></i><i></i><i></i></div>
+      <span class="art-caption">a small detail, <em>a lasting impression.</em></span>
+    </div></div>
+    <div class="hero-side">BEAUTICON / THE EDITED COLLECTION</div>
+  </section>
+  <section class="store-ribbon" aria-label="G&#7907;i &#253; ch&#7885;n v&#242;ng tay">
+    <span>01 / Ch&#7885;n d&#225;ng v&#242;ng</span><span>02 / T&#236;m m&#224;u h&#7907;p gu</span><span>03 / Xem k&#237;ch th&#432;&#7899;c</span>
+  </section>
+  <section class="collection" id="collection" aria-labelledby="collection-title">
+    <div class="collection-head">
+      <div><p class="store-eyebrow">SELECTED FOR YOU</p><h2 id="collection-title">B&#7897; s&#432;u t&#7853;p <em>v&#242;ng tay.</em></h2>
+        <p>Nh&#7919;ng thi&#7871;t k&#7871; hi&#7879;n c&#243; trong danh m&#7909;c c&#7917;a h&#224;ng.</p></div>
+      <div class="collection-count"><strong th:text="${collection.total}">0</strong><span>thi&#7871;t k&#7871;</span></div>
+    </div>
+    <form class="store-filter" method="get" th:action="@{/bo-suu-tap}" role="search">
+      <label for="shop-query">T&#236;m v&#242;ng tay</label>
+      <div class="store-search-row"><input id="shop-query" name="q" type="search" maxlength="80" th:value="${collection.keyword}" placeholder="Th&#7917; t&#234;n m&#7897;t thi&#7871;t k&#7871;...">
+      <select name="loai" aria-label="L&#7885;c lo&#7841;i v&#242;ng tay"><option value="">T&#7845;t c&#7843; d&#242;ng s&#7843;n ph&#7849;m</option>
+      <option th:each="c : ${collection.categories}" th:value="${c.id}" th:selected="${collection.category == c.id}" th:text="|${c.name} (${c.products})|">D&#242;ng</option></select>
+      <button type="submit">T&#236;m ki&#7871;m <span aria-hidden="true">&#8594;</span></button></div>
+    </form>
+    <div class="shop-chipbar" aria-label="L&#7885;c nhanh theo d&#242;ng s&#7843;n ph&#7849;m">
+      <a th:classappend="${collection.category == null} ? ' is-current' : ''" th:href="@{/bo-suu-tap(q=${collection.keyword})}">T&#7845;t c&#7843;</a>
+      <a th:each="c : ${collection.categories}" th:classappend="${collection.category == c.id} ? ' is-current' : ''"
+         th:href="@{/bo-suu-tap(q=${collection.keyword},loai=${c.id})}" th:text="${c.name}">Lo&#7841;i</a>
+    </div>
+    <div class="shop-grid" th:unless="${#lists.isEmpty(collection.products)}">
+      <a class="shop-card" th:each="p : ${collection.products}" th:href="@{/san-pham/{id}(id=${p.id})}">
+        <div class="shop-product-visual">
+          <img th:if="${p.image != null}" th:src="${p.image}" alt="Product image" th:alt="|${p.name} - v&#242;ng tay BeautIcon|" loading="lazy" decoding="async">
+          <div class="product-no-photo" th:unless="${p.image != null}"><span class="bracelet-symbol" aria-hidden="true"></span><small>BEAUTICON OBJECTS</small></div>
+          <span class="shop-soldout" th:if="${p.stock == 0}">T&#7841;m h&#7871;t</span>
+          <span class="product-card-arrow" aria-hidden="true">&#8599;</span>
+        </div>
+        <div class="shop-product-meta"><div class="product-category" th:text="${p.category}">V&#242;ng tay</div>
+        <h3 th:text="${p.name}">T&#234;n v&#242;ng tay</h3>
+        <span th:if="${p.material != ''}" class="product-material" th:text="${p.material}">Ch&#7845;t li&#7879;u</span>
+        <div class="product-price"><span>T&#7915;</span> <strong th:text="${p.price}">0 &#8363;</strong></div></div>
+      </a>
+    </div>
+    <div class="shop-empty" th:if="${#lists.isEmpty(collection.products)}"><span class="empty-line" aria-hidden="true">&#10022;</span>
+      <h3>Ch&#432;a t&#236;m th&#7845;y m&#243;n n&#224;o ph&#249; h&#7907;p.</h3>
+      <p>H&#227;y th&#7917; t&#234;n ng&#7855;n h&#417;n ho&#7863;c b&#7887; b&#7899;t b&#7897; l&#7885;c. C&#243; th&#7875; c&#7917;a h&#224;ng ch&#432;a &#273;&#259;ng s&#7843;n ph&#7849;m.</p>
+      <a th:href="@{/bo-suu-tap}" class="store-textlink">Xem to&#224;n b&#7897; s&#432;u t&#7853;p &#8594;</a>
+    </div>
+    <nav class="shop-pagination" aria-label="Ph&#226;n trang" th:if="${collection.pages > 1}">
+      <a th:if="${collection.page > 1}" th:href="@{/bo-suu-tap(q=${collection.keyword},loai=${collection.category},page=${collection.page - 1})}">&#8592; Trang tr&#432;&#7899;c</a>
+      <span th:text="|${collection.page} / ${collection.pages}|">1 / 2</span>
+      <a th:if="${collection.page < collection.pages}" th:href="@{/bo-suu-tap(q=${collection.keyword},loai=${collection.category},page=${collection.page + 1})}">Trang sau &#8594;</a>
+    </nav>
+  </section>
+  <section class="brand-story" id="story"><div class="story-number">B / 01</div><div>
+    <p class="store-eyebrow">ABOUT BEAUTICON</p>
+    <h2>Ph&#7909; ki&#7879;n nh&#7887;.<br><em>C&#226;u chuy&#7879;n c&#7911;a ri&#234;ng b&#7841;n.</em></h2>
+    <p>BeautIcon l&#224; g&#243;c nh&#7887; d&#224;nh cho nh&#7919;ng chi&#7871;c v&#242;ng tay &#273;&#432;&#7907;c ch&#7885;n theo phong c&#225;ch c&#7911;a m&#7895;i ng&#432;&#7901;i. T&#7841;i &#273;&#226;y, b&#7841;n c&#243; th&#7875; xem t&#7915;ng m&#7851;u, m&#224;u s&#7855;c v&#224; k&#237;ch th&#432;&#7899;c tr&#432;&#7899;c khi quy&#7871;t &#273;&#7883;nh.</p>
+    <small>Ch&#7885;n m&#7851;u v&#224; k&#237;ch th&#432;&#7899;c ngay tr&#234;n trang chi ti&#7871;t, sau &#273;&#243; th&#234;m v&#224;o gi&#7887; h&#224;ng.</small>
+  </div></section>
+</main>
+<footer th:replace="~{shop/fragments/footer :: footer}"></footer>
+</body></html>

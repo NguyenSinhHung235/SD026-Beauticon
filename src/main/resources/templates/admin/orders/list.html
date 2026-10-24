@@ -2,14 +2,17 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title th:text="${listing.invoicesOnly} ? 'Hoa don - BeautIcon' : 'Don hang online - BeautIcon'">Đơn hàng</title>
-  <link rel="stylesheet" th:href="@{/css/admin-catalog.css}"></head>
+  <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">  <link rel="stylesheet" th:href="@{/css/admin-brand.css}">
+  <script defer th:src="@{/js/admin-shell.js}"></script>
+<link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
 <body><div class="app">
 <aside th:replace="~{admin/fragments/nav :: menu(${active})}"></aside>
 <main>
   <div class="top"><div>
     <p class="eyebrow">BeautIcon Admin / Quản lý bán hàng</p>
     <h1 th:text="${listing.invoicesOnly} ? 'Hóa đơn hoàn thành' : 'Đơn hàng online'">Đơn hàng</h1>
-    <p class="hint" th:text="${listing.invoicesOnly} ? 'Tra cứu hóa đơn đã hoàn thành theo kênh bán' : 'Tiếp nhận, xử lý, xác nhận thu tiền và hủy đơn'">Mô tả</p>
+    
   </div><div class="actions">
     <a class="btn secondary" th:href="@{/admin/don-hang-online}">Đơn online</a>
     <a class="btn secondary" th:href="@{/admin/hoa-don}">Hóa đơn</a>

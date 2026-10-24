@@ -16,13 +16,18 @@ public class SecurityConfig {
 
     @Bean SecurityFilterChain filterChain(HttpSecurity http, NamedParameterJdbcTemplate jdbc) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/access-denied", "/css/**", "/health", "/error").permitAll()
+                .requestMatchers("/login", "/access-denied", "/css/**", "/js/**", "/images/**", "/uploads/**", "/health", "/error", "/favicon.ico", "/robots.txt", "/apple-touch-icon.png").permitAll()
+                .requestMatchers(HttpMethod.GET, "/", "/bo-suu-tap", "/san-pham/*").permitAll()
+                // Customer login/session is checked by shop controllers; never expose /admin.
+                .requestMatchers("/dang-ky", "/dang-nhap", "/tai-khoan", "/tai-khoan/**",
+                        "/gio-hang", "/gio-hang/**", "/thanh-toan", "/thanh-toan/**",
+                        "/don-hang-cua-toi", "/don-hang-cua-toi/**").permitAll()
                 .requestMatchers("/admin/nhan-vien", "/admin/nhan-vien/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/admin/khach-hang/*/trang-thai").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/admin/don-hang-online/*/xac-nhan-hoan-tien").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/admin/san-pham/**", "/admin/thuoc-tinh/**",
                         "/admin/khuyen-mai/**", "/admin/voucher/**").hasRole("ADMIN")
-                .requestMatchers("/admin", "/admin/**", "/", "/dashboard").hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers("/admin", "/admin/**", "/dashboard").hasAnyRole("ADMIN", "STAFF")
                 .anyRequest().authenticated())
             .formLogin(login -> login.loginPage("/login").loginProcessingUrl("/login")
                     .defaultSuccessUrl("/admin/dashboard", true).failureUrl("/login?error").permitAll())

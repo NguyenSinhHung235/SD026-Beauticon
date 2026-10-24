@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T&#224;i kho&#7843;n c&#7911;a t&#244;i | BeautIcon</title><link rel="stylesheet" th:href="@{/css/storefront.css}">
+<link rel="stylesheet" th:href="@{/css/shop-account.css}"><link rel="icon" th:href="@{/favicon.ico}">
+<script defer th:src="@{/js/storefront.js}"></script></head><body>
+<div th:replace="~{shop/fragments/header :: header}"></div>
+<main class="shop-page"><div class="page-kicker">YOUR CORNER / BEAUTICON</div>
+<h1 class="shop-page-title">Xin ch&#224;o, <em th:text="${customer.name}">b&#7841;n</em>.</h1>
+<p class="shop-page-sub" th:text="${customer.email}">email</p>
+<div class="account-grid">
+ <a th:href="@{/don-hang-cua-toi}" class="account-tile"><span class="tile-index">01 / PURCHASES</span><h2>&#272;&#417;n h&#224;ng c&#7911;a t&#244;i</h2><p>Theo d&#245;i ti&#7871;n &#273;&#7897; x&#7917; l&#253; v&#224; t&#236;nh tr&#7841;ng thanh to&#225;n.</p><strong>Xem &#273;&#417;n &#8594;</strong></a>
+ <a th:href="@{/tai-khoan/dia-chi}" class="account-tile"><span class="tile-index">02 / DELIVERY</span><h2>&#272;&#7883;a ch&#7881; giao h&#224;ng</h2><p>Th&#234;m ho&#7863;c &#7849;n nh&#7919;ng &#273;&#7883;a ch&#7881; nh&#7853;n h&#224;ng c&#7911;a b&#7841;n.</p><strong>Qu&#7843;n l&#253; &#8594;</strong></a>
+ <a th:href="@{/gio-hang}" class="account-tile"><span class="tile-index">03 / THE BASKET</span><h2>Gi&#7887; h&#224;ng</h2><p>Ti&#7871;p t&#7909;c ch&#7885;n m&#224;u v&#224; k&#237;ch th&#432;&#7899;c v&#242;ng tay.</p><strong>Xem gi&#7887; &#8594;</strong></a>
+</div>
+<form method="post" th:action="@{/tai-khoan/dang-xuat}" class="signout"><button type="submit">&#272;&#259;ng xu&#7845;t</button></form>
+</main><footer th:replace="~{shop/fragments/footer :: footer}"></footer></body></html>

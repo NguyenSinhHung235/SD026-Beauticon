@@ -1,191 +1,119 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title th:text="|Đơn hàng #${view.order.id} - BeautIcon|">Chi tiết đơn</title>
-    <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title th:text="|Đơn hàng #${view.order.id} - BeautIcon|">Chi tiết đơn</title>
+<link rel="stylesheet" th:href="@{/css/admin-catalog.css}">  <link rel="stylesheet" th:href="@{/css/admin-brand.css}">
+  <script defer th:src="@{/js/admin-shell.js}"></script>
+<link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
-<body>
-<div class="app">
-    <aside class="no-print" th:replace="~{admin/fragments/nav :: menu(${active})}"></aside>
-    <main>
-        <div class="top no-print">
-            <div>
-                <p class="eyebrow">BeautIcon / Chi tiết đơn hàng</p>
-                <h1 th:text="|Hóa đơn / Đơn hàng #${view.order.id}|">Đơn hàng</h1>
-                <p class="hint"><span th:text="${view.order.orderAtText}">24/10/2026</span> •
-                    <span th:text="${view.order.channel == 'ONLINE'} ? 'Online' : 'Tại quầy'">Online</span> •
-                    <span th:text="${view.order.statusLabel}">Trạng thái</span></p>
-            </div>
-            <div class="actions">
-                <a class="btn secondary" th:href="${printMode} ? @{/admin/hoa-don} : @{/admin/don-hang-online}">← Danh
-                    sách</a>
-                <a class="btn secondary" th:if="${view.order.status == 'HOAN_THANH'}"
-                   th:href="@{/admin/hoa-don/{id}/in(id=${view.order.id})}">Mẫu in hóa đơn</a>
-                <button type="button" onclick="window.print()">In trang</button>
-            </div>
-        </div>
-        <div class="notice no-print" th:if="${success}" th:text="${success}"></div>
-        <div class="notice error no-print" th:if="${error}" th:text="${error}"></div>
-        <div class="panel print-paper">
-            <div class="receipt-head"><h2>BEAUTICON</h2><strong
-                    th:text="|${view.order.channel == 'ONLINE' ? 'HÓA ĐƠN ONLINE' : 'HÓA ĐƠN BÁN TẠI QUẦY'} #${view.order.id}|"></strong>
-                <div th:text="${view.order.orderAtText}">24/10/2026</div>
-            </div>
-            <div class="order-details">
-                <div><span>Khách hàng</span><strong th:text="${view.order.customer}">Khách</strong></div>
-                <div><span>Nhân viên</span><strong th:text="${view.order.staff}">Nhân viên</strong></div>
-                <div><span>Người nhận</span><strong
-                        th:text="${view.order.recipient != null} ? ${view.order.recipient} : 'Nhận tại quầy'">Người
-                    nhận</strong></div>
-                <div><span>Điện thoại</span><strong th:text="${view.order.phone ?: '—'}">SĐT</strong></div>
-                <div class="full"><span>Địa chỉ giao hàng</span><strong th:text="${view.order.shippingAddress ?: '—'}">Địa
-                    chỉ</strong></div>
-                <div><span>Voucher</span><strong th:text="${view.order.voucher ?: '—'}">Mã</strong></div>
-                <div><span>Trạng thái</span><strong th:text="${view.order.statusLabel}">Hoàn thành</strong></div>
-            </div>
-            <h2 class="order-section-title">Chi tiết sản phẩm</h2>
-            <div class="table-scroll">
-                <table class="compact receipt-table">
-                    <thead>
-                    <tr>
-                        <th>Sản phẩm</th>
-                        <th>Biến thể</th>
-                        <th>SL</th>
-                        <th>Đơn giá</th>
-                        <th>Thành tiền</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="x : ${view.lines}">
-                        <td th:text="${x.product}">Vòng tay</td>
-                        <td th:text="|${x.color} / ${x.size}|">Màu / size</td>
-                        <td th:text="${x.quantity}">1</td>
-                        <td class="num" th:text="${#numbers.formatDecimal(x.price,1,'POINT',0,'COMMA')}">0</td>
-                        <td class="num" th:text="${#numbers.formatDecimal(x.lineTotal,1,'POINT',0,'COMMA')}">0</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="receipt-summary">
-                <div><span>Tiền hàng</span><strong
-                        th:text="|${#numbers.formatDecimal(view.order.subtotal,1,'POINT',0,'COMMA')} VND|">0</strong>
-                </div>
-                <div><span>Voucher</span><strong
-                        th:text="|-${#numbers.formatDecimal(view.order.discount,1,'POINT',0,'COMMA')} VND|">0</strong>
-                </div>
-                <div><span>Phí vận chuyển</span><strong
-                        th:text="|${#numbers.formatDecimal(view.order.shipping,1,'POINT',0,'COMMA')} VND|">0</strong>
-                </div>
-                <div class="grand"><span>Tổng tiền</span><strong
-                        th:text="|${#numbers.formatDecimal(view.order.total,1,'POINT',0,'COMMA')} VND|">0</strong></div>
-                <div><span>Đã thu thực tế sau hoàn</span><strong
-                        th:text="|${#numbers.formatDecimal(view.order.paidNet,1,'POINT',0,'COMMA')} VND|">0</strong>
-                </div>
-            </div>
-            <p class="receipt-thanks">Cảm ơn quý khách đã mua sắm tại BeautIcon!</p>
-        </div>
-        <div class="order-columns no-print">
-            <section class="panel"><h2>Lịch sử thanh toán và hoàn tiền</h2>
-                <div class="table-scroll">
-                    <table class="compact">
-                        <thead>
-                        <tr>
-                            <th>Loại</th>
-                            <th>Phương thức</th>
-                            <th>Số tiền</th>
-                            <th>Trạng thái</th>
-                            <th>Đối soát</th>
-                            <th>Thời gian</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="p : ${view.payments}">
-                            <td th:text="${p.type}">Thanh toán</td>
-                            <td th:text="${p.method}">Chuyển khoản</td>
-                            <td class="num" th:text="${#numbers.formatDecimal(p.amount,1,'POINT',0,'COMMA')}">0</td>
-                            <td th:text="${p.status}">THANH_CONG</td>
-                            <td th:text="${p.externalReference ?: p.code}">Mã</td>
-                            <td th:text="${p.paidAt}">24/10</td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(view.payments)}">
-                            <td colspan="6" class="empty">Chưa có giao dịch.</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-            <section class="panel"><h2>Nhật ký xử lý</h2>
-                <div th:each="h : ${view.history}" class="history-row">
-                    <strong th:text="${h.event}">Sự kiện</strong><small th:text="|${h.at} · ${h.staff}|"></small>
-                    <div th:text="${h.note}">Nội dung</div>
-                </div>
-<!--                <div class="hint" th:if="${#lists.isEmpty(view.history)}">Chưa có thay đổi kể từ khi nâng cấp giai đoạn-->
-<!--                    4.-->
-<!--                </div>-->
-            </section>
-        </div>
-        <div class="order-columns no-print" th:if="${view.order.channel == 'ONLINE' and !printMode}">
-            <section class="panel" th:if="${view.nextStatus != null}"><h2>Chuyển trạng thái online</h2>
-<!--                <p class="hint" th:text="|Bước kế tiếp: ${view.nextStatusLabel}. Chỉ hoàn thành khi đã thu đủ tiền.|">-->
-<!--                    Tiếp theo</p>-->
-                <form class="order-form" method="post"
-                      th:action="@{/admin/don-hang-online/{id}/chuyen-trang-thai(id=${view.order.id})}">
-                    <p class="hint">Nhân viên thực hiện: <strong th:text="${signedInStaff.fullName()}"></strong></p>
-                    <button type="submit" th:text="|Chuyển sang: ${view.nextStatusLabel}|">Chuyển trạng thái</button>
-                </form>
-            </section>
-            <section class="panel" th:if="${view.mayCancel and !view.paidInFull}"><h2>Ghi nhận thu tiền</h2>
-<!--                <p class="hint">Chỉ dùng khi nhân viên đã kiểm tra tiền thực nhận hoặc COD đã thu. Không kết nối ngân-->
-<!--                    hàng.</p>-->
-                <form class="order-form" method="post"
-                      th:action="@{/admin/don-hang-online/{id}/xac-nhan-thanh-toan(id=${view.order.id})}">
-                    <p class="hint">Nhân viên thực hiện: <strong th:text="${signedInStaff.fullName()}"></strong></p>
-                    <label class="field">Phương thức <select name="phuongThuc">
-                        <option value="CHUYEN_KHOAN">Chuyển khoản</option>
-                        <option value="TIEN_MAT">Tiền mặt / COD</option>
-                    </select></label>
-                    <label class="field">Mã đối soát (bắt buộc với chuyển khoản) <input name="maDoiSoat" maxlength="120"
-                                                                                        placeholder="Mã giao dịch thực tế"></label>
-                    <label class="confirm"><input type="checkbox" name="daNhanTien" value="true" required> Tôi xác nhận
-                        đã nhận đủ khoản tiền cần thu.</label>
-                    <button type="submit" onclick="return confirm('Bạn đã thực sự đối soát và nhận tiền?')">Ghi nhận
-                        thanh toán
-                    </button>
-                </form>
-            </section>
-            <section class="panel" th:if="${view.mayCancel}"><h2>Hủy đơn</h2>
-<!--                <p class="hint">Hoàn tồn kho nếu đơn đã trừ kho. Hoàn tiền được tạo ở trạng thái CHỜ, không tự chuyển-->
-<!--                    tiền.</p>-->
-                <form class="order-form" method="post"
-                      th:action="@{/admin/don-hang-online/{id}/huy(id=${view.order.id})}">
-                    <p class="hint">Nhân viên thực hiện: <strong th:text="${signedInStaff.fullName()}"></strong></p>
-                    <label class="field">Lý do hủy (tối thiểu 5 ký tự) <textarea name="lyDoHuy" minlength="5"
-                                                                                 maxlength="500" required
-                                                                                 placeholder="Khách yêu cầu hủy..."></textarea></label>
-                    <button class="danger" type="submit" onclick="return confirm('Hủy đơn và hoàn kho nếu đã trừ?')">Hủy
-                        đơn
-                    </button>
-                </form>
-            </section>
-            <section class="panel" th:if="${view.hasPendingRefund and isAdmin}"><h2>Xác nhận đã hoàn tiền</h2>
-<!--                <p class="hint">Chỉ xác nhận sau khi chuyển khoản hoặc hoàn tiền ngoài hệ thống đã thực hiện thành-->
-<!--                    công.</p>-->
-                <form class="order-form" method="post"
-                      th:action="@{/admin/don-hang-online/{id}/xac-nhan-hoan-tien(id=${view.order.id})}">
-                    <p class="hint">Nhân viên thực hiện: <strong th:text="${signedInStaff.fullName()}"></strong></p>
-                    <label class="field">Mã hoàn tiền / đối soát <input name="maDoiSoat" maxlength="120"
-                                                                        placeholder="Mã giao dịch hoàn tiền"></label>
-                    <label class="confirm"><input type="checkbox" name="daHoanTien" value="true" required> Tiền đã hoàn
-                        thực tế cho khách.</label>
-                    <button type="submit" onclick="return confirm('Tiền đã hoàn thực tế cho khách chưa?')">Đã hoàn
-                        tiền
-                    </button>
-                </form>
-            </section>
-        </div>
-    </main>
+<body><div class="app">
+<aside class="no-print" th:replace="~{admin/fragments/nav :: menu(${active})}"></aside><main>
+<div class="top no-print"><div>
+ <p class="eyebrow">BeautIcon / Chi tiết đơn hàng</p><h1 th:text="|Hóa đơn / Đơn hàng #${view.order.id}|">Đơn hàng</h1>
+ <p class="hint"><span th:text="${view.order.orderAtText}">24/10/2026</span> •
+ <span th:text="${view.order.channel == 'ONLINE'} ? 'Online' : 'Tại quầy'">Online</span> •
+ <span th:text="${view.order.statusLabel}">Trạng thái</span></p>
+</div><div class="actions">
+ <a class="btn secondary" th:href="${printMode} ? @{/admin/hoa-don} : @{/admin/don-hang-online}">← Danh sách</a>
+ <a class="btn secondary" th:if="${view.order.status == 'HOAN_THANH'}" th:href="@{/admin/hoa-don/{id}/in(id=${view.order.id})}">Mẫu in hóa đơn</a>
+ <button type="button" onclick="window.print()">In trang</button>
+</div></div>
+<div class="notice no-print" th:if="${success}" th:text="${success}"></div>
+<div class="notice error no-print" th:if="${error}" th:text="${error}"></div>
+<div class="panel print-paper">
+ <div class="receipt-head"><h2>BEAUTICON</h2><strong th:text="|${view.order.channel == 'ONLINE' ? 'HÓA ĐƠN ONLINE' : 'HÓA ĐƠN BÁN TẠI QUẦY'} #${view.order.id}|"></strong>
+ <div th:text="${view.order.orderAtText}">24/10/2026</div></div>
+ <div class="order-details">
+  <div><span>Khách hàng</span><strong th:text="${view.order.customer}">Khách</strong></div>
+  <div><span>Nhân viên</span><strong th:text="${view.order.staff}">Nhân viên</strong></div>
+  <div><span>Người nhận</span><strong th:text="${view.order.recipient != null} ? ${view.order.recipient} : 'Nhận tại quầy'">Người nhận</strong></div>
+  <div><span>Điện thoại</span><strong th:text="${view.order.phone ?: '—'}">SĐT</strong></div>
+  <div class="full"><span>Địa chỉ giao hàng</span><strong th:text="${view.order.shippingAddress ?: '—'}">Địa chỉ</strong></div>
+  <div><span>Voucher</span><strong th:text="${view.order.voucher ?: '—'}">Mã</strong></div>
+  <div><span>Trạng thái</span><strong th:text="${view.order.statusLabel}">Hoàn thành</strong></div>
+ </div>
+ <h2 class="order-section-title">Chi tiết sản phẩm</h2>
+ <div class="table-scroll"><table class="compact receipt-table"><thead><tr><th>Sản phẩm</th><th>Biến thể</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th></tr></thead>
+ <tbody><tr th:each="x : ${view.lines}">
+   <td th:text="${x.product}">Vòng tay</td>
+   <td><strong th:text="|${x.color} / ${x.size}|">Màu / size</strong>
+     <div class="admin-size-detail" th:if="${x.sizeMode == 'THEO_YEU_CAU'}">
+       <div><strong>Chu vi cổ tay:</strong> <span th:text="${x.wristCm}">16.5</span> cm</div>
+       <div><strong>Độ rộng đeo:</strong>
+         <span th:text="${x.fit == 'OM' ? 'Ôm tay' : (x.fit == 'RONG' ? 'Rộng' : 'Vừa thoải mái')}">Vừa</span></div>
+       <div th:if="${x.sizeNote != null and !#strings.isEmpty(x.sizeNote)}">
+         <strong>Ghi chú:</strong> <span th:text="${x.sizeNote}"></span></div>
+       <div th:if="${x.sizeConfirmation == 'CHO_XAC_NHAN'}" class="size-confirm-wait">Chờ xác nhận kích thước</div>
+       <div th:if="${x.sizeConfirmation == 'DA_XAC_NHAN'}" class="size-confirm-done">Đã xác nhận kích thước</div>
+       <form class="no-print" th:if="${view.order.channel == 'ONLINE' and !printMode and x.sizeConfirmation == 'CHO_XAC_NHAN' and view.order.status != 'DA_HUY' and view.order.status != 'HOAN_THANH'}"
+             method="post" th:action="@{/admin/don-hang-online/{id}/xac-nhan-kich-thuoc(id=${view.order.id})}">
+         <input type="hidden" name="idChiTiet" th:value="${x.id}">
+         <button type="submit" class="btn secondary" onclick="return confirm('Đã liên hệ và xác nhận số đo với khách hàng?')">Xác nhận kích thước</button>
+       </form>
+     </div>
+     <div th:if="${x.sizeNote != null and !#strings.isEmpty(x.sizeNote) and x.sizeMode != 'THEO_YEU_CAU'}"
+          th:text="|Ghi chú: ${x.sizeNote}|"></div>
+   </td>
+   <td th:text="${x.quantity}">1</td>
+   <td class="num" th:text="${#numbers.formatDecimal(x.price,1,'POINT',0,'COMMA')}">0</td>
+   <td class="num" th:text="${#numbers.formatDecimal(x.lineTotal,1,'POINT',0,'COMMA')}">0</td>
+ </tr></tbody></table></div>
+ <div class="receipt-summary">
+  <div><span>Tiền hàng</span><strong th:text="|${#numbers.formatDecimal(view.order.subtotal,1,'POINT',0,'COMMA')} VND|">0</strong></div>
+  <div><span>Voucher</span><strong th:text="|-${#numbers.formatDecimal(view.order.discount,1,'POINT',0,'COMMA')} VND|">0</strong></div>
+  <div><span>Phí vận chuyển</span><strong th:text="|${#numbers.formatDecimal(view.order.shipping,1,'POINT',0,'COMMA')} VND|">0</strong></div>
+  <div class="grand"><span>Tổng tiền</span><strong th:text="|${#numbers.formatDecimal(view.order.total,1,'POINT',0,'COMMA')} VND|">0</strong></div>
+  <div><span>Đã thu thực tế sau hoàn</span><strong th:text="|${#numbers.formatDecimal(view.order.paidNet,1,'POINT',0,'COMMA')} VND|">0</strong></div>
+ </div>
+ <p class="receipt-thanks">Cảm ơn quý khách đã mua sắm tại BeautIcon!</p>
 </div>
-</body>
-</html>
+<div class="order-columns no-print">
+  <section class="panel"><h2>Lịch sử thanh toán và hoàn tiền</h2>
+    <div class="table-scroll"><table class="compact"><thead><tr><th>Loại</th><th>Phương thức</th><th>Số tiền</th><th>Trạng thái</th><th>Đối soát</th><th>Thời gian</th></tr></thead><tbody>
+     <tr th:each="p : ${view.payments}"><td th:text="${p.type}">Thanh toán</td><td th:text="${p.method}">Chuyển khoản</td>
+      <td class="num" th:text="${#numbers.formatDecimal(p.amount,1,'POINT',0,'COMMA')}">0</td><td th:text="${p.status}">THANH_CONG</td>
+      <td th:text="${p.externalReference ?: p.code}">Mã</td><td th:text="${p.paidAt}">24/10</td></tr>
+     <tr th:if="${#lists.isEmpty(view.payments)}"><td colspan="6" class="empty">Chưa có giao dịch.</td></tr>
+    </tbody></table></div>
+  </section>
+  <section class="panel"><h2>Nhật ký xử lý</h2><div th:each="h : ${view.history}" class="history-row">
+    <strong th:text="${h.event}">Sự kiện</strong><small th:text="|${h.at} · ${h.staff}|"></small><div th:text="${h.note}">Nội dung</div>
+  </div></section>
+</div>
+<div class="order-columns no-print" th:if="${view.order.channel == 'ONLINE' and !printMode}">
+ <section class="panel" th:if="${view.nextStatus != null}"><h2>Chuyển trạng thái online</h2>
+  <p class="hint" th:text="|Bước kế tiếp: ${view.nextStatusLabel}|">Tiếp theo</p>
+  <form class="order-form" method="post" th:action="@{/admin/don-hang-online/{id}/chuyen-trang-thai(id=${view.order.id})}">
+   <p class="hint">Nhân viên thực hiện: <strong th:text="${signedInStaff.fullName()}"></strong></p>
+   <button type="submit" th:text="|Chuyển sang: ${view.nextStatusLabel}|">Chuyển trạng thái</button>
+  </form>
+ </section>
+ <section class="panel" th:if="${view.mayCancel and !view.paidInFull}"><h2>Ghi nhận thu tiền</h2>
+  
+  <form class="order-form" method="post" th:action="@{/admin/don-hang-online/{id}/xac-nhan-thanh-toan(id=${view.order.id})}">
+   <p class="hint">Nhân viên thực hiện: <strong th:text="${signedInStaff.fullName()}"></strong></p>
+   <label class="field">Phương thức <select name="phuongThuc"><option value="CHUYEN_KHOAN">Chuyển khoản</option><option value="TIEN_MAT">Tiền mặt / COD</option></select></label>
+   <label class="field">Mã đối soát (bắt buộc với chuyển khoản) <input name="maDoiSoat" maxlength="120" placeholder="Mã giao dịch thực tế"></label>
+   <label class="confirm"><input type="checkbox" name="daNhanTien" value="true" required> Tôi xác nhận đã nhận đủ khoản tiền cần thu.</label>
+   <button type="submit" onclick="return confirm('Bạn đã thực sự đối soát và nhận tiền?')">Ghi nhận thanh toán</button>
+  </form>
+ </section>
+ <section class="panel" th:if="${view.mayCancel}"><h2>Hủy đơn</h2>
+  
+  <form class="order-form" method="post" th:action="@{/admin/don-hang-online/{id}/huy(id=${view.order.id})}">
+   <p class="hint">Nhân viên thực hiện: <strong th:text="${signedInStaff.fullName()}"></strong></p>
+   <label class="field">Lý do hủy (tối thiểu 5 ký tự) <textarea name="lyDoHuy" minlength="5" maxlength="500" required placeholder="Khách yêu cầu hủy..."></textarea></label>
+   <button class="danger" type="submit" onclick="return confirm('Hủy đơn và hoàn kho nếu đã trừ?')">Hủy đơn</button>
+  </form>
+ </section>
+ <section class="panel" th:if="${view.hasPendingRefund and isAdmin}"><h2>Xác nhận đã hoàn tiền</h2>
+  
+  <form class="order-form" method="post" th:action="@{/admin/don-hang-online/{id}/xac-nhan-hoan-tien(id=${view.order.id})}">
+   <p class="hint">Nhân viên thực hiện: <strong th:text="${signedInStaff.fullName()}"></strong></p>
+   <label class="field">Mã hoàn tiền / đối soát <input name="maDoiSoat" maxlength="120" placeholder="Mã giao dịch hoàn tiền"></label>
+   <label class="confirm"><input type="checkbox" name="daHoanTien" value="true" required> Tiền đã hoàn thực tế cho khách.</label>
+   <button type="submit" onclick="return confirm('Tiền đã hoàn thực tế cho khách chưa?')">Đã hoàn tiền</button>
+  </form>
+ </section>
+</div>
+</main></div></body></html>

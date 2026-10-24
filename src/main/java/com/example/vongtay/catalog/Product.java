@@ -29,6 +29,10 @@ public class Product {
     private String moTa;
     @Column(name = "ngay_san_xuat")
     private LocalDate ngaySanXuat;
+    @Column(name = "freesize_min_cm", precision = 4, scale = 1)
+    private BigDecimal freesizeMinCm;
+    @Column(name = "freesize_max_cm", precision = 4, scale = 1)
+    private BigDecimal freesizeMaxCm;
     @Column(name = "trang_thai", nullable = false)
     private boolean trangThai = true;
     @Column(name = "ngay_tao", nullable = false, updatable = false)
@@ -56,6 +60,10 @@ public class Product {
     public void setMoTa(String moTa) { this.moTa = moTa; }
     public LocalDate getNgaySanXuat() { return ngaySanXuat; }
     public void setNgaySanXuat(LocalDate ngaySanXuat) { this.ngaySanXuat = ngaySanXuat; }
+    public BigDecimal getFreesizeMinCm() { return freesizeMinCm; }
+    public void setFreesizeMinCm(BigDecimal v) { freesizeMinCm = v; }
+    public BigDecimal getFreesizeMaxCm() { return freesizeMaxCm; }
+    public void setFreesizeMaxCm(BigDecimal v) { freesizeMaxCm = v; }
     public boolean isTrangThai() { return trangThai; }
     public void setTrangThai(boolean trangThai) { this.trangThai = trangThai; }
     public LocalDateTime getNgayTao() { return ngayTao; }

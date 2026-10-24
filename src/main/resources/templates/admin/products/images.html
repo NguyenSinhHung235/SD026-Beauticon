@@ -1,83 +1,32 @@
-<!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Hình ảnh sản phẩm • BeautIcon</title>
-    <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hình ảnh sản phẩm • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}">  <link rel="stylesheet" th:href="@{/css/admin-brand.css}">
+  <script defer th:src="@{/js/admin-shell.js}"></script>
+<link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
-<body>
-<div class="app">
-    <aside th:replace="~{admin/fragments/nav :: menu('products')}"></aside>
-    <main>
-        <div class="breadcrumb"><a th:href="@{/admin/san-pham}">Sản phẩm</a><span>/</span><span
-                th:text="${product.tenSanPham}">Vòng tay</span><span>/</span>Hình ảnh
-        </div>
-        <div class="top">
-            <div><h1>Quản lý hình ảnh</h1>
-                <div class="hint" th:text="${product.tenSanPham}">Vòng tay</div>
-            </div>
-            <a class="btn secondary" th:href="@{/admin/san-pham/{p}/bien-the(p=${product.idSanPham})}">Xem biến thể
-                →</a></div>
-        <div class="notice" th:if="${success}" th:text="${success}"></div>
-        <div class="notice error" th:if="${error}" th:text="${error}"></div>
-        <div class="panel" th:if="${isAdmin}"><h2>Thêm URL ảnh</h2>
-<!--            <p class="hint">Chấp nhận ảnh HTTPS hoặc đường dẫn nội bộ /uploads/... (chưa có tính năng upload file).</p>-->
-            <form class="toolbar" method="post"
-                  th:action="@{/admin/san-pham/{p}/hinh-anh/them(p=${product.idSanPham})}">
-                <input type="text" name="url" maxlength="1000" required placeholder="https://example.com/bracelet.jpg"
-                       class="image-input">
-                <button type="submit">＋ Thêm ảnh</button>
-            </form>
-        </div>
-        <div class="panel"><h2>Danh sách ảnh</h2>
-            <div class="table-scroll">
-                <table class="compact">
-                    <thead>
-                    <tr>
-                        <th>Xem trước</th>
-                        <th>Đường dẫn</th>
-                        <th>Loại</th>
-                        <th>Thao tác</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="item : ${items}">
-                        <td><img class="preview" th:src="${item.url}" alt="Ảnh vòng tay" loading="lazy"></td>
-                        <td>
-                            <form class="actions" th:if="${isAdmin}" method="post"
-                                  th:action="@{/admin/san-pham/{p}/hinh-anh/{id}/sua(p=${product.idSanPham},id=${item.id})}">
-                                <input type="text" name="url" th:value="${item.url}" required maxlength="1000"
-                                       style="max-width:340px">
-                                <button class="secondary tiny" type="submit">Lưu URL</button>
-                            </form>
-                            <span th:unless="${isAdmin}" th:text="${item.url}"></span></td>
-                        <td><span class="pill on" th:if="${item.main}">Ảnh đại diện</span><span class="pill"
-                                                                                                th:unless="${item.main}">Ảnh phụ</span>
-                        </td>
-                        <td>
-                            <div class="actions">
-                                <form method="post" th:if="${isAdmin and !item.main}"
-                                      th:action="@{/admin/san-pham/{p}/hinh-anh/{id}/anh-chinh(p=${product.idSanPham},id=${item.id})}">
-                                    <button class="secondary tiny" type="submit">Đặt làm chính</button>
-                                </form>
-                                <form method="post" th:if="${isAdmin}"
-                                      th:action="@{/admin/san-pham/{p}/hinh-anh/{id}/xoa(p=${product.idSanPham},id=${item.id})}">
-                                    <button class="danger tiny" type="submit" onclick="return confirm('Xóa ảnh này?');">
-                                        Xóa ảnh
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(items)}">
-                        <td colspan="4" class="empty">Chưa thêm ảnh nào.</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </main>
-</div>
-</body>
-</html>
+<body><div class="app"><aside th:replace="~{admin/fragments/nav :: menu('products')}"></aside><main>
+<div class="breadcrumb"><a th:href="@{/admin/san-pham}">Sản phẩm</a><span>/</span><span th:text="${product.tenSanPham}">Vòng tay</span><span>/</span>Hình ảnh</div>
+<div class="top"><div><h1>Quản lý hình ảnh</h1><div class="hint" th:text="${product.tenSanPham}">Vòng tay</div></div>
+<a class="btn secondary" th:href="@{/admin/san-pham/{p}/bien-the(p=${product.idSanPham})}">Xem biến thể →</a></div>
+<div class="notice" th:if="${success}" th:text="${success}"></div>
+<div class="notice error" th:if="${error}" th:text="${error}"></div>
+<div class="panel" th:if="${isAdmin}"><h2>Tải ảnh từ máy</h2>
+
+<form method="post" enctype="multipart/form-data" th:action="@{/admin/san-pham/{p}/hinh-anh/tai-len(p=${product.idSanPham})}">
+<input type="file" name="file" accept="image/jpeg,image/png" required>
+<button type="submit">Tải ảnh lên</button></form></div>
+<div class="panel" th:if="${isAdmin}"><h2>Thêm URL ảnh</h2>
+<form class="toolbar" method="post" th:action="@{/admin/san-pham/{p}/hinh-anh/them(p=${product.idSanPham})}">
+<input type="text" name="url" maxlength="1000" required placeholder="https://example.com/bracelet.jpg" class="image-input">
+<button type="submit">＋ Thêm ảnh</button></form></div>
+<div class="panel"><h2>Danh sách ảnh</h2><div class="table-scroll"><table class="compact"><thead><tr><th>Xem trước</th><th>Đường dẫn</th><th>Loại</th><th>Thao tác</th></tr></thead><tbody>
+<tr th:each="item : ${items}"><td><img class="preview" th:src="${item.url}" alt="Ảnh vòng tay" loading="lazy"></td>
+<td><form class="actions" th:if="${isAdmin}" method="post" th:action="@{/admin/san-pham/{p}/hinh-anh/{id}/sua(p=${product.idSanPham},id=${item.id})}">
+<input type="text" name="url" th:value="${item.url}" required maxlength="1000" style="max-width:340px"><button class="secondary tiny" type="submit">Lưu URL</button></form><span th:unless="${isAdmin}" th:text="${item.url}"></span></td>
+<td><span class="pill on" th:if="${item.main}">Ảnh đại diện</span><span class="pill" th:unless="${item.main}">Ảnh phụ</span></td>
+<td><div class="actions"><form method="post" th:if="${isAdmin and !item.main}" th:action="@{/admin/san-pham/{p}/hinh-anh/{id}/anh-chinh(p=${product.idSanPham},id=${item.id})}">
+<button class="secondary tiny" type="submit">Đặt làm chính</button></form>
+<form method="post" th:if="${isAdmin}" th:action="@{/admin/san-pham/{p}/hinh-anh/{id}/xoa(p=${product.idSanPham},id=${item.id})}">
+<button class="danger tiny" type="submit" onclick="return confirm('Xóa ảnh này?');">Xóa ảnh</button></form></div></td></tr>
+<tr th:if="${#lists.isEmpty(items)}"><td colspan="4" class="empty">Chưa thêm ảnh nào.</td></tr>
+</tbody></table></div></div>
+</main></div></body></html>

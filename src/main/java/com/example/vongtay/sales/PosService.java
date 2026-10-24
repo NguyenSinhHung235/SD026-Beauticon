@@ -1,6 +1,7 @@
 package com.example.vongtay.sales;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import com.example.vongtay.shop.SizeSelection;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,9 @@ public class PosService {
                 JOIN dbo.bien_the_mau_sac m ON m.id_mau_sac=v.id_mau_sac
                 JOIN dbo.bien_the_kich_thuoc k ON k.id_kich_thuoc=v.id_kich_thuoc
                 WHERE v.trang_thai=1 AND s.trang_thai=1 AND v.so_luong_ton > 0
+                  AND LOWER(LTRIM(RTRIM(k.ten_kich_thuoc))) NOT IN (N'theo yêu cầu',N'theo yeu cau')
+                  AND (LOWER(LTRIM(RTRIM(k.ten_kich_thuoc))) NOT IN (N'freesize',N'free size')
+                       OR (s.freesize_min_cm IS NOT NULL AND s.freesize_max_cm IS NOT NULL))
                 ORDER BY s.ten_san_pham, v.id_bien_the
                 """, new MapSqlParameterSource());
         List<Long> ids = rows.stream().map(r -> ((Number)r.get("id")).longValue()).toList();
@@ -81,7 +85,7 @@ public class PosService {
         return combined;
     }
 
-    private record Line(long variantId, int quantity, BigDecimal original, BigDecimal actual) {}
+    private record Line(long variantId, int quantity, BigDecimal original, BigDecimal actual, String sizeName, String sizeMode) {}
 
     /** Read-only estimate. The checkout recalculates everything in a transaction. */
     public Map<String, Object> quote(PosForm f) {
@@ -92,15 +96,19 @@ public class PosService {
         for (Map.Entry<Long, Integer> item : items.entrySet()) {
             List<Map<String, Object>> matches = jdbc.queryForList("""
                     SELECT b.gia_ban AS price, b.so_luong_ton AS stock,
-                           b.trang_thai AS active, s.trang_thai AS productActive
+                           b.trang_thai AS active, s.trang_thai AS productActive,
+                           k.ten_kich_thuoc AS sizeName,
+                           s.freesize_min_cm AS freeMin, s.freesize_max_cm AS freeMax
                     FROM dbo.san_pham_bien_the b
                     JOIN dbo.san_pham s ON s.id_san_pham=b.id_san_pham
+                    JOIN dbo.bien_the_kich_thuoc k ON k.id_kich_thuoc=b.id_kich_thuoc
                     WHERE b.id_bien_the=:id
                     """, new MapSqlParameterSource("id", item.getKey()));
             if (matches.isEmpty()) throw new IllegalArgumentException("Bien the khong ton tai.");
             Map<String, Object> row = matches.get(0);
             if (!Boolean.TRUE.equals(row.get("active")) || !Boolean.TRUE.equals(row.get("productActive")))
                 throw new IllegalArgumentException("Bien the dang ngung ban.");
+            validatePosSize(row);
             if (((Number)row.get("stock")).intValue() < item.getValue())
                 throw new IllegalArgumentException("Bien the #" + item.getKey() + " khong du ton kho.");
             BigDecimal price = PromotionService.effectivePrice((BigDecimal)row.get("price"), active.get(item.getKey()));
@@ -142,20 +150,25 @@ public class PosService {
             Long id = entry.getKey();
             List<Map<String, Object>> matches = jdbc.queryForList("""
                     SELECT b.gia_ban AS price, b.so_luong_ton AS stock,
-                           b.trang_thai AS active, s.trang_thai AS productActive
+                           b.trang_thai AS active, s.trang_thai AS productActive,
+                           k.ten_kich_thuoc AS sizeName,
+                           s.freesize_min_cm AS freeMin, s.freesize_max_cm AS freeMax
                     FROM dbo.san_pham_bien_the b WITH (UPDLOCK, ROWLOCK)
                     JOIN dbo.san_pham s ON s.id_san_pham=b.id_san_pham
+                    JOIN dbo.bien_the_kich_thuoc k ON k.id_kich_thuoc=b.id_kich_thuoc
                     WHERE b.id_bien_the=:id
                     """, new MapSqlParameterSource("id", id));
             if (matches.isEmpty()) throw new IllegalArgumentException("Bien the #" + id + " khong ton tai.");
             Map<String, Object> r = matches.get(0);
             if (!Boolean.TRUE.equals(r.get("active")) || !Boolean.TRUE.equals(r.get("productActive")))
                 throw new IllegalArgumentException("Bien the #" + id + " da ngung ban.");
+            validatePosSize(r);
             if (((Number)r.get("stock")).intValue() < entry.getValue())
                 throw new IllegalArgumentException("Ton kho cua bien the #" + id + " khong du.");
             BigDecimal original = (BigDecimal)r.get("price");
             BigDecimal effective = PromotionService.effectivePrice(original, rules.get(id));
-            lines.add(new Line(id, entry.getValue(), original, effective));
+            lines.add(new Line(id, entry.getValue(), original, effective,
+                    (String)r.get("sizeName"),SizeSelection.modeFor((String)r.get("sizeName"))));
             subtotal = subtotal.add(effective.multiply(BigDecimal.valueOf(entry.getValue())));
         }
         if (subtotal.signum() <= 0) throw new IllegalArgumentException("Don hang 0 dong chua duoc ho tro tai POS.");
@@ -196,11 +209,13 @@ public class PosService {
                     """, new MapSqlParameterSource("quantity", line.quantity()).addValue("id", line.variantId()));
             if (updated != 1) throw new IllegalArgumentException("Ton kho vua thay doi. Hay kiem tra lai.");
             jdbc.update("""
-                    INSERT INTO dbo.don_hang_chi_tiet(id_don_hang,id_bien_the,so_luong,gia_ban)
-                    VALUES(:orderId,:variantId,:quantity,:price)
+                    INSERT INTO dbo.don_hang_chi_tiet(id_don_hang,id_bien_the,so_luong,gia_ban,
+                        kieu_kich_thuoc,ten_kich_thuoc_chot)
+                    VALUES(:orderId,:variantId,:quantity,:price,:sizeMode,:sizeName)
                     """, new MapSqlParameterSource("orderId", orderId)
                     .addValue("variantId", line.variantId()).addValue("quantity", line.quantity())
-                    .addValue("price", line.actual()));
+                    .addValue("price", line.actual()).addValue("sizeMode",line.sizeMode())
+                    .addValue("sizeName",line.sizeName()));
         }
         jdbc.update("""
                 INSERT INTO dbo.thanh_toan(id_don_hang,phuong_thuc,loai_giao_dich,so_tien,
@@ -210,6 +225,15 @@ public class PosService {
                 .addValue("method", payment).addValue("total", total)
                 .addValue("transaction", "POS-" + orderId));
         return orderId;
+    }
+
+    private static void validatePosSize(Map<String,Object> row) {
+        String size=(String)row.get("sizeName");
+        if (SizeSelection.CUSTOM.equals(SizeSelection.modeFor(size)))
+            throw new IllegalArgumentException("Size theo yêu cầu chỉ hỗ trợ qua đơn online có nhập số đo.");
+        if (SizeSelection.FREE.equals(SizeSelection.modeFor(size))
+                && (row.get("freeMin")==null || row.get("freeMax")==null))
+            throw new IllegalArgumentException("Freesize chưa có khoảng điều chỉnh; sửa cấu hình sản phẩm trước khi bán.");
     }
 
     private boolean existsActive(String table, String key, Long id) {
@@ -243,7 +267,7 @@ public class PosService {
         order.put("orderText", SaleSupport.toDisplay(order.get("orderAt")));
         order.put("items", jdbc.queryForList("""
                 SELECT s.ten_san_pham AS name, m.ten_mau_sac AS color,
-                    k.ten_kich_thuoc AS size, c.so_luong AS quantity,
+                    COALESCE(c.ten_kich_thuoc_chot,k.ten_kich_thuoc) AS size, c.so_luong AS quantity,
                     c.gia_ban AS price,
                     c.so_luong * c.gia_ban AS lineTotal
                 FROM dbo.don_hang_chi_tiet c

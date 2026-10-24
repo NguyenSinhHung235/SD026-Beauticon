@@ -1,84 +1,97 @@
-<!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard / Thống kê • BeautIcon</title>
-  <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
-  <link rel="stylesheet" th:href="@{/css/admin-dashboard.css}">
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T&#7893;ng quan kinh doanh | BeautIcon Retail</title>
+<link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+<link rel="stylesheet" th:href="@{/css/admin-dashboard.css}">
+<link rel="stylesheet" th:href="@{/css/admin-brand.css}">
+<script defer th:src="@{/js/admin-shell.js}"></script><link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
-<body>
-<div class="app">
-  <aside th:replace="~{admin/fragments/nav :: menu('dashboard')}"></aside>
-  <main class="dashboard-page">
-    <div class="top">
-      <div><p class="eyebrow">Tổng quan / Báo cáo</p><h1>Tổng quan kinh doanh</h1>
-        <p class="hint">Doanh thu thực thu theo ngày thanh toán; đơn hàng theo ngày đặt • VND</p></div>
-      <form class="dash-filter" method="get" th:action="@{/admin/dashboard}">
-        <label class="field">Từ ngày <input type="date" name="from" th:value="${from}" required></label>
-        <label class="field">Đến ngày <input type="date" name="to" th:value="${to}" required></label>
-        <button type="submit">Áp dụng</button>
-      </form>
+<body><div class="app">
+<aside th:replace="~{admin/fragments/nav :: menu('dashboard')}"></aside>
+<main class="dashboard-page" id="main-content">
+  <header class="dash-welcome">
+    <div><p class="eyebrow">BEAUTICON</p>
+      <h1>Nh&#7883;p s&#7889;ng c&#7917;a h&#224;ng<span class="dash-dot">.</span></h1>
+      <p class="dash-subline">M&#7897;t g&#243;c nh&#236;n r&#245; r&#224;ng v&#7873; b&#225;n h&#224;ng, &#273;&#417;n &#273;&#7863;t v&#224; h&#224;ng t&#7891;n &#8212; tr&#234;n c&#249;ng m&#7897;t trang.</p>
     </div>
-    <div th:if="${error}" class="notice error" th:text="${error}"></div>
-    <div class="dash-cards">
-      <section class="dash-card"><div class="muted">Doanh thu thực thu</div><div class="dash-value" th:text="${stats.revenue}">0</div><div class="hint">Thanh toán thành công − hoàn tiền</div></section>
-      <section class="dash-card"><div class="muted">Đơn hàng đã tạo</div><div class="dash-value" th:text="${stats.totalOrders}">0</div><div class="hint">Theo ngày đặt hàng</div></section>
-      <section class="dash-card"><div class="muted">Đơn hoàn thành</div><div class="dash-value" th:text="${stats.completed}">0</div><div class="hint">Trạng thái HOAN_THANH</div></section>
-      <section class="dash-card"><div class="muted">Biến thể tồn kho thấp</div><div class="dash-value" th:text="${stats.lowStock}">0</div><div class="hint">Còn ≤ 5 sản phẩm • toàn hệ thống</div></section>
-      <section class="dash-card"><div class="muted">Doanh thu Online</div><div class="dash-value" th:text="${stats.onlineRevenue}">0</div></section>
-      <section class="dash-card"><div class="muted">Doanh thu tại quầy</div><div class="dash-value" th:text="${stats.offlineRevenue}">0</div></section>
-      <section class="dash-card"><div class="muted">Khách mới</div><div class="dash-value" th:text="${stats.newCustomers}">0</div></section>
-      <section class="dash-card"><div class="muted">Đơn bị hủy</div><div class="dash-value" th:text="${stats.cancelled}">0</div></section>
-    </div>
-    <div class="dash-two">
-      <section class="panel dash-panel">
-        <h2>Doanh thu theo ngày</h2>
-        <div class="dash-bars">
-          <div class="dash-bar-col" th:each="b : ${chart}" th:title="${b.label + ': ' + b.amount}">
-            <div class="dash-bar" th:style="|height: ${b.height}%|"></div><small th:text="${b.label}">01/01</small>
-          </div>
+    <div class="dash-stamp" aria-hidden="true"><span>BEAUTICON</span><strong>B<span>.</span></strong><small>RETAIL NOTES</small></div>
+  </header>
+  <section class="dash-date-card" aria-label="Kho&#7843;ng ng&#224;y th&#7889;ng k&#234;">
+    <div class="date-card-label"><span class="date-card-icon" aria-hidden="true">&#9719;</span><div>
+      <strong>Kho&#7843;ng th&#7901;i gian b&#225;o c&#225;o</strong>
+      <small>Doanh thu theo ng&#224;y thanh to&#225;n; &#273;&#417;n h&#224;ng theo ng&#224;y &#273;&#7863;t (gi&#7901; Vi&#7879;t Nam).</small>
+    </div></div>
+    <form class="dash-filter" method="get" th:action="@{/admin/dashboard}">
+      <label class="field">T&#7915; ng&#224;y <input type="date" name="from" th:value="${from}" required></label>
+      <label class="field">&#272;&#7871;n ng&#224;y <input type="date" name="to" th:value="${to}" required></label>
+      <button type="submit">Xem b&#225;o c&#225;o <span aria-hidden="true">&#8594;</span></button>
+    </form>
+  </section>
+  <div class="notice error" th:if="${error}" th:text="${error}"></div>
+  <section class="dash-hero-metrics" aria-label="S&#7889; li&#7879;u n&#7893;i b&#7853;t">
+    <article class="metric metric-feature"><div class="metric-overline">01 / D&#210;NG TI&#7872;N</div>
+      <p class="metric-name">Doanh thu th&#7921;c thu</p>
+      <strong class="metric-value" th:text="${stats.revenue}">0 &#8363;</strong>
+      <p class="metric-foot">&#272;&#227; tr&#7915; c&#225;c kho&#7843;n ho&#224;n ti&#7873;n th&#224;nh c&#244;ng.</p>
+      <span class="metric-watermark" aria-hidden="true">b.</span></article>
+    <article class="metric"><div class="metric-overline">02 / &#272;&#416;N H&#192;NG</div><p class="metric-name">&#272;&#417;n &#273;&#227; t&#7841;o</p>
+      <strong class="metric-value" th:text="${stats.totalOrders}">0</strong><p class="metric-foot">T&#7893;ng &#273;&#417;n trong kho&#7843;ng &#273;&#227; ch&#7885;n.</p></article>
+    <article class="metric"><div class="metric-overline">03 / HO&#192;N TH&#192;NH</div><p class="metric-name">&#272;&#417;n ho&#224;n t&#7845;t</p>
+      <strong class="metric-value" th:text="${stats.completed}">0</strong><p class="metric-foot">&#272;&#227; &#273;&#432;&#7907;c x&#7917; l&#253; th&#224;nh c&#244;ng.</p></article>
+    <article class="metric metric-warning"><div class="metric-overline">04 / T&#7890;N KHO</div><p class="metric-name">Bi&#7871;n th&#7875; s&#7855;p h&#7871;t</p>
+      <strong class="metric-value" th:text="${stats.lowStock}">0</strong>
+      <p class="metric-foot">C&#242;n 5 chi&#7871;c tr&#7903; xu&#7889;ng, tr&#234;n to&#224;n c&#7917;a h&#224;ng.</p>
+      <a class="metric-link" th:href="@{/admin/san-pham}">Ki&#7875;m tra s&#7843;n ph&#7849;m &#8594;</a></article>
+  </section>
+  <section class="dash-secondary-metrics" aria-label="S&#7889; li&#7879;u b&#7893; sung">
+    <div><small>DOANH THU ONLINE</small><strong th:text="${stats.onlineRevenue}">0 &#8363;</strong></div>
+    <div><small>DOANH THU T&#7840;I QU&#7846;Y</small><strong th:text="${stats.offlineRevenue}">0 &#8363;</strong></div>
+    <div><small>KH&#193;CH H&#192;NG M&#7898;I</small><strong th:text="${stats.newCustomers}">0</strong></div>
+    <div><small>&#272;&#416;N &#272;&#195; H&#7910;Y</small><strong th:text="${stats.cancelled}">0</strong></div>
+  </section>
+  <section class="dash-two dash-analytics">
+    <article class="panel dash-panel dash-revenue-chart">
+      <div class="dash-panel-head"><div><p class="dash-panel-kicker">TH&#7882; TR&#431;&#7900;NG / THEO NG&#192;Y</p><h2>D&#242;ng doanh thu</h2></div>
+       <span class="subtle-marker">VND / THEO NG&#192;Y</span></div>
+      <div class="dash-bars" role="img" aria-label="Bi&#7875;u &#273;&#7891; doanh thu c&#225;c ng&#224;y trong kho&#7843;ng ch&#7885;n">
+        <div class="dash-bar-col" th:each="b : ${chart}" th:title="${b.label + ': ' + b.amount}">
+          <div class="dash-bar" th:style="|height: ${b.height}%|"></div><small th:text="${b.label}">01/01</small>
         </div>
-        <div class="dash-legend">Ngày thanh toán thành công (giờ Việt Nam). Di chuột lên cột để xem số tiền.</div>
-      </section>
-      <section class="panel dash-panel">
-        <h2>Trạng thái đơn hàng</h2>
-        <div class="dash-status-grid">
-          <div class="dash-status-item"><strong th:text="${stats.pending}">0</strong><span>Chưa xử lý</span></div>
-          <div class="dash-status-item"><strong th:text="${stats.processing}">0</strong><span>Đang xử lý</span></div>
-          <div class="dash-status-item"><strong th:text="${stats.processed}">0</strong><span>Đã xử lý</span></div>
-          <div class="dash-status-item"><strong th:text="${stats.completed}">0</strong><span>Hoàn thành</span></div>
-        </div>
-      </section>
-    </div>
-    <div class="dash-two">
-      <section class="panel dash-panel">
-        <h2>Đơn hàng gần đây</h2>
-        <div class="table-scroll"><table>
-          <thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Kênh</th><th>Ngày đặt</th><th>Trạng thái</th><th>Tổng tiền</th></tr></thead>
-          <tbody>
-            <tr th:each="o : ${recentOrders}">
-              <td><a th:href="${o.channel == 'ONLINE'} ? @{/admin/don-hang-online/{id}(id=${o.id})} : @{/admin/hoa-don/{id}(id=${o.id})}" th:text="|#${o.id}|">#1</a></td><td th:text="${o.customer}">Nguyễn A</td>
-              <td th:text="${o.channel}">ONLINE</td><td th:text="${o.date}">01/01/2026</td>
-              <td><span class="pill" th:classappend="${o.status}" th:text="${o.statusLabel}">Hoàn thành</span></td>
-              <td th:text="${o.total}">0</td>
-            </tr>
-            <tr th:if="${#lists.isEmpty(recentOrders)}"><td colspan="6" class="empty">Chưa có đơn hàng trong khoảng ngày đã chọn.</td></tr>
-          </tbody>
-        </table></div>
-      </section>
-      <section class="panel dash-panel">
-        <h2>Top 5 sản phẩm bán chạy</h2>
-        <div class="table-scroll"><table style="min-width:0">
-          <thead><tr><th>Sản phẩm</th><th>SL bán</th><th>Tiền hàng</th></tr></thead>
-          <tbody>
-            <tr th:each="p : ${topProducts}"><td style="white-space:normal" th:text="${p.name}">Vòng tay</td><td th:text="${p.quantity}">0</td><td th:text="${p.gross}">0</td></tr>
-            <tr th:if="${#lists.isEmpty(topProducts)}"><td colspan="3" class="empty">Chưa có đơn hoàn thành.</td></tr>
-          </tbody>
-        </table></div>
-        <div class="dash-legend">Top theo số lượng trong các đơn hoàn thành (ngày đặt trong khoảng lọc).</div>
-      </section>
-    </div>
-  </main>
-</div>
-</body>
-</html>
+      </div>
+      <div class="dash-legend">Di chu&#7897;t l&#234;n c&#7897;t &#273;&#7875; xem s&#7889; ti&#7873;n. Gi&#225; tr&#7883; &#226;m do ho&#224;n ti&#7873;n kh&#244;ng &#273;&#432;&#7907;c v&#7869; b&#7857;ng c&#7897;t &#226;m.</div>
+    </article>
+    <article class="panel dash-panel dash-status-panel">
+      <div class="dash-panel-head"><div><p class="dash-panel-kicker">V&#7852;N H&#192;NH / TR&#7840;NG TH&#193;I</p><h2>&#272;&#417;n h&#224;ng &#273;ang &#7903; &#273;&#226;u?</h2></div></div>
+      <div class="dash-status-grid">
+        <a th:href="@{/admin/don-hang-online(status='CHUA_XU_LY')}" class="dash-status-item"><span class="status-indicator status-pending"></span><span>Ch&#432;a x&#7917; l&#253;</span><strong th:text="${stats.pending}">0</strong></a>
+        <a th:href="@{/admin/don-hang-online(status='DANG_XU_LY')}" class="dash-status-item"><span class="status-indicator status-processing"></span><span>&#272;ang x&#7917; l&#253;</span><strong th:text="${stats.processing}">0</strong></a>
+        <a th:href="@{/admin/don-hang-online(status='DA_XU_LY')}" class="dash-status-item"><span class="status-indicator status-processed"></span><span>&#272;&#227; x&#7917; l&#253;</span><strong th:text="${stats.processed}">0</strong></a>
+        <a th:href="@{/admin/hoa-don}" class="dash-status-item"><span class="status-indicator status-completed"></span><span>Ho&#224;n t&#7845;t</span><strong th:text="${stats.completed}">0</strong></a>
+      </div>
+      <div class="dash-task-cta"><small>THAO T&#193;C NHANH</small>
+        <a th:href="@{/admin/ban-tai-quay}">T&#7841;o h&#243;a &#273;&#417;n t&#7841;i qu&#7847;y <span aria-hidden="true">&#8599;</span></a></div>
+    </article>
+  </section>
+  <section class="dash-two dash-lists">
+    <article class="panel dash-panel">
+      <div class="dash-panel-head"><div><p class="dash-panel-kicker">G&#7846;N &#272;&#194;Y NH&#7844;T</p><h2>&#272;&#417;n h&#224;ng m&#7899;i</h2></div><a th:href="@{/admin/don-hang-online}" class="dash-all-link">Xem t&#7845;t c&#7843; &#8594;</a></div>
+      <div class="table-scroll"><table><thead><tr><th>M&#227;</th><th>Kh&#225;ch h&#224;ng</th><th>K&#234;nh</th><th>Tr&#7841;ng th&#225;i</th><th>Th&#224;nh ti&#7873;n</th></tr></thead>
+        <tbody><tr th:each="o : ${recentOrders}"><td><a th:href="${o.channel == 'ONLINE'} ? @{/admin/don-hang-online/{id}(id=${o.id})} : @{/admin/hoa-don/{id}(id=${o.id})}" th:text="|#${o.id}|">#1</a></td>
+          <td><strong th:text="${o.customer}">Kh&#225;ch h&#224;ng</strong><small th:text="${o.date}">01/01/2026</small></td>
+          <td><span th:if="${o.channel == 'ONLINE'}">Online</span><span th:unless="${o.channel == 'ONLINE'}">T&#7841;i qu&#7847;y</span></td>
+          <td><span class="pill" th:classappend="${o.status}" th:text="${o.statusLabel}">Tr&#7841;ng th&#225;i</span></td>
+          <td class="num" th:text="${o.total}">0 &#8363;</td></tr>
+          <tr th:if="${#lists.isEmpty(recentOrders)}"><td colspan="5" class="empty">Ch&#432;a c&#243; &#273;&#417;n n&#224;o trong kho&#7843;ng ng&#224;y n&#224;y.</td></tr></tbody></table></div>
+    </article>
+    <article class="panel dash-panel">
+      <div class="dash-panel-head"><div><p class="dash-panel-kicker">KH&#193;CH &#272;ANG CH&#7884;N G&#204;?</p><h2>5 m&#7851;u b&#225;n ch&#7841;y</h2></div></div>
+      <div class="table-scroll"><table class="dash-top-products"><thead><tr><th>#</th><th>Thi&#7871;t k&#7871;</th><th>SL</th><th>Ti&#7873;n h&#224;ng</th></tr></thead>
+        <tbody><tr th:each="p,idx : ${topProducts}"><td th:text="${idx.count}">1</td>
+          <td><a th:href="@{/admin/san-pham/{id}/bien-the(id=${p.id})}" th:text="${p.name}">V&#242;ng tay</a></td>
+          <td class="num" th:text="${p.quantity}">0</td><td class="num" th:text="${p.gross}">0</td></tr>
+          <tr th:if="${#lists.isEmpty(topProducts)}"><td colspan="4" class="empty">Ch&#432;a c&#243; &#273;&#417;n ho&#224;n th&#224;nh &#273;&#7875; x&#7871;p h&#7841;ng.</td></tr></tbody></table></div>
+      <p class="dash-table-note">X&#7871;p theo s&#7889; l&#432;&#7907;ng trong &#273;&#417;n ho&#224;n th&#224;nh, theo ng&#224;y &#273;&#7863;t.</p>
+    </article>
+  </section>
+  <footer class="dash-footer">BEAUTICON RETAIL &nbsp; / &nbsp; B&#225;o c&#225;o ch&#7881; d&#249;ng d&#7919; li&#7879;u t&#7915; h&#7879; th&#7889;ng.</footer>
+</main></div></body></html>

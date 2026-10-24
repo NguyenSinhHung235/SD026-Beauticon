@@ -100,7 +100,11 @@ public class OrderService {
         BigDecimal total = (BigDecimal)o.get("total");
         List<Map<String,Object>> lines = jdbc.queryForList("""
                 SELECT ct.id_dh_chi_tiet AS id, s.ten_san_pham AS product,
-                    m.ten_mau_sac AS color, z.ten_kich_thuoc AS size,
+                    m.ten_mau_sac AS color,
+                    COALESCE(ct.ten_kich_thuoc_chot,z.ten_kich_thuoc) AS size,
+                    ct.kieu_kich_thuoc AS sizeMode,ct.chu_vi_co_tay_cm AS wristCm,
+                    ct.do_rong_deo AS fit,ct.ghi_chu_kich_thuoc AS sizeNote,
+                    ct.trang_thai_xac_nhan_size AS sizeConfirmation,
                     ct.so_luong AS quantity, ct.gia_ban AS price,
                     ct.so_luong * ct.gia_ban AS lineTotal
                 FROM dbo.don_hang_chi_tiet ct
@@ -159,6 +163,12 @@ public class OrderService {
         String previous = (String)o.get("status");
         String next = OrderWorkflow.next(previous);
         if (next == null) throw new IllegalArgumentException("Don khong o trang thai duoc chuyen tiep.");
+        Long unconfirmed=jdbc.queryForObject("""
+                SELECT COUNT_BIG(*) FROM dbo.don_hang_chi_tiet
+                WHERE id_don_hang=:id AND trang_thai_xac_nhan_size='CHO_XAC_NHAN'
+                """,idParam(id),Long.class);
+        if (unconfirmed!=null && unconfirmed>0)
+            throw new IllegalArgumentException("Hãy xác nhận kích thước đặt riêng trước khi chuyển trạng thái đơn.");
         if (OrderWorkflow.COMPLETED.equals(next)) {
             BigDecimal net = (BigDecimal)o.get("paidNet");
             if (net.compareTo((BigDecimal)o.get("total")) < 0)
@@ -174,6 +184,27 @@ public class OrderService {
                 """, idParam(id).addValue("next", next).addValue("previous",previous).addValue("staff",employeeId));
         if (updated != 1) throw new IllegalArgumentException("Trang thai don da thay doi. Tai lai trang.");
         audit(id,employeeId,"CHUYEN_TRANG_THAI",previous,next,"Cap nhat trang thai online.");
+    }
+
+    /** Employees confirm measurements on a single ordered line, never on the product itself. */
+    @Transactional
+    public void confirmSize(long orderId,long lineId,long employeeId) {
+        requireStaff(employeeId);
+        Map<String,Object> o=findOrder(orderId,true);
+        onlineOnly(o);
+        String status=(String)o.get("status");
+        if (OrderWorkflow.CANCELLED.equals(status) || OrderWorkflow.COMPLETED.equals(status))
+            throw new IllegalArgumentException("Không thể xác nhận kích thước trên đơn đã đóng.");
+        int updated=jdbc.update("""
+                UPDATE dbo.don_hang_chi_tiet
+                SET trang_thai_xac_nhan_size='DA_XAC_NHAN'
+                WHERE id_dh_chi_tiet=:line AND id_don_hang=:id
+                  AND kieu_kich_thuoc='THEO_YEU_CAU'
+                  AND trang_thai_xac_nhan_size='CHO_XAC_NHAN'
+                """,idParam(orderId).addValue("line",lineId));
+        if (updated!=1) throw new IllegalArgumentException("Yêu cầu kích thước không tồn tại hoặc đã được xác nhận.");
+        audit(orderId,employeeId,"XAC_NHAN_KICH_THUOC",status,status,
+                "Đã xác nhận số đo cho dòng sản phẩm #"+lineId+" trước khi thực hiện đơn hàng.");
     }
 
     @Transactional

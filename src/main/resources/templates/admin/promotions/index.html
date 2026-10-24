@@ -1,73 +1,33 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Khuyen mai - BeautIcon</title>
-    <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Khuyen mai - BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}">  <link rel="stylesheet" th:href="@{/css/admin-brand.css}">
+  <script defer th:src="@{/js/admin-shell.js}"></script>
+<link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
-<body>
-<div class="app">
-    <aside th:replace="~{admin/fragments/nav :: menu('promotions')}"></aside>
-    <main>
-        <div class="top">
-            <div><p class="eyebrow">Ban hang / Uu dai</p>
-                <h1>Ch&#432;&#417;ng tr&#236;nh khuy&#7871;n m&#227;i</h1>
-<!--                <p class="hint">Khuy&#7871;n m&#227;i theo bi&#7871;n th&#7875;, t&#237;nh v&#224;o gi&#225; b&#225;n-->
-<!--                    khi thanh to&#225;n.</p>-->
-            </div>
-            <a class="btn" th:if="${isAdmin}" th:href="@{/admin/khuyen-mai/them}">+ Th&#234;m khuy&#7871;n m&#227;i</a>
-        </div>
-        <div class="notice" th:if="${success}" th:text="${success}"></div>
-        <div class="notice error" th:if="${error}" th:text="${error}"></div>
-        <div class="panel">
-            <div class="table-scroll">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>T&#234;n ch&#432;&#417;ng tr&#236;nh</th>
-                        <th>M&#7913;c gi&#7843;m</th>
-                        <th>Bi&#7871;n th&#7875;</th>
-                        <th>Th&#7901;i gian (VN)</th>
-                        <th>Tr&#7841;ng th&#225;i</th>
-                        <th>Thao t&#225;c</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="p : ${items}">
-                        <td th:text="|#${p.id}|">#1</td>
-                        <td><strong th:text="${p.name}">Khuyen mai</strong></td>
-                        <td th:text="${p.type == 'PHAN_TRAM'} ? ${p.value + '%'} : ${p.value + ' VND'}">10%</td>
-                        <td th:text="${p.variantCount}">2</td>
-                        <td><span th:text="${p.startText}">01/01/2026</span><small th:text="|den ${p.endText}|">den
-                            02/01/2026</small></td>
-                        <td><span class="pill" th:classappend="${p.active} ? ' on' : ' off'"
-                                  th:text="${p.active} ? (${p.inWindow} ? 'Dang ap dung' : 'Da bat / ngoai han') : 'Tam dung'">Dang ap dung</span>
-                        </td>
-                        <td>
-                            <div class="actions"><a class="btn tiny secondary" th:if="${isAdmin}"
-                                                    th:href="@{/admin/khuyen-mai/{id}/sua(id=${p.id})}">S&#7917;a</a>
-                                <form method="post" th:if="${isAdmin}"
-                                      th:action="@{/admin/khuyen-mai/{id}/trang-thai(id=${p.id})}">
-                                    <input type="hidden" name="active" th:value="${!p.active}">
-                                    <button class="tiny" th:classappend="${p.active} ? ' danger' : ' secondary'"
-                                            th:text="${p.active} ? 'Tam dung' : 'Bat lai'">Tam dung
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(items)}">
-                        <td class="empty" colspan="7">Ch&#432;a c&#243; ch&#432;&#417;ng tr&#236;nh.</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-<!--        <p class="hint">Quy t&#7855;c: m&#7895;i bi&#7871;n th&#7875; ch&#7881; &#225;p d&#7909;ng m&#7897;t khuy&#7871;n-->
-<!--            m&#227;i c&#243; l&#7907;i nh&#7845;t, kh&#244;ng c&#7897;ng d&#7891;n.</p>-->
-    </main>
+<body><div class="app">
+<aside th:replace="~{admin/fragments/nav :: menu('promotions')}"></aside>
+<main>
+<div class="top"><div><p class="eyebrow">Ban hang / Uu dai</p>
+<h1>Ch&#432;&#417;ng tr&#236;nh khuy&#7871;n m&#227;i</h1>
 </div>
-</body>
-</html>
+<a class="btn" th:if="${isAdmin}" th:href="@{/admin/khuyen-mai/them}">+ Th&#234;m khuy&#7871;n m&#227;i</a></div>
+<div class="notice" th:if="${success}" th:text="${success}"></div>
+<div class="notice error" th:if="${error}" th:text="${error}"></div>
+<div class="panel"><div class="table-scroll"><table>
+<thead><tr><th>ID</th><th>T&#234;n ch&#432;&#417;ng tr&#236;nh</th><th>M&#7913;c gi&#7843;m</th><th>Bi&#7871;n th&#7875;</th><th>Th&#7901;i gian (VN)</th><th>Tr&#7841;ng th&#225;i</th><th>Thao t&#225;c</th></tr></thead>
+<tbody><tr th:each="p : ${items}">
+<td th:text="|#${p.id}|">#1</td><td><strong th:text="${p.name}">Khuyen mai</strong></td>
+<td th:text="${p.type == 'PHAN_TRAM'} ? ${p.value + '%'} : ${p.value + ' VND'}">10%</td>
+<td th:text="${p.variantCount}">2</td>
+<td><span th:text="${p.startText}">01/01/2026</span><small th:text="|den ${p.endText}|">den 02/01/2026</small></td>
+<td><span class="pill" th:classappend="${p.active} ? ' on' : ' off'" th:text="${p.active} ? (${p.inWindow} ? 'Dang ap dung' : 'Da bat / ngoai han') : 'Tam dung'">Dang ap dung</span></td>
+<td><div class="actions"><a class="btn tiny secondary" th:if="${isAdmin}" th:href="@{/admin/khuyen-mai/{id}/sua(id=${p.id})}">S&#7917;a</a>
+<form method="post" th:if="${isAdmin}" th:action="@{/admin/khuyen-mai/{id}/trang-thai(id=${p.id})}">
+<input type="hidden" name="active" th:value="${!p.active}">
+<button class="tiny" th:classappend="${p.active} ? ' danger' : ' secondary'" th:text="${p.active} ? 'Tam dung' : 'Bat lai'">Tam dung</button>
+</form></div></td></tr>
+<tr th:if="${#lists.isEmpty(items)}"><td class="empty" colspan="7">Ch&#432;a c&#243; ch&#432;&#417;ng tr&#236;nh.</td></tr>
+</tbody></table></div></div>
+
+</main></div></body></html>

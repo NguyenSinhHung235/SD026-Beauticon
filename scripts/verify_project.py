@@ -62,12 +62,14 @@ for f in (SRC/'java').rglob('*Controller.java'):
 for f in (SRC/'java').rglob('*.java'):
     s=f.read_text(encoding='utf8')
     if f.name.endswith('Controller.java'):
-        for return_template in re.findall(r'return\s+"(admin/[A-Za-z0-9/_-]+|auth/[A-Za-z0-9/_-]+)"',s):
+        for return_template in re.findall(r'return\s+"(admin/[A-Za-z0-9/_-]+|auth/[A-Za-z0-9/_-]+|shop/[A-Za-z0-9/_-]+)"',s):
             check((TEMPLATES/(return_template+'.html')).exists(),f'{f.name}: missing template {return_template}.html')
 
 def is_match(uri,method):
+    if uri in ('/favicon.ico', '/robots.txt', '/apple-touch-icon.png'):
+        return (SRC/'resources/static'/uri.lstrip('/')).is_file()
     if uri.startswith(('/css/','/js/','/images/','/uploads/')):
-        if uri.startswith('/css/'): return (SRC/'resources/static'/uri.lstrip('/')).exists()
+        if uri.startswith(('/css/','/js/','/images/')): return (SRC/'resources/static'/uri.lstrip('/')).exists()
         return True
     if uri in ['/login','/logout']:
         return True
@@ -87,6 +89,8 @@ for html_file in sorted(TEMPLATES.rglob('*.html')):
     for src in parser.assets:
         if src.startswith('@{/css/'):
             check((SRC/'resources/static'/src[3:-1]).exists(),f'{html_file.name}: CSS file missing {src}')
+    for src in re.findall(r'th:src=["\']@\{(/js/[^}]+)\}["\']',data):
+        check((SRC/'resources/static'/src.lstrip('/')).exists(),f'{html_file.name}: JS asset missing {src}')
     for frag in re.findall(r'~\{([\w/-]+)\s*::',data):
         check((TEMPLATES/(frag+'.html')).exists(),f'{html_file.name}: missing fragment {frag}')
     for m in re.finditer(r'@\{',data):

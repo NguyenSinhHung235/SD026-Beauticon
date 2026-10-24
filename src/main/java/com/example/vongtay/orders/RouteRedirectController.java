@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class RouteRedirectController {
     @GetMapping("/health")
     @ResponseBody
-    public String health() { return "BeautIcon Admin GD6 is running"; }
+    public String health() { return "BeautIcon Admin GD8 is running"; }
 
-    @GetMapping({"/", "/dashboard", "/admin/"})
+    @GetMapping({"/dashboard", "/admin/"})
     public String home() { return "redirect:/admin/dashboard"; }
 
     @GetMapping({"/admin/don-hang", "/admin/don-hang/online", "/admin/don-hang-online/"})

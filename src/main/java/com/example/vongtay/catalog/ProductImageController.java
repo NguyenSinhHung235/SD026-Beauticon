@@ -1,5 +1,7 @@
 package com.example.vongtay.catalog;
 
+import java.io.IOException;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -10,10 +12,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ProductImageController {
     private final ProductImageService images;
     private final CatalogService catalog;
+    private final ProductImageUploadService uploader;
 
-    public ProductImageController(ProductImageService images, CatalogService catalog) {
+    public ProductImageController(ProductImageService images, CatalogService catalog, ProductImageUploadService uploader) {
         this.images = images;
         this.catalog = catalog;
+        this.uploader = uploader;
     }
 
     @GetMapping
@@ -21,6 +25,18 @@ public class ProductImageController {
         model.addAttribute("product", catalog.getProduct(productId));
         model.addAttribute("items", images.list(productId));
         return "admin/products/images";
+    }
+
+    @PostMapping("/tai-len")
+    public String upload(@PathVariable long productId, @RequestParam("file") MultipartFile file,
+                         RedirectAttributes flash) {
+        try {
+            uploader.upload(productId, file);
+            flash.addFlashAttribute("success", "Ảnh đã được tải lên và liên kết với sản phẩm.");
+        } catch (IllegalArgumentException | IOException ex) {
+            flash.addFlashAttribute("error", ex.getMessage());
+        }
+        return back(productId);
     }
 
     @PostMapping("/them")

@@ -1,15 +1,11 @@
-<!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Không tìm thấy trang • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}"></head>
-<body class="auth-body">
-  <main class="auth-panel" role="main">
-    <p class="eyebrow">Lỗi 404</p>
-    <h1>Không tìm thấy trang</h1>
-    <p class="muted">Đường dẫn bạn mở không tồn tại trong phiên bản hiện tại. Kiểm tra địa chỉ hoặc quay lại Dashboard.</p>
-    <div class="buttons"><a class="btn" th:href="@{/admin/dashboard}">Về Dashboard</a>
-      <a class="btn secondary" th:href="@{/login}">Đăng nhập</a></div>
-    <p class="hint">Nếu vừa cập nhật mã nguồn, hãy dừng phiên bản Spring Boot cũ và khởi động lại dự án.</p>
-  </main>
-</body>
-</html>
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>404 | BeautIcon</title>
+<link rel="stylesheet" th:href="@{/css/admin-catalog.css}"><link rel="stylesheet" th:href="@{/css/admin-brand.css}"><link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body class="auth-body"><main class="auth-panel" role="main">
+<p class="eyebrow">BEAUTICON / 404</p>
+<h1>Trang n&#224;y kh&#244;ng c&#242;n &#7903; &#273;&#226;y.</h1>
+<p class="muted">&#272;&#432;&#7901;ng d&#7851;n c&#243; th&#7875; &#273;&#227; thay &#273;&#7893;i, ho&#7863;c s&#7843;n ph&#7849;m &#273;ang t&#7841;m &#7849;n. B&#7841;n c&#243; th&#7875; b&#7855;t &#273;&#7847;u l&#7841;i t&#7915; b&#7897; s&#432;u t&#7853;p.</p>
+<div class="buttons"><a class="btn" th:href="@{/}">V&#7873; c&#7917;a h&#224;ng</a><a class="btn secondary" th:href="@{/admin/dashboard}">V&#7873; trang qu&#7843;n tr&#7883;</a></div>
+</main></body></html>

@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /login
+Disallow: /logout
+Allow: /
+
+Disallow: /dang-nhap
+Disallow: /dang-ky
+Disallow: /tai-khoan
+Disallow: /gio-hang
+Disallow: /thanh-toan
+Disallow: /don-hang-cua-toi

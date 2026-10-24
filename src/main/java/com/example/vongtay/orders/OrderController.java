@@ -79,6 +79,12 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/admin/don-hang-online/{id}/xac-nhan-kich-thuoc")
+    public String confirmSize(@PathVariable long id,@RequestParam long idChiTiet,
+                              RedirectAttributes flash) {
+        return run(id,flash,()->orders.confirmSize(id,idChiTiet,current.id()));
+    }
+
     @PostMapping("/admin/don-hang-online/{id}/chuyen-trang-thai")
     public String advance(@PathVariable long id,RedirectAttributes flash) {
         return run(id,flash,()->orders.advance(id,current.id()));

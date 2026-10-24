@@ -8,7 +8,7 @@ BEGIN TRY
         THROW 51000, 'Database da co san pham. Khong chay lai seed demo.', 1;
 
     DECLARE @loai BIGINT, @brand BIGINT, @ncc BIGINT, @material BIGINT;
-    DECLARE @silver BIGINT, @gold BIGINT, @pink BIGINT, @free BIGINT, @cm16 BIGINT, @cm18 BIGINT;
+    DECLARE @silver BIGINT, @gold BIGINT, @pink BIGINT, @free BIGINT, @cm16 BIGINT, @cm18 BIGINT, @custom BIGINT;
     DECLARE @staff BIGINT, @customer1 BIGINT, @customer2 BIGINT, @address BIGINT;
     DECLARE @sp1 BIGINT, @sp2 BIGINT, @sp3 BIGINT, @bt1 BIGINT, @bt2 BIGINT, @bt3 BIGINT, @bt4 BIGINT;
     DECLARE @voucher BIGINT, @promo BIGINT;
@@ -30,6 +30,9 @@ BEGIN TRY
     SET @pink = SCOPE_IDENTITY();
     INSERT dbo.bien_the_kich_thuoc(ten_kich_thuoc) VALUES(N'Freesize');
     SET @free = SCOPE_IDENTITY();
+    INSERT dbo.bien_the_kich_thuoc(ten_kich_thuoc,mo_ta)
+    VALUES(N'Theo yêu cầu',N'Nhập chu vi cổ tay và độ rộng đeo; shop sẽ xác nhận.');
+    SET @custom = SCOPE_IDENTITY();
     INSERT dbo.bien_the_kich_thuoc(ten_kich_thuoc) VALUES(N'16 cm');
     SET @cm16 = SCOPE_IDENTITY();
     INSERT dbo.bien_the_kich_thuoc(ten_kich_thuoc) VALUES(N'18 cm');
@@ -57,6 +60,9 @@ BEGIN TRY
     INSERT dbo.san_pham(id_loai, id_thuong_hieu, ten_san_pham)
     VALUES(@loai, @brand, N'Vòng tay Charm Trái Tim');
     SET @sp3 = SCOPE_IDENTITY();
+    -- Seed-only demo range. Actual ranges must match the product's hardware.
+    UPDATE dbo.san_pham SET freesize_min_cm=14.0, freesize_max_cm=20.0
+    WHERE id_san_pham IN (@sp2,@sp3);
 
     INSERT dbo.san_pham_bien_the(id_san_pham, id_mau_sac, id_kich_thuoc, gia_ban, so_luong_ton)
     VALUES(@sp1, @silver, @cm16, 249000, 28);
@@ -70,6 +76,9 @@ BEGIN TRY
     INSERT dbo.san_pham_bien_the(id_san_pham, id_mau_sac, id_kich_thuoc, gia_ban, so_luong_ton)
     VALUES(@sp3, @gold, @free, 99000, 22);
     SET @bt4 = SCOPE_IDENTITY();
+    -- A custom-size sample variant for the public shop flow (only demo data).
+    INSERT dbo.san_pham_bien_the(id_san_pham,id_mau_sac,id_kich_thuoc,gia_ban,so_luong_ton)
+    VALUES(@sp1,@silver,@custom,299000,7);
 
     INSERT dbo.ma_giam_gia(code, loai_giam, gia_tri_giam, gia_tri_don_toi_thieu,
                             so_luong, so_luong_da_dung, ngay_bat_dau, ngay_ket_thuc, id_nhan_vien)

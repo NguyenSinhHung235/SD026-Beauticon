@@ -1,17 +1,31 @@
 <!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Đăng nhập quản trị • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}"></head>
-<body class="auth-body"><main class="auth-panel">
-  <div class="auth-brand">✦ BeautIcon</div>
-  <h1>Đăng nhập quản trị</h1>
-  <p class="hint">Dành cho tài khoản quản lý và nhân viên được cấp quyền.</p>
-  <div class="notice error" th:if="${param.error}">Email hoặc mật khẩu không đúng, hoặc tài khoản đã bị khóa.</div>
-  <div class="notice" th:if="${param.logout}">Bạn đã đăng xuất.</div>
-  <div class="notice error" th:if="${param.expired}">Phiên đăng nhập đã kết thúc vì tài khoản hoặc quyền đã thay đổi.</div>
-  <form method="post" th:action="@{/login}" class="auth-form">
-    <label class="field">Email nhân viên<input type="email" name="username" maxlength="254" autocomplete="username" required autofocus placeholder="admin@shop.vn"></label>
-    <label class="field">Mật khẩu<input type="password" name="password" autocomplete="current-password" required></label>
-    <button type="submit" class="btn">Đăng nhập</button>
-  </form>
-  <p class="hint">Nếu chưa có tài khoản quản lý, xem mục BOOTSTRAP_ADMIN_EMAIL trong README.</p>
-</main></body></html>
+<title>&#272;&#259;ng nh&#7853;p | BeautIcon Workspace</title>
+<link rel="stylesheet" th:href="@{/css/admin-catalog.css}"><link rel="stylesheet" th:href="@{/css/admin-brand.css}"><link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body class="auth-body auth-login"><div class="auth-shell">
+  <section class="auth-editorial" aria-label="BeautIcon Retail Workspace">
+    <a th:href="@{/}" class="auth-editorial-brand"><span class="auth-editorial-mark">b<span>.</span></span><span>BeautIcon<small>RETAIL WORKSPACE</small></span></a>
+<!--    <div class="auth-editorial-center"><span class="auth-editorial-ring" aria-hidden="true"></span>-->
+<!--      <p></p>-->
+<!--      <h2>Ch&#259;m ch&#250;t t&#7915;<br><em>nh&#7919;ng &#273;i&#7873;u nh&#7887;.</em></h2>-->
+<!--      <span>H&#224;ng h&#243;a, &#273;&#417;n h&#224;ng v&#224; nh&#7919;ng kho&#7843;nh kh&#7855;c ph&#7909;c v&#7909; kh&#225;ch &#273;&#432;&#7907;c qu&#7843;n l&#253; c&#7849;n th&#7853;n.</span>-->
+<!--    </div>-->
+    <div class="auth-editorial-foot">BEAUTICON <span></span></div>
+  </section>
+  <main class="auth-panel" role="main">
+<!--    <div class="auth-form-eyebrow">D&#192;NH CHO &#272;&#7896;I NG&#360; BEAUTICON</div>-->
+    <h1>Ch&#224;o m&#7915;ng<br><em>tr&#7903; l&#7841;i.</em></h1>
+    <p class="auth-description">&#272;&#259;ng nh&#7853;p &#273;&#7875; ti&#7871;p t&#7909;c c&#244;ng vi&#7879;c c&#7911;a h&#244;m nay.</p>
+    <div class="notice error" role="alert" th:if="${param.error}">Email ho&#7863;c m&#7853;t kh&#7849;u kh&#244;ng &#273;&#250;ng, ho&#7863;c t&#224;i kho&#7843;n &#273;&#227; b&#7883; kh&#243;a.</div>
+    <div class="notice" th:if="${param.logout}">B&#7841;n &#273;&#227; &#273;&#259;ng xu&#7845;t.</div>
+    <div class="notice error" role="alert" th:if="${param.expired}">Phi&#234;n &#273;&#259;ng nh&#7853;p &#273;&#227; k&#7871;t th&#250;c v&#236; t&#224;i kho&#7843;n ho&#7863;c quy&#7873;n &#273;&#227; thay &#273;&#7893;i.</div>
+    <form method="post" th:action="@{/login}" class="auth-form">
+      <label class="field">Email nh&#226;n vi&#234;n<input type="email" name="username" maxlength="254" autocomplete="username" required autofocus placeholder="email@beauticon.vn"></label>
+      <label class="field">M&#7853;t kh&#7849;u<input type="password" name="password" autocomplete="current-password" required placeholder="Nh&#7853;p m&#7853;t kh&#7849;u"></label>
+      <button type="submit" class="btn">V&#224;o kh&#244;ng gian l&#224;m vi&#7879;c <span aria-hidden="true">&#8594;</span></button>
+    </form>
+    <p class="auth-help">C&#7847;n t&#224;i kho&#7843;n m&#7899;i? H&#227;y li&#234;n h&#7879; ng&#432;&#7901;i qu&#7843;n l&#253; c&#7917;a h&#224;ng.</p>
+    <a class="auth-to-store" th:href="@{/}">&#8592; V&#7873; trang c&#7917;a h&#224;ng</a>
+  </main>
+</div></body></html>

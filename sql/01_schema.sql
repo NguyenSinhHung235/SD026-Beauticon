@@ -114,13 +114,19 @@ CREATE TABLE dbo.san_pham (
     trong_luong_gram DECIMAL(10,3) NULL,
     mo_ta NVARCHAR(MAX) NULL,
     ngay_san_xuat DATE NULL,
+    freesize_min_cm DECIMAL(4,1) NULL,
+    freesize_max_cm DECIMAL(4,1) NULL,
     trang_thai BIT NOT NULL CONSTRAINT DF_sp_trang_thai DEFAULT 1,
     ngay_tao DATETIME2(0) NOT NULL CONSTRAINT DF_sp_ngay_tao DEFAULT SYSUTCDATETIME(),
     CONSTRAINT FK_sp_loai FOREIGN KEY(id_loai) REFERENCES dbo.loai_san_pham(id_loai),
     CONSTRAINT FK_sp_thuong_hieu FOREIGN KEY(id_thuong_hieu) REFERENCES dbo.thuong_hieu(id_thuong_hieu),
     CONSTRAINT FK_sp_ncc FOREIGN KEY(id_nha_cung_cap) REFERENCES dbo.nha_cung_cap(id_nha_cung_cap),
     CONSTRAINT FK_sp_chat_lieu FOREIGN KEY(id_chat_lieu) REFERENCES dbo.chat_lieu(id_chat_lieu),
-    CONSTRAINT CK_sp_trong_luong CHECK (trong_luong_gram IS NULL OR trong_luong_gram > 0)
+    CONSTRAINT CK_sp_trong_luong CHECK (trong_luong_gram IS NULL OR trong_luong_gram > 0),
+    CONSTRAINT CK_sp_freesize_range CHECK (
+      (freesize_min_cm IS NULL AND freesize_max_cm IS NULL)
+      OR (freesize_min_cm >= 10.0 AND freesize_max_cm <= 30.0
+          AND freesize_min_cm < freesize_max_cm))
 );
 GO
 CREATE TABLE dbo.hinh_anh_sp (
@@ -210,9 +216,19 @@ CREATE TABLE dbo.chi_tiet_gio_hang (
     id_gio_hang BIGINT NOT NULL,
     id_bien_the BIGINT NOT NULL,
     so_luong INT NOT NULL,
+    kieu_kich_thuoc VARCHAR(16) NOT NULL CONSTRAINT DF_ctgh_size_mode DEFAULT 'CO_SAN',
+    chu_vi_co_tay_cm DECIMAL(4,1) NULL,
+    do_rong_deo VARCHAR(8) NULL,
+    ghi_chu_kich_thuoc NVARCHAR(300) NULL,
     CONSTRAINT FK_ctgh_gio FOREIGN KEY(id_gio_hang) REFERENCES dbo.gio_hang(id_gio_hang),
     CONSTRAINT FK_ctgh_bt FOREIGN KEY(id_bien_the) REFERENCES dbo.san_pham_bien_the(id_bien_the),
-    CONSTRAINT UQ_ctgh_unique UNIQUE(id_gio_hang, id_bien_the),
+    CONSTRAINT UQ_ctgh_unique UNIQUE(id_gio_hang, id_bien_the,
+        kieu_kich_thuoc, chu_vi_co_tay_cm, do_rong_deo),
+    CONSTRAINT CK_ctgh_size_mode CHECK (
+      (kieu_kich_thuoc IN ('CO_SAN','FREESIZE') AND chu_vi_co_tay_cm IS NULL AND do_rong_deo IS NULL)
+      OR (kieu_kich_thuoc='THEO_YEU_CAU' AND chu_vi_co_tay_cm IS NOT NULL AND do_rong_deo IS NOT NULL
+          AND chu_vi_co_tay_cm BETWEEN 10 AND 30
+          AND do_rong_deo IN ('OM','VUA','RONG'))),
     CONSTRAINT CK_ctgh_qty CHECK(so_luong > 0)
 );
 GO
@@ -234,6 +250,7 @@ CREATE TABLE dbo.don_hang (
     dia_chi_giao_snapshot NVARCHAR(700) NULL,
     ghi_chu NVARCHAR(1000) NULL,
     ma_yeu_cau_pos VARCHAR(36) NULL, -- UUID de chong bam nut thanh toan 2 lan
+    ma_yeu_cau_online VARCHAR(36) NULL, -- UUID de chong gui don online trung
     tien_khach_dua DECIMAL(18,2) NULL, -- tien mat tai quay
     tien_thoi_lai DECIMAL(18,2) NULL,
     ton_kho_da_tru BIT NOT NULL CONSTRAINT DF_dh_ton_kho_da_tru DEFAULT (0),
@@ -253,6 +270,7 @@ CREATE TABLE dbo.don_hang (
     CONSTRAINT FK_dh_dia_chi_dung_khach FOREIGN KEY(id_khach_hang, id_dia_chi_giao_hang)
         REFERENCES dbo.dia_chi_giao_hang(id_khach_hang, id_dia_chi),
     CONSTRAINT CK_dh_kenh CHECK(kenh_ban IN ('ONLINE','OFFLINE')),
+    CONSTRAINT CK_dh_online_token CHECK(ma_yeu_cau_online IS NULL OR kenh_ban='ONLINE'),
     CONSTRAINT CK_dh_status CHECK(trang_thai IN ('CHUA_XU_LY','DANG_XU_LY','DA_XU_LY','HOAN_THANH','DA_HUY')),
     CONSTRAINT CK_dh_tien CHECK(tien_hang >= 0 AND tien_giam >= 0 AND tien_giam <= tien_hang AND phi_van_chuyen >= 0),
     CONSTRAINT CK_dh_dia_chi_khach CHECK(id_dia_chi_giao_hang IS NULL OR id_khach_hang IS NOT NULL),
@@ -269,9 +287,24 @@ CREATE TABLE dbo.don_hang_chi_tiet (
     id_bien_the BIGINT NOT NULL,
     so_luong INT NOT NULL,
     gia_ban DECIMAL(18,2) NOT NULL, -- gia chot tai thoi diem ban
+    kieu_kich_thuoc VARCHAR(16) NOT NULL CONSTRAINT DF_ctdh_size_mode DEFAULT 'CO_SAN',
+    chu_vi_co_tay_cm DECIMAL(4,1) NULL,
+    do_rong_deo VARCHAR(8) NULL,
+    ghi_chu_kich_thuoc NVARCHAR(300) NULL,
+    ten_kich_thuoc_chot NVARCHAR(100) NULL,
+    trang_thai_xac_nhan_size VARCHAR(20) NOT NULL CONSTRAINT DF_ctdh_confirm_size DEFAULT 'KHONG_CAN',
     CONSTRAINT FK_ctdh_don FOREIGN KEY(id_don_hang) REFERENCES dbo.don_hang(id_don_hang),
     CONSTRAINT FK_ctdh_bt FOREIGN KEY(id_bien_the) REFERENCES dbo.san_pham_bien_the(id_bien_the),
-    CONSTRAINT UQ_ctdh_bien_the UNIQUE(id_don_hang, id_bien_the),
+    CONSTRAINT UQ_ctdh_bien_the UNIQUE(id_don_hang, id_bien_the,
+        kieu_kich_thuoc, chu_vi_co_tay_cm, do_rong_deo),
+    CONSTRAINT CK_ctdh_size_mode CHECK (
+      (kieu_kich_thuoc IN ('CO_SAN','FREESIZE') AND chu_vi_co_tay_cm IS NULL AND do_rong_deo IS NULL)
+      OR (kieu_kich_thuoc='THEO_YEU_CAU' AND chu_vi_co_tay_cm IS NOT NULL AND do_rong_deo IS NOT NULL
+          AND chu_vi_co_tay_cm BETWEEN 10 AND 30
+          AND do_rong_deo IN ('OM','VUA','RONG'))),
+    CONSTRAINT CK_ctdh_confirm_size CHECK (
+      (kieu_kich_thuoc='THEO_YEU_CAU' AND trang_thai_xac_nhan_size IN ('CHO_XAC_NHAN','DA_XAC_NHAN'))
+      OR (kieu_kich_thuoc<>'THEO_YEU_CAU' AND trang_thai_xac_nhan_size='KHONG_CAN')),
     CONSTRAINT CK_ctdh_qty CHECK(so_luong > 0),
     CONSTRAINT CK_ctdh_gia CHECK(gia_ban >= 0)
 );
@@ -311,6 +344,9 @@ GO
 CREATE UNIQUE INDEX UX_dh_ma_yeu_cau_pos
 ON dbo.don_hang(ma_yeu_cau_pos) WHERE ma_yeu_cau_pos IS NOT NULL;
 GO
+CREATE UNIQUE INDEX UX_dh_ma_yeu_cau_online
+ON dbo.don_hang(ma_yeu_cau_online) WHERE ma_yeu_cau_online IS NOT NULL;
+GO
 CREATE TABLE dbo.lich_su_don_hang (
     id_lich_su BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
     id_don_hang BIGINT NOT NULL,
@@ -322,7 +358,7 @@ CREATE TABLE dbo.lich_su_don_hang (
     ngay_tao DATETIME2(0) NOT NULL CONSTRAINT DF_lsdh_ngay DEFAULT SYSUTCDATETIME(),
     CONSTRAINT FK_lsdh_don FOREIGN KEY(id_don_hang) REFERENCES dbo.don_hang(id_don_hang),
     CONSTRAINT FK_lsdh_nv FOREIGN KEY(id_nhan_vien) REFERENCES dbo.nhan_vien(id_nhan_vien),
-    CONSTRAINT CK_lsdh_event CHECK(su_kien IN ('CHUYEN_TRANG_THAI','HUY_DON','XAC_NHAN_THU_TIEN','XAC_NHAN_HOAN_TIEN'))
+    CONSTRAINT CK_lsdh_event CHECK(su_kien IN ('CHUYEN_TRANG_THAI','HUY_DON','XAC_NHAN_THU_TIEN','XAC_NHAN_HOAN_TIEN','XAC_NHAN_KICH_THUOC'))
 );
 GO
 CREATE INDEX IX_lsdh_don ON dbo.lich_su_don_hang(id_don_hang, ngay_tao DESC);

@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title th:text="|&#272;&#417;n h&#224;ng #${view.order.id} - BeautIcon|">&#272;&#417;n h&#224;ng</title>
+<link rel="stylesheet" th:href="@{/css/storefront.css}"><link rel="stylesheet" th:href="@{/css/shop-account.css}">
+<link rel="icon" th:href="@{/favicon.ico}"><script defer th:src="@{/js/storefront.js}"></script></head><body>
+<div th:replace="~{shop/fragments/header :: header}"></div>
+<main class="shop-page"><a class="shop-back" th:href="@{/don-hang-cua-toi}">&#8592; Danh s&#225;ch &#273;&#417;n h&#224;ng</a>
+<p class="page-kicker">ORDER DETAILS</p><h1 class="shop-page-title" th:text="|&#272;&#417;n h&#224;ng #${view.order.id}|"></h1>
+<p class="shop-alert success" th:if="${param['vua-dat'] != null}">C&#7843;m &#417;n b&#7841;n. &#272;&#417;n h&#224;ng &#273;&#227; &#273;&#432;&#7907;c t&#7841;o v&#224; &#273;ang ch&#7901; nh&#226;n vi&#234;n x&#7917; l&#253;.</p>
+<div class="checkout-columns">
+ <section class="customer-card"><div class="order-detail-top"><div><p class="muted">Ng&#224;y &#273;&#7863;t</p><strong th:text="${view.order.date}">24/10/2026</strong></div>
+ <span class="shop-status" th:text="${view.order.statusText}">Ch&#7901; x&#7917; l&#253;</span></div>
+ <h2>C&#225;c m&#243;n trong &#273;&#417;n</h2>
+ <div class="checkout-item" th:each="item : ${view.lines}">
+  <a th:href="@{/san-pham/{id}(id=${item.productId})}"><strong th:text="${item.product}">V&#242;ng tay</strong>
+   <small th:text="|${item.color} / ${item.sizeDescription()} ×${item.quantity}|">Màu / size</small>
+   <small class="size-note-display" th:if="${item.sizeNote != null and !#strings.isEmpty(item.sizeNote)}"
+          th:text="|Ghi chú số đo: ${item.sizeNote}|"></small>
+   <small class="size-confirm-status" th:if="${item.sizeMode == 'THEO_YEU_CAU'}"
+          th:text="${item.waitingSizeConfirmation()} ? 'Đang chờ cửa hàng xác nhận kích thước' : 'Cửa hàng đã xác nhận kích thước'">Trạng thái size</small></a>
+  <strong th:text="${item.totalText()}">0 &#8363;</strong>
+ </div>
+ <h2>Th&#244;ng tin giao h&#224;ng</h2>
+ <div class="address-readonly"><strong th:text="${view.order.recipient}">Kh&#225;ch</strong>
+  <p th:text="${view.order.phone}">0900000000</p><p th:text="${view.order.address}">&#272;&#7883;a ch&#7881;</p>
+  <p th:if="${view.order.note != null and !#strings.isEmpty(view.order.note)}" th:text="${view.order.note}">Ghi ch&#250;</p></div>
+ <p class="fine-print">&#272;&#7883;a ch&#7881; hi&#7875;n th&#7883; l&#224; b&#7843;n l&#432;u t&#7841;i th&#7901;i &#273;i&#7875;m &#273;&#7863;t h&#224;ng.</p>
+ </section>
+ <aside class="customer-card order-summary"><p class="page-kicker">ORDER OVERVIEW</p><h2>Thanh to&#225;n</h2>
+  <div class="shop-payment-state" th:classappend="${view.order.paidInFull()} ? ' paid' : ''" th:text="${view.order.paymentText()}">Ch&#7901; thanh to&#225;n</div>
+  <div class="summary-row"><span>Ti&#7873;n h&#224;ng</span><strong th:text="${view.order.subtotalText()}">0 &#8363;</strong></div>
+  <div class="summary-row"><span>Gi&#7843;m gi&#225;</span><strong th:text="|-${view.order.discountText()}|"></strong></div>
+  <div class="summary-row"><span>V&#7853;n chuy&#7875;n</span><strong th:text="${view.order.shippingText()}">0 &#8363;</strong></div>
+  <div class="summary-row grand"><span>T&#7893;ng</span><strong th:text="${view.order.totalText()}">0 &#8363;</strong></div>
+  <p class="fine-print" th:if="${view.order.method == 'CHUYEN_KHOAN' and !view.order.paidInFull()}">
+    Ch&#432;a t&#237;ch h&#7907;p ng&#226;n h&#224;ng tr&#7921;c ti&#7871;p. Vui l&#242;ng &#273;&#7907;i c&#7917;a h&#224;ng li&#234;n h&#7879; &#273;&#7875; &#273;&#7889;i so&#225;t chuy&#7875;n kho&#7843;n.
+  </p>
+  <a class="store-primary wide" th:href="@{/bo-suu-tap}">Ti&#7871;p t&#7909;c kh&#225;m ph&#225; &#8594;</a>
+ </aside>
+</div></main><footer th:replace="~{shop/fragments/footer :: footer}"></footer></body></html>

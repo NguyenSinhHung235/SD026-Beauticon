@@ -1,32 +1,46 @@
-<!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<body>
-<aside class="sidebar" th:fragment="menu(active)">
-  <div class="brand">✦ BeautIcon Admin</div>
-  <div class="nav-label">TỔNG QUAN</div>
-  <a th:classappend="${active == 'dashboard'} ? ' active' : ''" th:href="@{/admin/dashboard}">▦ Dashboard / Thống kê</a>
-  <div class="nav-label">HÀNG HÓA</div>
-  <a th:classappend="${active == 'products'} ? ' active' : ''" th:href="@{/admin/san-pham}">▤ Quản lý sản phẩm</a>
-  <a class="sub" th:classappend="${active == 'attributes'} ? ' active' : ''" th:href="@{/admin/thuoc-tinh/loai}">Loại sản phẩm</a>
-  <a class="sub" th:classappend="${active == 'attributes'} ? ' active' : ''" th:href="@{/admin/thuoc-tinh/mau-sac}">Màu sắc</a>
-  <a class="sub" th:classappend="${active == 'attributes'} ? ' active' : ''" th:href="@{/admin/thuoc-tinh/kich-thuoc}">Kích thước</a>
-  <a class="sub" th:classappend="${active == 'attributes'} ? ' active' : ''" th:href="@{/admin/thuoc-tinh/chat-lieu}">Chất liệu</a>
-  <a class="sub" th:classappend="${active == 'attributes'} ? ' active' : ''" th:href="@{/admin/thuoc-tinh/thuong-hieu}">Thương hiệu</a>
-  <a class="sub" th:classappend="${active == 'attributes'} ? ' active' : ''" th:href="@{/admin/thuoc-tinh/nha-cung-cap}">Nhà cung cấp</a>
-  <div class="nav-label">BÁN HÀNG</div>
-  <a th:classappend="${active == 'promotions'} ? ' active' : ''" th:href="@{/admin/khuyen-mai}">Khuy&#7871;n m&#227;i</a>
-  <a th:classappend="${active == 'vouchers'} ? ' active' : ''" th:href="@{/admin/voucher}">Voucher / M&#227; gi&#7843;m gi&#225;</a>
-  <a th:classappend="${active == 'pos'} ? ' active' : ''" th:href="@{/admin/ban-tai-quay}">B&#225;n h&#224;ng t&#7841;i qu&#7847;y (POS)</a>
-  <a th:classappend="${active == 'online'} ? ' active' : ''" th:href="@{/admin/don-hang-online}">Đơn hàng online</a>
-  <a th:classappend="${active == 'invoices'} ? ' active' : ''" th:href="@{/admin/hoa-don}">Hóa đơn hoàn thành</a>
-  <div class="nav-label">ĐỐI TƯỢNG</div>
-  <a th:classappend="${active == 'customers'} ? ' active' : ''" th:href="@{/admin/khach-hang}">♙ Khách hàng</a>
-  <a th:if="${isAdmin}" th:classappend="${active == 'staff'} ? ' active' : ''" th:href="@{/admin/nhan-vien}">♙ Nhân viên / Phân quyền</a>
-  <div class="signed-in" th:if="${signedInStaff != null}">
-    <strong th:text="${signedInStaff.fullName()}">Nhân viên</strong>
-    <span th:text="${isAdmin ? 'Quản lý' : 'Nhân viên'}">Vai trò</span>
-    <form method="post" th:action="@{/logout}"><button class="logout-btn" type="submit">Đăng xuất</button></form>
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org"><body>
+<aside class="sidebar" th:fragment="menu(active)" aria-label="Đi&#7873;u h&#432;&#7899;ng qu&#7843;n tr&#7883;">
+  <div class="sidebar-heading">
+    <a class="brand" th:href="@{/admin/dashboard}" aria-label="BeautIcon - T&#7893;ng quan qu&#7843;n tr&#7883;">
+      <span class="admin-monogram" aria-hidden="true">b<span>.</span></span>
+      <span class="brand-copy"><strong>BeautIcon</strong><small>RETAIL WORKSPACE</small></span>
+    </a>
+    <button type="button" id="admin-menu-toggle" class="mobile-menu-toggle" aria-controls="admin-sidebar-links" aria-expanded="false">Menu <span aria-hidden="true">&#9776;</span></button>
   </div>
-</aside>
-</body>
-</html>
+  <div class="sidebar-nav" id="admin-sidebar-links">
+    <nav aria-label="C&#225;c ch&#7913;c n&#259;ng qu&#7843;n tr&#7883;">
+      <div class="nav-label">KH&#212;NG GIAN L&#192;M VI&#7878;C</div>
+      <a th:classappend="${active == 'dashboard'} ? ' active' : ''" th:href="@{/admin/dashboard}"><span class="nav-icon" aria-hidden="true">&#9638;</span> T&#7893;ng quan</a>
+      <div class="nav-label">H&#192;NG H&#211;A</div>
+      <a th:classappend="${active == 'products'} ? ' active' : ''" th:href="@{/admin/san-pham}"><span class="nav-icon" aria-hidden="true">&#9671;</span> S&#7843;n ph&#7849;m &amp; bi&#7871;n th&#7875;</a>
+      <details class="nav-subgroup" th:attr="open=${active == 'attributes'} ? 'open' : null">
+        <summary><span class="nav-icon" aria-hidden="true">&#9776;</span> Thuộc tính <span class="summary-arrow" aria-hidden="true">&#8964;</span></summary>
+        <div class="nav-subitems">
+          <a class="sub" th:href="@{/admin/thuoc-tinh/loai}">Lo&#7841;i s&#7843;n ph&#7849;m</a>
+          <a class="sub" th:href="@{/admin/thuoc-tinh/mau-sac}">M&#224;u s&#7855;c</a>
+          <a class="sub" th:href="@{/admin/thuoc-tinh/kich-thuoc}">K&#237;ch th&#432;&#7899;c</a>
+          <a class="sub" th:href="@{/admin/thuoc-tinh/chat-lieu}">Ch&#7845;t li&#7879;u</a>
+          <a class="sub" th:href="@{/admin/thuoc-tinh/thuong-hieu}">Th&#432;&#417;ng hi&#7879;u</a>
+          <a class="sub" th:href="@{/admin/thuoc-tinh/nha-cung-cap}">Nh&#224; cung c&#7845;p</a>
+        </div>
+      </details>
+      <div class="nav-label">B&#193;N H&#192;NG</div>
+      <a th:classappend="${active == 'pos'} ? ' active' : ''" th:href="@{/admin/ban-tai-quay}"><span class="nav-icon" aria-hidden="true">&#9702;</span> B&#225;n t&#7841;i qu&#7847;y</a>
+      <a th:classappend="${active == 'online'} ? ' active' : ''" th:href="@{/admin/don-hang-online}"><span class="nav-icon" aria-hidden="true">&#8594;</span> &#272;&#417;n h&#224;ng online</a>
+      <a th:classappend="${active == 'invoices'} ? ' active' : ''" th:href="@{/admin/hoa-don}"><span class="nav-icon" aria-hidden="true">&#9635;</span> H&#243;a &#273;&#417;n</a>
+      <a th:classappend="${active == 'promotions'} ? ' active' : ''" th:href="@{/admin/khuyen-mai}"><span class="nav-icon" aria-hidden="true">%</span> Khuy&#7871;n m&#227;i</a>
+      <a th:classappend="${active == 'vouchers'} ? ' active' : ''" th:href="@{/admin/voucher}"><span class="nav-icon" aria-hidden="true">&#9670;</span> Voucher</a>
+      <div class="nav-label">NGƯỜI DÙNG</div>
+      <a th:classappend="${active == 'customers'} ? ' active' : ''" th:href="@{/admin/khach-hang}"><span class="nav-icon" aria-hidden="true">&#9678;</span> Kh&#225;ch h&#224;ng</a>
+      <a th:if="${isAdmin}" th:classappend="${active == 'staff'} ? ' active' : ''" th:href="@{/admin/nhan-vien}"><span class="nav-icon" aria-hidden="true">&#9775;</span> Nh&#226;n vi&#234;n</a>
+    </nav>
+    <div class="sidebar-foot">
+      <a class="view-store" th:href="@{/}"><span class="nav-icon" aria-hidden="true">&#8599;</span> Xem trang c&#7917;a h&#224;ng</a>
+      <div class="signed-in" th:if="${signedInStaff != null}">
+        <span class="signed-avatar" aria-hidden="true">B</span>
+        <div class="signed-copy"><strong th:text="${signedInStaff.fullName()}">Nh&#226;n vi&#234;n</strong><small th:text="${isAdmin ? 'Qu&#7843;n l&#253; c&#7917;a h&#224;ng' : 'Nh&#226;n vi&#234;n'}">Vai tr&#242;</small></div>
+        <form method="post" th:action="@{/logout}"><button class="logout-btn" type="submit" aria-label="&#272;&#259;ng xu&#7845;t">&#8594;</button></form>
+      </div>
+    </div>
+  </div>
+</aside></body></html>

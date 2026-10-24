@@ -103,7 +103,7 @@ public class DashboardService {
                 });
 
         List<Map<String, Object>> topProducts = jdbc.query("""
-                SELECT TOP (5) sp.ten_san_pham AS name,
+                SELECT TOP (5) sp.id_san_pham AS productId, sp.ten_san_pham AS name,
                        SUM(ct.so_luong) AS quantity,
                        SUM(ct.gia_ban * ct.so_luong) AS gross
                 FROM dbo.don_hang_chi_tiet ct
@@ -116,6 +116,7 @@ public class DashboardService {
                 ORDER BY quantity DESC, gross DESC
                 """, p, (rs, rowNum) -> {
                     Map<String, Object> m = new LinkedHashMap<>();
+                    m.put("id", rs.getLong("productId"));
                     m.put("name", rs.getString("name"));
                     m.put("quantity", rs.getLong("quantity"));
                     m.put("gross", money(rs.getBigDecimal("gross")));

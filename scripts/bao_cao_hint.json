@@ -1,0 +1,199 @@
+{
+  "removed_count": 29,
+  "kept_dynamic_count": 15,
+  "removed": [
+    [
+      "src/main/resources/templates/admin/attributes/index.html",
+      "Thêm, sửa, ẩn hoặc khôi phục dữ liệu danh mục."
+    ],
+    [
+      "src/main/resources/templates/admin/attributes/index.html",
+      "Ẩn thay vì xóa để bảo toàn khóa ngoại của sản phẩm và biến thể đã tạo."
+    ],
+    [
+      "src/main/resources/templates/admin/orders/detail.html",
+      "Chưa có thay đổi kể từ khi nâng cấp giai đoạn 4."
+    ],
+    [
+      "src/main/resources/templates/admin/orders/detail.html",
+      "Chỉ dùng khi nhân viên đã kiểm tra tiền thực nhận hoặc COD đã thu. Không kết nối ngân hàng."
+    ],
+    [
+      "src/main/resources/templates/admin/orders/detail.html",
+      "Hoàn tồn kho nếu đơn đã trừ kho. Hoàn tiền được tạo ở trạng thái CHỜ, không tự chuyển tiền."
+    ],
+    [
+      "src/main/resources/templates/admin/orders/detail.html",
+      "Chỉ xác nhận sau khi chuyển khoản hoặc hoàn tiền ngoài hệ thống đã thực hiện thành công."
+    ],
+    [
+      "src/main/resources/templates/admin/orders/list.html",
+      "Mô tả"
+    ],
+    [
+      "src/main/resources/templates/admin/people/customer-detail.html",
+      "Ẩn địa chỉ thay vì xóa để giữ tham chiếu và snapshot địa chỉ của đơn cũ."
+    ],
+    [
+      "src/main/resources/templates/admin/people/customer-form.html",
+      "Yêu cầu ít nhất một phương thức liên hệ. Module CRM không hiển thị hoặc chỉnh sửa mật khẩu khách hàn"
+    ],
+    [
+      "src/main/resources/templates/admin/people/customers-list.html",
+      "Hồ sơ, địa chỉ giao hàng và các đơn đã mua."
+    ],
+    [
+      "src/main/resources/templates/admin/people/staff-form.html",
+      "Không thể tự hạ quyền chính mình hoặc khóa quản lý cuối cùng. Thay đổi quyền có hiệu lực với phiên đ"
+    ],
+    [
+      "src/main/resources/templates/admin/people/staff-list.html",
+      "QUAN_LY có toàn quyền; NHAN_VIEN được bán hàng, xử lý đơn và quản lý thông tin khách."
+    ],
+    [
+      "src/main/resources/templates/admin/people/staff-list.html",
+      "Khóa tài khoản là xóa mềm; hóa đơn và lịch sử xử lý vẫn được giữ nguyên."
+    ],
+    [
+      "src/main/resources/templates/admin/pos/index.html",
+      "Ch&#7885;n v&#242;ng tay, &#225;p d&#7909;ng khuy&#7871;n m&#227;i + voucher, thu ti&#7873;n v&#224;"
+    ],
+    [
+      "src/main/resources/templates/admin/pos/index.html",
+      "Gi&#225; hi&#7875;n th&#7883; &#273;&#227; t&#237;nh khuy&#7871;n m&#227;i &#273;ang hi&#7879;u l&#7"
+    ],
+    [
+      "src/main/resources/templates/admin/pos/index.html",
+      "S&#7889; ti&#7873;n xem tr&#432;&#7899;c do m&#225;y ch&#7911; t&#237;nh. Khi ho&#224;n t&#7845;t s&"
+    ],
+    [
+      "src/main/resources/templates/admin/pos/index.html",
+      "H&#243;a &#273;&#417;n t&#7841;o ra s&#7869; c&#243; k&#234;nh OFFLINE v&#224; tr&#7841;ng th&#225;i"
+    ],
+    [
+      "src/main/resources/templates/admin/products/form.html",
+      "Thông tin chung; màu, kích thước, giá và tồn kho thiết lập sau trong mục Biến thể."
+    ],
+    [
+      "src/main/resources/templates/admin/products/images.html",
+      "Chọn file JPG/PNG tối đa 5 MB. Ảnh được lưu tại thư mục uploads và tự tạo đường dẫn xem ảnh."
+    ],
+    [
+      "src/main/resources/templates/admin/products/images.html",
+      "Chấp nhận ảnh HTTPS hoặc đường dẫn nội bộ /uploads/... (hoặc sử dụng form tải file phía trên)."
+    ],
+    [
+      "src/main/resources/templates/admin/products/index.html",
+      "Danh sách vòng tay, giá và tồn kho được lưu theo từng biến thể."
+    ],
+    [
+      "src/main/resources/templates/admin/products/index.html",
+      "Nút “Ẩn” là xóa mềm để giữ nguyên lịch sử đơn hàng và đánh giá."
+    ],
+    [
+      "src/main/resources/templates/admin/promotions/index.html",
+      "Khuy&#7871;n m&#227;i theo bi&#7871;n th&#7875;, t&#237;nh v&#224;o gi&#225; b&#225;n khi thanh to&#"
+    ],
+    [
+      "src/main/resources/templates/admin/promotions/index.html",
+      "Quy t&#7855;c: m&#7895;i bi&#7871;n th&#7875; ch&#7881; &#225;p d&#7909;ng m&#7897;t khuy&#7871;n m&"
+    ],
+    [
+      "src/main/resources/templates/admin/variants/form.html",
+      "Giá bán và tồn kho áp dụng riêng cho màu + kích thước đã chọn."
+    ],
+    [
+      "src/main/resources/templates/admin/variants/form.html",
+      "Khi bắt đầu bán hàng tại quầy, cần ghi lịch sử nhập/xuất kho; không chỉnh tồn thủ công tùy tiện."
+    ],
+    [
+      "src/main/resources/templates/admin/variants/index.html",
+      "Mỗi cặp màu + kích thước chỉ có một bản ghi trong một sản phẩm."
+    ],
+    [
+      "src/main/resources/templates/admin/variants/index.html",
+      "Giá và tồn kho được quản lý ở đây. Ẩn biến thể sẽ ngừng bán nhưng vẫn giữ lịch sử đã mua."
+    ],
+    [
+      "src/main/resources/templates/admin/vouchers/index.html",
+      "M&#227; gi&#7843;m gi&#225; cho to&#224;n &#273;&#417;n, gi&#7899;i h&#7841;n l&#432;&#7907;t d&#249"
+    ]
+  ],
+  "kept": [
+    [
+      "src/main/resources/templates/admin/orders/detail.html",
+      "",
+      "24/10/2026 •\n Online •\n Trạng thái"
+    ],
+    [
+      "src/main/resources/templates/admin/orders/detail.html",
+      "",
+      "Tiếp theo"
+    ],
+    [
+      "src/main/resources/templates/admin/orders/detail.html",
+      "",
+      "Nhân viên thực hiện: "
+    ],
+    [
+      "src/main/resources/templates/admin/orders/detail.html",
+      "",
+      "Nhân viên thực hiện: "
+    ],
+    [
+      "src/main/resources/templates/admin/orders/detail.html",
+      "",
+      "Nhân viên thực hiện: "
+    ],
+    [
+      "src/main/resources/templates/admin/orders/detail.html",
+      "",
+      "Nhân viên thực hiện: "
+    ],
+    [
+      "src/main/resources/templates/admin/orders/list.html",
+      "",
+      "Kết quả"
+    ],
+    [
+      "src/main/resources/templates/admin/people/address-form.html",
+      "",
+      ""
+    ],
+    [
+      "src/main/resources/templates/admin/people/customer-detail.html",
+      "",
+      ""
+    ],
+    [
+      "src/main/resources/templates/admin/people/customers-list.html",
+      "",
+      "0 khách"
+    ],
+    [
+      "src/main/resources/templates/admin/people/staff-list.html",
+      "",
+      "0 nhân viên"
+    ],
+    [
+      "src/main/resources/templates/admin/pos/index.html",
+      "cartHint",
+      "Ch&#432;a ch&#7885;n bi&#7871;n th&#7875; n&#224;o."
+    ],
+    [
+      "src/main/resources/templates/admin/pos/index.html",
+      "",
+      "Ti&#7873;n th&#7889;i d&#7921; ki&#7871;n: 0 VND"
+    ],
+    [
+      "src/main/resources/templates/admin/products/images.html",
+      "",
+      "Vòng tay"
+    ],
+    [
+      "src/main/resources/templates/admin/vouchers/form.html",
+      "",
+      "Người lập: Quản lý đăng nhập. Hệ thống gán người lập khi tạo voucher, không lấy ID từ"
+    ]
+  ]
+}

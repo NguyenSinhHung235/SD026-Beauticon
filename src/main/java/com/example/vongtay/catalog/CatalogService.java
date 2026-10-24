@@ -106,6 +106,8 @@ public class CatalogService {
         p.setTrongLuongGram(f.getTrongLuongGram());
         p.setMoTa(f.getMoTa() == null || f.getMoTa().isBlank() ? null : f.getMoTa().trim());
         p.setNgaySanXuat(f.getNgaySanXuat());
+        p.setFreesizeMinCm(f.getFreesizeMinCm());
+        p.setFreesizeMaxCm(f.getFreesizeMaxCm());
         p.setTrangThai(f.isTrangThai());
         return products.save(p);
     }
@@ -170,6 +172,14 @@ public class CatalogService {
     }
 
     private void validateProduct(ProductForm f) {
+        BigDecimal freeMin = f.getFreesizeMinCm(), freeMax = f.getFreesizeMaxCm();
+        if ((freeMin == null) != (freeMax == null))
+            throw new IllegalArgumentException("Khoảng Freesize phải nhập cả giá trị nhỏ nhất và lớn nhất.");
+        if (freeMin != null && (freeMin.scale() > 1 || freeMax.scale() > 1
+                || freeMin.compareTo(new BigDecimal("10.0")) < 0
+                || freeMax.compareTo(new BigDecimal("30.0")) > 0
+                || freeMin.compareTo(freeMax) >= 0))
+            throw new IllegalArgumentException("Khoảng Freesize phải từ 10 đến 30 cm và min nhỏ hơn max.");
         if (f.getTenSanPham() == null || f.getTenSanPham().isBlank() || f.getTenSanPham().trim().length() > 200)
             throw new IllegalArgumentException("Tên sản phẩm bắt buộc và không quá 200 ký tự.");
         if (!attributes.exists(AttributeKind.CATEGORY, f.getIdLoai()))

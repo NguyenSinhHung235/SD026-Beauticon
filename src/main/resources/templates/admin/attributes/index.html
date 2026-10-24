@@ -1,7 +1,10 @@
 <!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quản lý thuộc tính • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}"></head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Quản lý thuộc tính • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}">  <link rel="stylesheet" th:href="@{/css/admin-brand.css}">
+  <script defer th:src="@{/js/admin-shell.js}"></script>
+<link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
 <body><div class="app"><aside th:replace="~{admin/fragments/nav :: menu('attributes')}"></aside><main>
-<div class="top"><div><p class="eyebrow">Hàng hóa / Thuộc tính</p><h1 th:text="${kind.title}">Màu sắc</h1><div class="hint">Thêm, sửa, ẩn hoặc khôi phục dữ liệu danh mục.</div></div>
+<div class="top"><div><p class="eyebrow">Hàng hóa / Thuộc tính</p><h1 th:text="${kind.title}">Màu sắc</h1></div>
 <a class="btn" th:if="${isAdmin}" th:href="@{/admin/thuoc-tinh/{s}/them(s=${kind.slug})}">＋ Thêm mới</a></div>
 <div class="notice" th:if="${success}" th:text="${success}"></div>
 <div class="panel"><form class="toolbar" method="get" th:action="@{/admin/thuoc-tinh/{s}(s=${kind.slug})}">
@@ -22,7 +25,5 @@
 <input type="hidden" name="active" th:value="${!item.active}"><button class="tiny" th:classappend="${item.active} ? ' danger' : ' secondary'" th:text="${item.active} ? 'Ẩn' : 'Khôi phục'" type="submit">Ẩn</button></form>
 </div></td></tr>
 <tr th:if="${#lists.isEmpty(items)}"><td class="empty" colspan="8">Chưa có dữ liệu.</td></tr>
-</tbody></table></div>
-<!--    <p class="hint">Ẩn thay vì xóa để bảo toàn khóa ngoại của sản phẩm và biến thể đã tạo.</p>-->
-</div>
+</tbody></table></div></div>
 </main></div></body></html>

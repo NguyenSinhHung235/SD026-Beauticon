@@ -15,6 +15,8 @@ public class ProductForm {
     private String moTa;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate ngaySanXuat;
+    private BigDecimal freesizeMinCm;
+    private BigDecimal freesizeMaxCm;
     private boolean trangThai = true;
 
     public static ProductForm from(Product p) {
@@ -27,6 +29,8 @@ public class ProductForm {
         f.trongLuongGram = p.getTrongLuongGram();
         f.moTa = p.getMoTa();
         f.ngaySanXuat = p.getNgaySanXuat();
+        f.freesizeMinCm = p.getFreesizeMinCm();
+        f.freesizeMaxCm = p.getFreesizeMaxCm();
         f.trangThai = p.isTrangThai();
         return f;
     }
@@ -46,6 +50,10 @@ public class ProductForm {
     public void setMoTa(String v) { moTa = v; }
     public LocalDate getNgaySanXuat() { return ngaySanXuat; }
     public void setNgaySanXuat(LocalDate v) { ngaySanXuat = v; }
+    public BigDecimal getFreesizeMinCm() { return freesizeMinCm; }
+    public void setFreesizeMinCm(BigDecimal v) { freesizeMinCm = v; }
+    public BigDecimal getFreesizeMaxCm() { return freesizeMaxCm; }
+    public void setFreesizeMaxCm(BigDecimal v) { freesizeMaxCm = v; }
     public boolean isTrangThai() { return trangThai; }
     public void setTrangThai(boolean v) { trangThai = v; }
 }

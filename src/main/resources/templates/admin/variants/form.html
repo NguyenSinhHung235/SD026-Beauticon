@@ -1,59 +1,25 @@
-<!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Biến thể • BeautIcon</title>
-    <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Biến thể • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}">  <link rel="stylesheet" th:href="@{/css/admin-brand.css}">
+  <script defer th:src="@{/js/admin-shell.js}"></script>
+<link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
-<body>
-<div class="app">
-    <aside th:replace="~{admin/fragments/nav :: menu('products')}"></aside>
-    <main>
-        <div class="breadcrumb"><a th:href="@{/admin/san-pham}">Sản phẩm</a><span>/</span><a
-                th:href="@{/admin/san-pham/{p}/bien-the(p=${productId})}" th:text="${product.tenSanPham}">Vòng
-            tay</a><span>/</span>Biến thể
-        </div>
-        <div class="top">
-            <div><h1 th:text="${variantId == null} ? 'Thêm biến thể' : 'Sửa biến thể'">Thêm biến thể</h1>
-<!--                <div class="hint">Giá bán và tồn kho áp dụng riêng cho màu + kích thước đã chọn.</div>-->
-            </div>
-        </div>
-        <div class="notice error" th:if="${error}" th:text="${error}"></div>
-        <div class="panel">
-            <form method="post" th:object="${form}"
-                  th:action="${variantId == null} ? @{/admin/san-pham/{p}/bien-the/them(p=${productId})} : @{/admin/san-pham/{p}/bien-the/{id}/sua(p=${productId},id=${variantId})}">
-                <input type="hidden" th:field="*{expectedStock}">
-                <div class="grid">
-                    <label class="field">Màu sắc *<select th:field="*{idMauSac}" required>
-                        <option value="">-- Chọn màu --</option>
-                        <option th:each="o : ${colors}" th:value="${o.id}"
-                                th:text="${o.label + (o.active ? '' : ' (đã ẩn)')}">Bạc
-                        </option>
-                    </select></label>
-                    <label class="field">Kích thước *<select th:field="*{idKichThuoc}" required>
-                        <option value="">-- Chọn kích thước --</option>
-                        <option th:each="o : ${sizes}" th:value="${o.id}"
-                                th:text="${o.label + (o.active ? '' : ' (đã ẩn)')}">Freesize
-                        </option>
-                    </select></label>
-                    <label class="field">Giá bán (VND) *<input type="number" th:field="*{giaBan}" step="0.01" min="0"
-                                                               required placeholder="249000"></label>
-                    <label class="field">Số lượng tồn *<input type="number" th:field="*{soLuongTon}" step="1" min="0"
-                                                              required></label>
-                    <label class="field">Trạng thái<select th:field="*{trangThai}">
-                        <option value="true">Đang bán</option>
-                        <option value="false">Đã ẩn</option>
-                    </select></label>
-                </div>
-                <div class="buttons">
-                    <button type="submit">Lưu biến thể</button>
-                    <a class="btn secondary" th:href="@{/admin/san-pham/{p}/bien-the(p=${productId})}">Hủy</a></div>
-            </form>
-        </div>
-<!--        <p class="hint">Khi bắt đầu bán hàng tại quầy, cần ghi lịch sử nhập/xuất kho; không chỉnh tồn thủ công tùy-->
-<!--            tiện.</p>-->
-    </main>
-</div>
-</body>
-</html>
+<body><div class="app"><aside th:replace="~{admin/fragments/nav :: menu('products')}"></aside><main>
+<div class="breadcrumb"><a th:href="@{/admin/san-pham}">Sản phẩm</a><span>/</span><a th:href="@{/admin/san-pham/{p}/bien-the(p=${productId})}" th:text="${product.tenSanPham}">Vòng tay</a><span>/</span>Biến thể</div>
+<div class="top"><div><h1 th:text="${variantId == null} ? 'Thêm biến thể' : 'Sửa biến thể'">Thêm biến thể</h1></div></div>
+<div class="notice error" th:if="${error}" th:text="${error}"></div>
+<div class="panel"><form method="post" th:object="${form}"
+  th:action="${variantId == null} ? @{/admin/san-pham/{p}/bien-the/them(p=${productId})} : @{/admin/san-pham/{p}/bien-the/{id}/sua(p=${productId},id=${variantId})}">
+  <input type="hidden" th:field="*{expectedStock}">
+  <div class="grid">
+    <label class="field">Màu sắc *<select th:field="*{idMauSac}" required><option value="">-- Chọn màu --</option>
+      <option th:each="o : ${colors}" th:value="${o.id}" th:text="${o.label + (o.active ? '' : ' (đã ẩn)')}">Bạc</option></select></label>
+    <label class="field">Kích thước *<select th:field="*{idKichThuoc}" required><option value="">-- Chọn kích thước --</option>
+      <option th:each="o : ${sizes}" th:value="${o.id}" th:text="${o.label + (o.active ? '' : ' (đã ẩn)')}">Freesize</option></select></label>
+    <label class="field">Giá bán (VND) *<input type="number" th:field="*{giaBan}" step="0.01" min="0" required placeholder="249000"></label>
+    <label class="field">Số lượng tồn *<input type="number" th:field="*{soLuongTon}" step="1" min="0" required></label>
+    <label class="field">Trạng thái<select th:field="*{trangThai}"><option value="true">Đang bán</option><option value="false">Đã ẩn</option></select></label>
+  </div>
+  <div class="buttons"><button type="submit">Lưu biến thể</button><a class="btn secondary" th:href="@{/admin/san-pham/{p}/bien-the(p=${productId})}">Hủy</a></div>
+</form></div>
+
+</main></div></body></html>

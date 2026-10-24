@@ -1,4 +1,23 @@
-<<<<<<< HEAD
+# BEAUTICON GD9 - KICH THUOC VONG TAY LINH HOAT
+
+**Moi trong GD9:** 3 lua chon **Co san / Freesize co khoang dieu chinh / Theo yeu cau co chu vi co tay va do rong deo**. Chi tiet gio hang va don hang luu rieng tung lua chon; nhan vien xac nhan size dat rieng truoc khi xu ly don. Giao dien giu Times New Roman va menu da rut gon.
+
+**NANG CAP DB DANG DUNG:** sao luu, chay DUY NHAT `sql/11_migrate_giai_doan_9.sql` tren GD8, sau do chay ung dung moi. **KHONG chay lai `01_schema.sql`/`02_seed_demo.sql` tren database cu.** Xem `HUONG_DAN_GD9_KICH_THUOC.md`.
+
+---
+
+# BeautIcon - Giai doan 8 (Admin + Storefront Online)
+
+**Giai doan 8 da them:** dang ky/dang nhap khach, gio hang va bien the, dia chi, checkout COD/chuyen khoan cho doi soat, luu don online, trang theo doi don. Giu lai toan bo Admin GD1-7. **SQL Server van 22 bang**, them mot cot `don_hang.ma_yeu_cau_online` va unique index.
+
+**Cap nhat GD7 -> GD8:** Sao luu DB, chay **`sql/08_migrate_giai_doan_8.sql`**, khong chay lai schema/seed. Neu khoi tao moi, chay `sql/01_schema.sql` GD8; khong can migration 08. Sau do `mvn clean test` va `mvn spring-boot:run`.
+
+**Diem vao:** `/` (cua hang), `/dang-ky` (KH moi), `/dang-nhap` (KH), `/gio-hang`, `/thanh-toan`, `/don-hang-cua-toi`; Admin van o `/login` va `/admin/dashboard`. Xem `HUONG_DAN_GD8.md` va `KICH_BAN_KIEM_THU_GD8.md`.
+
+**Thanh toan:** Dang mo phong quy trinh COD/chuyen khoan doi soat thu cong, khong co cong thanh toan that; `thanh_toan.trang_thai=CHO_XU_LY` den khi Admin xac nhan tien THUC SU da nhan. Chua kiem thu Maven + SQL Server thuc te trong moi truong tao ma.
+
+---
+
 # BeautIcon — Admin web bán vòng tay nữ (Giai đoạn 1–6)
 
 ## Phạm vi
@@ -114,6 +133,50 @@ src/main/resources/templates/admin/people/      giao diện CRUD
 TROUBLESHOOT_404.md
 CHANGELOG_GD1_GD4.md                 tài liệu chi tiết các giai đoạn trước
 ```
-=======
-# SD026
->>>>>>> f528d5eab6c1ac4f50d613e47eb557f61dbcbb84
+
+---
+
+## GD7 / Distinctive BeautIcon experience (October 2026)
+
+**New public preview**: `GET /` and `GET /bo-suu-tap` open the actual, database-backed product collection. `GET /san-pham/{id}` opens a product and its available color/size variants. These routes are public GET only; they do not allow visitors to write to the database. Spring Security still protects `/admin/**` and staff actions.
+
+**Scope:** Public browsing and product details are ready as a *read-only showroom*, not a fully implemented customer shop. There is NO customer cart/checkout/login endpoint yet. Avoid claiming otherwise in your demo.
+
+**UI identity:** Warm paper, charcoal and copper; editorial serif display headings; a CSS-only bracelet illustration; branded admin navigation; responsive collapsible staff sidebar; redesigned dashboard and login; accessible focus styles and reduced-motion support. The product cards show real DB images when available. No fake ratings or fabricated testimonials are inserted.
+
+**Images:** The existing Admin image form accepts either HTTPS image URLs or `/uploads/filename.jpg`. GD7 now serves `/uploads/**` as a read-only folder. From the project root:
+
+1. Place your own photos at `uploads/my-bracelet-01.jpg` (or set the `UPLOADS_DIR` environment variable to an absolute existing image folder).
+2. In Admin > Product > Images, enter `/uploads/my-bracelet-01.jpg`.
+3. Reopen the product on `/` to see the photo. A product without an image displays a deliberate bracelet-shaped placeholder, **not** a fabricated product photo.
+
+**SEO basics:** Public pages have individual titles, descriptions, semantic sections and a local favicon. `robots.txt` excludes the admin and login URLs. Set a real domain, actual product content, policies and canonical/sitemap strategy before public deployment.
+
+**No SQL migration in GD7.** Schema stays at 22 tables, so upgrade users of GD6 only need to replace the app code and restart. Existing images and data remain untouched.
+
+### GD7 smoke checks (not full integration)
+
+```bash
+python3 scripts/verify_project.py
+sh scripts/run_java_smoke.sh
+sh scripts/run_showroom_smoke.sh
+node --check src/main/resources/static/js/admin-shell.js
+node --check src/main/resources/static/js/storefront.js
+mvn clean test
+mvn spring-boot:run
+```
+
+The first three commands are lightweight checks (the showroom Java build uses **Spring API stubs** for syntax validation). `mvn clean test` and a running SQL Server are still required to validate the real framework/runtime. This generation environment did not have Maven or a SQL Server instance, so do NOT treat the project as production-tested.
+
+### What to personalize before presenting this as your own graduation project
+
+- Replace the BeautIcon sample visual identity if your store has its own official logo and name.
+- Shoot and use actual bracelet photos (front, side, on-wrist, size reference), with consistent light and camera framing. Avoid synthetic stock photos pretending to be real inventory.
+- Enter honest specifications: bracelet length in cm, materials, plating details, size options and actual stock.
+- Edit every product description into natural Vietnamese based on the physical product; remove generic sales adjectives.
+- Validate the full customer journey with 3-5 actual testers and fix what they find confusing; record design decisions and screenshots of your own tests for the thesis defense.
+- Do not promise online checkout, shipping or warranty until those functions and policies have been implemented.
+
+The `demo/` HTML files are **static visual samples using fabricated demonstration data marked as such**, not connected to SQL Server. Do not copy their sample counts or product names into factual reports.
+
+See `HUONG_DAN_GD7.md` for short troubleshooting and presentation notes.

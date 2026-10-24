@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org"><body>
+<div th:fragment="header">
+  <div class="store-topnote">BEAUTICON STUDIO <span aria-hidden="true">&#183;</span> SMALL DETAILS, PERSONAL STORIES</div>
+  <header class="store-header">
+    <a class="store-brand" th:href="@{/}" aria-label="BeautIcon - Trang ch&#7911;">
+      <span class="brand-mark" aria-hidden="true">b<span>.</span></span>
+      <span class="brand-name">BeautIcon<small>JEWELRY NOTES</small></span>
+    </a>
+    <nav class="store-links" aria-label="Menu c&#7917;a h&#224;ng">
+      <a th:href="@{/}">Trang ch&#7911;</a>
+      <a th:href="@{/bo-suu-tap}">B&#7897; s&#432;u t&#7853;p</a>
+      <a th:href="@{/gio-hang}">Gi&#7887; h&#224;ng <span class="nav-count" th:if="${shopCartCount > 0}" th:text="${shopCartCount}">0</span></a>
+      <a th:if="${shopCustomer == null}" th:href="@{/dang-nhap}">&#272;&#259;ng nh&#7853;p</a>
+      <a th:if="${shopCustomer != null}" th:href="@{/tai-khoan}">T&#224;i kho&#7843;n</a>
+    </nav>
+  </header>
+</div>
+</body></html>

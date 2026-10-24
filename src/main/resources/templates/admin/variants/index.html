@@ -1,79 +1,30 @@
-<!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Biến thể sản phẩm • BeautIcon</title>
-    <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Biến thể sản phẩm • BeautIcon</title>
+<link rel="stylesheet" th:href="@{/css/admin-catalog.css}">  <link rel="stylesheet" th:href="@{/css/admin-brand.css}">
+  <script defer th:src="@{/js/admin-shell.js}"></script>
+<link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
-<body>
-<div class="app">
-    <aside th:replace="~{admin/fragments/nav :: menu('products')}"></aside>
-    <main>
-        <div class="breadcrumb"><a th:href="@{/admin/san-pham}">Sản phẩm</a><span>/</span><span
-                th:text="${product.tenSanPham}">Vòng tay</span><span>/</span>Biến thể
-        </div>
-        <div class="top">
-            <div><h1>Quản lý biến thể</h1>
-                <div class="hint">Mỗi cặp màu + kích thước chỉ có một bản ghi trong một sản phẩm.</div>
-            </div>
-            <a class="btn" th:if="${isAdmin}" th:href="@{/admin/san-pham/{p}/bien-the/them(p=${product.idSanPham})}">＋
-                Thêm biến thể</a></div>
-        <div class="notice" th:if="${success}" th:text="${success}"></div>
-        <section class="panel"><h2 th:text="${product.tenSanPham}">Vòng tay</h2>
-            <p class="hint">Giá và tồn kho được quản lý ở đây. Ẩn biến thể sẽ ngừng bán nhưng vẫn giữ lịch sử đã
-                mua.</p>
-            <div class="table-scroll">
-                <table class="compact">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Màu</th>
-                        <th>Kích thước</th>
-                        <th>Giá bán (₫)</th>
-                        <th>Tồn kho</th>
-                        <th>Trạng thái</th>
-                        <th>Thao tác</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="item : ${items}">
-                        <td th:text="|#${item.variant.idBienThe}|">#1</td>
-                        <td th:text="${item.color}">Bạc</td>
-                        <td th:text="${item.size}">16 cm</td>
-                        <td class="num"
-                            th:text="${#numbers.formatDecimal(item.variant.giaBan, 1, 'POINT', 0, 'COMMA')}">249000
-                        </td>
-                        <td><span class="pill" th:classappend="${item.variant.soLuongTon <= 5} ? ' low' : ''"
-                                  th:text="${item.variant.soLuongTon}">0</span></td>
-                        <td><span class="pill" th:classappend="${item.variant.trangThai} ? ' on' : ' off'"
-                                  th:text="${item.variant.trangThai} ? 'Đang bán' : 'Đã ẩn'">Đang bán</span></td>
-                        <td>
-                            <div class="actions"><a class="btn tiny secondary" th:if="${isAdmin}"
-                                                    th:href="@{/admin/san-pham/{p}/bien-the/{id}/sua(p=${product.idSanPham},id=${item.variant.idBienThe})}">Sửa</a>
-                                <form method="post" th:if="${isAdmin}"
-                                      th:action="@{/admin/san-pham/{p}/bien-the/{id}/trang-thai(p=${product.idSanPham},id=${item.variant.idBienThe})}">
-                                    <input type="hidden" name="active" th:value="${!item.variant.trangThai}">
-                                    <button class="tiny"
-                                            th:classappend="${item.variant.trangThai} ? ' danger' : ' secondary'"
-                                            type="submit" th:text="${item.variant.trangThai} ? 'Ẩn' : 'Khôi phục'">Ẩn
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(items)}">
-                        <td colspan="7" class="empty">Sản phẩm chưa có biến thể. Nhấn “Thêm biến thể” để đặt giá bán.
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="buttons"><a class="btn secondary" th:href="@{/admin/san-pham}">← Danh sách sản phẩm</a>
-                <a class="btn secondary" th:href="@{/admin/san-pham/{id}/hinh-anh(id=${product.idSanPham})}">Quản lý
-                    hình ảnh</a></div>
-        </section>
-    </main>
-</div>
-</body>
-</html>
+<body><div class="app"><aside th:replace="~{admin/fragments/nav :: menu('products')}"></aside><main>
+  <div class="breadcrumb"><a th:href="@{/admin/san-pham}">Sản phẩm</a><span>/</span><span th:text="${product.tenSanPham}">Vòng tay</span><span>/</span>Biến thể</div>
+  <div class="top"><div><h1>Quản lý biến thể</h1></div>
+    <a class="btn" th:if="${isAdmin}" th:href="@{/admin/san-pham/{p}/bien-the/them(p=${product.idSanPham})}">＋ Thêm biến thể</a></div>
+  <div class="notice" th:if="${success}" th:text="${success}"></div>
+  <section class="panel"><h2 th:text="${product.tenSanPham}">Vòng tay</h2>
+    
+    <div class="table-scroll"><table class="compact"><thead><tr><th>ID</th><th>Màu</th><th>Kích thước</th><th>Giá bán (₫)</th><th>Tồn kho</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody>
+      <tr th:each="item : ${items}">
+        <td th:text="|#${item.variant.idBienThe}|">#1</td>
+        <td th:text="${item.color}">Bạc</td><td th:text="${item.size}">16 cm</td>
+        <td class="num" th:text="${#numbers.formatDecimal(item.variant.giaBan, 1, 'POINT', 0, 'COMMA')}">249000</td>
+        <td><span class="pill" th:classappend="${item.variant.soLuongTon <= 5} ? ' low' : ''" th:text="${item.variant.soLuongTon}">0</span></td>
+        <td><span class="pill" th:classappend="${item.variant.trangThai} ? ' on' : ' off'" th:text="${item.variant.trangThai} ? 'Đang bán' : 'Đã ẩn'">Đang bán</span></td>
+        <td><div class="actions"><a class="btn tiny secondary" th:if="${isAdmin}" th:href="@{/admin/san-pham/{p}/bien-the/{id}/sua(p=${product.idSanPham},id=${item.variant.idBienThe})}">Sửa</a>
+          <form method="post" th:if="${isAdmin}" th:action="@{/admin/san-pham/{p}/bien-the/{id}/trang-thai(p=${product.idSanPham},id=${item.variant.idBienThe})}">
+            <input type="hidden" name="active" th:value="${!item.variant.trangThai}">
+            <button class="tiny" th:classappend="${item.variant.trangThai} ? ' danger' : ' secondary'" type="submit" th:text="${item.variant.trangThai} ? 'Ẩn' : 'Khôi phục'">Ẩn</button></form>
+        </div></td>
+      </tr><tr th:if="${#lists.isEmpty(items)}"><td colspan="7" class="empty">Sản phẩm chưa có biến thể. Nhấn “Thêm biến thể” để đặt giá bán.</td></tr>
+    </tbody></table></div><div class="buttons"><a class="btn secondary" th:href="@{/admin/san-pham}">← Danh sách sản phẩm</a>
+      <a class="btn secondary" th:href="@{/admin/san-pham/{id}/hinh-anh(id=${product.idSanPham})}">Quản lý hình ảnh</a></div>
+  </section>
+</main></div></body></html>

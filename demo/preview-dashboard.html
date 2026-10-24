@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Tổng quan kinh doanh | BeautIcon Retail</title>
+<link href="../src/main/resources/static/css/admin-catalog.css" rel="stylesheet" th:href="@{/css/admin-catalog.css}"/>
+<link href="../src/main/resources/static/css/admin-dashboard.css" rel="stylesheet" th:href="@{/css/admin-dashboard.css}"/>
+<link href="../src/main/resources/static/css/admin-brand.css" rel="stylesheet" th:href="@{/css/admin-brand.css}"/>
+<script defer="" src="../src/main/resources/static/js/admin-shell.js" th:src="@{/js/admin-shell.js}"></script><link href="#collection" rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
+</head>
+<body><div style="position:fixed;z-index:100;background:#72523c;color:#fff;right:0;top:0;padding:5px 10px;font:11px 'Times New Roman',serif;letter-spacing:.08em">DEMO GIAO DIEN / DU LIEU MINH HOA</div><div class="app">
+<aside aria-label="Điều hướng quản trị" class="sidebar" th:fragment="menu(active)">
+<div class="sidebar-heading">
+<a aria-label="BeautIcon - Tổng quan quản trị" class="brand" href="#collection" th:href="@{/admin/dashboard}">
+<span aria-hidden="true" class="admin-monogram">b<span>.</span></span>
+<span class="brand-copy"><strong>BeautIcon</strong><small>RETAIL WORKSPACE</small></span>
+</a>
+<button aria-controls="admin-sidebar-links" aria-expanded="false" class="mobile-menu-toggle" id="admin-menu-toggle" type="button">Menu <span aria-hidden="true">☰</span></button>
+</div>
+<div class="sidebar-nav" id="admin-sidebar-links">
+<nav aria-label="Các chức năng quản trị">
+<div class="nav-label">KHÔNG GIAN LÀM VIỆC</div>
+<a href="#collection" th:classappend="${active == 'dashboard'} ? ' active' : ''" th:href="@{/admin/dashboard}"><span aria-hidden="true" class="nav-icon">▦</span> Tổng quan</a>
+<div class="nav-label">HÀNG HÓA</div>
+<a href="#collection" th:classappend="${active == 'products'} ? ' active' : ''" th:href="@{/admin/san-pham}"><span aria-hidden="true" class="nav-icon">◇</span> Sản phẩm &amp; biến thể</a>
+<details class="nav-subgroup" th:attr="open=${active == 'attributes'} ? 'open' : null">
+<summary><span aria-hidden="true" class="nav-icon">☰</span> Thuộc tính <span aria-hidden="true" class="summary-arrow">⌄</span></summary>
+<div class="nav-subitems">
+<a class="sub" href="#collection" th:href="@{/admin/thuoc-tinh/loai}">Loại sản phẩm</a>
+<a class="sub" href="#collection" th:href="@{/admin/thuoc-tinh/mau-sac}">Màu sắc</a>
+<a class="sub" href="#collection" th:href="@{/admin/thuoc-tinh/kich-thuoc}">Kích thước</a>
+<a class="sub" href="#collection" th:href="@{/admin/thuoc-tinh/chat-lieu}">Chất liệu</a>
+<a class="sub" href="#collection" th:href="@{/admin/thuoc-tinh/thuong-hieu}">Thương hiệu</a>
+<a class="sub" href="#collection" th:href="@{/admin/thuoc-tinh/nha-cung-cap}">Nhà cung cấp</a>
+</div>
+</details>
+<div class="nav-label">BÁN HÀNG</div>
+<a href="#collection" th:classappend="${active == 'pos'} ? ' active' : ''" th:href="@{/admin/ban-tai-quay}"><span aria-hidden="true" class="nav-icon">◦</span> Bán tại quầy</a>
+<a href="#collection" th:classappend="${active == 'online'} ? ' active' : ''" th:href="@{/admin/don-hang-online}"><span aria-hidden="true" class="nav-icon">→</span> Đơn hàng online</a>
+<a href="#collection" th:classappend="${active == 'invoices'} ? ' active' : ''" th:href="@{/admin/hoa-don}"><span aria-hidden="true" class="nav-icon">▣</span> Hóa đơn</a>
+<a href="#collection" th:classappend="${active == 'promotions'} ? ' active' : ''" th:href="@{/admin/khuyen-mai}"><span aria-hidden="true" class="nav-icon">%</span> Khuyến mãi</a>
+<a href="#collection" th:classappend="${active == 'vouchers'} ? ' active' : ''" th:href="@{/admin/voucher}"><span aria-hidden="true" class="nav-icon">◆</span> Voucher</a>
+<div class="nav-label">NGƯỜI DÙNG</div>
+<a href="#collection" th:classappend="${active == 'customers'} ? ' active' : ''" th:href="@{/admin/khach-hang}"><span aria-hidden="true" class="nav-icon">◎</span> Khách hàng</a>
+<a href="#collection" th:classappend="${active == 'staff'} ? ' active' : ''" th:href="@{/admin/nhan-vien}" th:if="${isAdmin}"><span aria-hidden="true" class="nav-icon">☯</span> Nhân viên</a>
+</nav>
+<div class="sidebar-foot">
+<a class="view-store" href="#collection" th:href="@{/}"><span aria-hidden="true" class="nav-icon">↗</span> Xem trang cửa hàng</a>
+<div class="signed-in" th:if="${signedInStaff != null}">
+<span aria-hidden="true" class="signed-avatar">B</span>
+<div class="signed-copy"><strong th:text="${signedInStaff.fullName()}">Nhân viên</strong><small th:text="${isAdmin ? 'Quản lý cửa hàng' : 'Nhân viên'}">Vai trò</small></div>
+<form method="post" th:action="@{/logout}"><button aria-label="Đăng xuất" class="logout-btn" type="submit">→</button></form>
+</div>
+</div>
+</div>
+</aside>
+<main class="dashboard-page" id="main-content">
+<header class="dash-welcome">
+<div><p class="eyebrow">BEAUTICON / RETAIL OVERVIEW</p>
+<h1>Nhịp sống cửa hàng<span class="dash-dot">.</span></h1>
+<p class="dash-subline">Một góc nhìn rõ ràng về bán hàng, đơn đặt và hàng tồn — trên cùng một trang.</p>
+</div>
+<div aria-hidden="true" class="dash-stamp"><span>BEAUTICON</span><strong>B<span>.</span></strong><small>RETAIL NOTES</small></div>
+</header>
+<section aria-label="Khoảng ngày thống kê" class="dash-date-card">
+<div class="date-card-label"><span aria-hidden="true" class="date-card-icon">◷</span><div>
+<strong>Khoảng thời gian báo cáo</strong>
+<small>Doanh thu theo ngày thanh toán; đơn hàng theo ngày đặt (giờ Việt Nam).</small>
+</div></div>
+<form class="dash-filter" method="get" th:action="@{/admin/dashboard}">
+<label class="field">Từ ngày <input name="from" required="" th:value="${from}" type="date"/></label>
+<label class="field">Đến ngày <input name="to" required="" th:value="${to}" type="date"/></label>
+<button type="submit">Xem báo cáo <span aria-hidden="true">→</span></button>
+</form>
+</section>
+<div class="notice error" th:if="${error}" th:text="${error}"></div>
+<section aria-label="Số liệu nổi bật" class="dash-hero-metrics">
+<article class="metric metric-feature"><div class="metric-overline">01 / DÒNG TIỀN</div>
+<p class="metric-name">Doanh thu thực thu</p>
+<strong class="metric-value" th:text="${stats.revenue}">18.450.000 ₫</strong>
+<p class="metric-foot">Đã trừ các khoản hoàn tiền thành công.</p>
+<span aria-hidden="true" class="metric-watermark">b.</span></article>
+<article class="metric"><div class="metric-overline">02 / ĐƠN HÀNG</div><p class="metric-name">Đơn đã tạo</p>
+<strong class="metric-value" th:text="${stats.totalOrders}">67</strong><p class="metric-foot">Tổng đơn trong khoảng đã chọn.</p></article>
+<article class="metric"><div class="metric-overline">03 / HOÀN THÀNH</div><p class="metric-name">Đơn hoàn tất</p>
+<strong class="metric-value" th:text="${stats.completed}">42</strong><p class="metric-foot">Đã được xử lý thành công.</p></article>
+<article class="metric metric-warning"><div class="metric-overline">04 / TỒN KHO</div><p class="metric-name">Biến thể sắp hết</p>
+<strong class="metric-value" th:text="${stats.lowStock}">6</strong>
+<p class="metric-foot">Còn 5 chiếc trở xuống, trên toàn cửa hàng.</p>
+<a class="metric-link" href="#collection" th:href="@{/admin/san-pham}">Kiểm tra sản phẩm →</a></article>
+</section>
+<section aria-label="Số liệu bổ sung" class="dash-secondary-metrics">
+<div><small>DOANH THU ONLINE</small><strong th:text="${stats.onlineRevenue}">11.820.000 ₫</strong></div>
+<div><small>DOANH THU TẠI QUẦY</small><strong th:text="${stats.offlineRevenue}">6.630.000 ₫</strong></div>
+<div><small>KHÁCH HÀNG MỚI</small><strong th:text="${stats.newCustomers}">19</strong></div>
+<div><small>ĐƠN ĐÃ HỦY</small><strong th:text="${stats.cancelled}">3</strong></div>
+</section>
+<section class="dash-two dash-analytics">
+<article class="panel dash-panel dash-revenue-chart">
+<div class="dash-panel-head"><div><p class="dash-panel-kicker">THỊ TRƯỜNG / THEO NGÀY</p><h2>Dòng doanh thu</h2></div>
+<span class="subtle-marker">VND / THEO NGÀY</span></div>
+<div aria-label="Biểu đồ doanh thu các ngày trong khoảng chọn" class="dash-bars" role="img">
+<div class="dash-bar-col" th:each="b : ${chart}" th:title="${b.label + ': ' + b.amount}">
+<div class="dash-bar" style="height:26%" th:style="|height: ${b.height}%|"></div><small th:text="${b.label}">16/10</small>
+</div>
+<div class="dash-bar-col" th:each="b : ${chart}" th:title="${b.label + ': ' + b.amount}">
+<div class="dash-bar" style="height:39%" th:style="|height: ${b.height}%|"></div><small th:text="${b.label}">17/10</small>
+</div><div class="dash-bar-col" th:each="b : ${chart}" th:title="${b.label + ': ' + b.amount}">
+<div class="dash-bar" style="height:64%" th:style="|height: ${b.height}%|"></div><small th:text="${b.label}">18/10</small>
+</div><div class="dash-bar-col" th:each="b : ${chart}" th:title="${b.label + ': ' + b.amount}">
+<div class="dash-bar" style="height:42%" th:style="|height: ${b.height}%|"></div><small th:text="${b.label}">19/10</small>
+</div><div class="dash-bar-col" th:each="b : ${chart}" th:title="${b.label + ': ' + b.amount}">
+<div class="dash-bar" style="height:80%" th:style="|height: ${b.height}%|"></div><small th:text="${b.label}">20/10</small>
+</div><div class="dash-bar-col" th:each="b : ${chart}" th:title="${b.label + ': ' + b.amount}">
+<div class="dash-bar" style="height:58%" th:style="|height: ${b.height}%|"></div><small th:text="${b.label}">21/10</small>
+</div><div class="dash-bar-col" th:each="b : ${chart}" th:title="${b.label + ': ' + b.amount}">
+<div class="dash-bar" style="height:100%" th:style="|height: ${b.height}%|"></div><small th:text="${b.label}">22/10</small>
+</div></div>
+<div class="dash-legend">Di chuột lên cột để xem số tiền. Giá trị âm do hoàn tiền không được vẽ bằng cột âm.</div>
+</article>
+<article class="panel dash-panel dash-status-panel">
+<div class="dash-panel-head"><div><p class="dash-panel-kicker">VẬN HÀNH / TRẠNG THÁI</p><h2>Đơn hàng đang ở đâu?</h2></div></div>
+<div class="dash-status-grid">
+<a class="dash-status-item" href="#collection" th:href="@{/admin/don-hang-online(status='CHUA_XU_LY')}"><span class="status-indicator status-pending"></span><span>Chưa xử lý</span><strong th:text="${stats.pending}">12</strong></a>
+<a class="dash-status-item" href="#collection" th:href="@{/admin/don-hang-online(status='DANG_XU_LY')}"><span class="status-indicator status-processing"></span><span>Đang xử lý</span><strong th:text="${stats.processing}">7</strong></a>
+<a class="dash-status-item" href="#collection" th:href="@{/admin/don-hang-online(status='DA_XU_LY')}"><span class="status-indicator status-processed"></span><span>Đã xử lý</span><strong th:text="${stats.processed}">6</strong></a>
+<a class="dash-status-item" href="#collection" th:href="@{/admin/hoa-don}"><span class="status-indicator status-completed"></span><span>Hoàn tất</span><strong th:text="${stats.completed}">42</strong></a>
+</div>
+<div class="dash-task-cta"><small>THAO TÁC NHANH</small>
+<a href="#collection" th:href="@{/admin/ban-tai-quay}">Tạo hóa đơn tại quầy <span aria-hidden="true">↗</span></a></div>
+</article>
+</section>
+<section class="dash-two dash-lists">
+<article class="panel dash-panel">
+<div class="dash-panel-head"><div><p class="dash-panel-kicker">GẦN ĐÂY NHẤT</p><h2>Đơn hàng mới</h2></div><a class="dash-all-link" href="#collection" th:href="@{/admin/don-hang-online}">Xem tất cả →</a></div>
+<div class="table-scroll"><table><thead><tr><th>Mã</th><th>Khách hàng</th><th>Kênh</th><th>Trạng thái</th><th>Thành tiền</th></tr></thead>
+<tbody><tr th:each="o : ${recentOrders}"><td><a href="#collection" th:href="${o.channel == 'ONLINE'} ? @{/admin/don-hang-online/{id}(id=${o.id})} : @{/admin/hoa-don/{id}(id=${o.id})}" th:text="|#${o.id}|">#121</a></td>
+<td><strong th:text="${o.customer}">Khach hang 1</strong><small th:text="${o.date}">24/10/2026</small></td>
+<td>Tai quay</td>
+<td><span class="pill" th:classappend="${o.status}" th:text="${o.statusLabel}">Hoan thanh</span></td>
+<td class="num" th:text="${o.total}">420.000 ₫</td></tr>
+<tr th:each="o : ${recentOrders}"><td><a href="#collection" th:href="${o.channel == 'ONLINE'} ? @{/admin/don-hang-online/{id}(id=${o.id})} : @{/admin/hoa-don/{id}(id=${o.id})}" th:text="|#${o.id}|">#120</a></td>
+<td><strong th:text="${o.customer}">Khach hang 2</strong><small th:text="${o.date}">24/10/2026</small></td>
+<td>Online</td>
+<td><span class="pill" th:classappend="${o.status}" th:text="${o.statusLabel}">Hoan thanh</span></td>
+<td class="num" th:text="${o.total}">280.000 ₫</td></tr><tr th:each="o : ${recentOrders}"><td><a href="#collection" th:href="${o.channel == 'ONLINE'} ? @{/admin/don-hang-online/{id}(id=${o.id})} : @{/admin/hoa-don/{id}(id=${o.id})}" th:text="|#${o.id}|">#119</a></td>
+<td><strong th:text="${o.customer}">Khach hang 3</strong><small th:text="${o.date}">24/10/2026</small></td>
+<td>Tai quay</td>
+<td><span class="pill" th:classappend="${o.status}" th:text="${o.statusLabel}">Hoan thanh</span></td>
+<td class="num" th:text="${o.total}">590.000 ₫</td></tr><tr th:each="o : ${recentOrders}"><td><a href="#collection" th:href="${o.channel == 'ONLINE'} ? @{/admin/don-hang-online/{id}(id=${o.id})} : @{/admin/hoa-don/{id}(id=${o.id})}" th:text="|#${o.id}|">#118</a></td>
+<td><strong th:text="${o.customer}">Khach hang 4</strong><small th:text="${o.date}">24/10/2026</small></td>
+<td>Online</td>
+<td><span class="pill" th:classappend="${o.status}" th:text="${o.statusLabel}">Hoan thanh</span></td>
+<td class="num" th:text="${o.total}">320.000 ₫</td></tr></tbody></table></div>
+</article>
+<article class="panel dash-panel">
+<div class="dash-panel-head"><div><p class="dash-panel-kicker">KHÁCH ĐANG CHỌN GÌ?</p><h2>5 mẫu bán chạy</h2></div></div>
+<div class="table-scroll"><table class="dash-top-products"><thead><tr><th>#</th><th>Thiết kế</th><th>SL</th><th>Tiền hàng</th></tr></thead>
+<tbody><tr th:each="p,idx : ${topProducts}"><td th:text="${idx.count}">1</td>
+<td><a href="#collection" th:href="@{/admin/san-pham/{id}/bien-the(id=${p.id})}" th:text="${p.name}">Dawn / 01</a></td>
+<td class="num" th:text="${p.quantity}">9</td><td class="num" th:text="${p.gross}">2610.000 ₫</td></tr>
+<tr th:each="p,idx : ${topProducts}"><td th:text="${idx.count}">2</td>
+<td><a href="#collection" th:href="@{/admin/san-pham/{id}/bien-the(id=${p.id})}" th:text="${p.name}">Bloom / 03</a></td>
+<td class="num" th:text="${p.quantity}">7</td><td class="num" th:text="${p.gross}">1855.000 ₫</td></tr><tr th:each="p,idx : ${topProducts}"><td th:text="${idx.count}">3</td>
+<td><a href="#collection" th:href="@{/admin/san-pham/{id}/bien-the(id=${p.id})}" th:text="${p.name}">Iris / 05</a></td>
+<td class="num" th:text="${p.quantity}">6</td><td class="num" th:text="${p.gross}">1320.000 ₫</td></tr><tr th:each="p,idx : ${topProducts}"><td th:text="${idx.count}">4</td>
+<td><a href="#collection" th:href="@{/admin/san-pham/{id}/bien-the(id=${p.id})}" th:text="${p.name}">Muse / 06</a></td>
+<td class="num" th:text="${p.quantity}">5</td><td class="num" th:text="${p.gross}">2050.000 ₫</td></tr></tbody></table></div>
+<p class="dash-table-note">Xếp theo số lượng trong đơn hoàn thành, theo ngày đặt.</p>
+</article>
+</section>
+<footer class="dash-footer">BEAUTICON RETAIL   /   Báo cáo chỉ dùng dữ liệu từ hệ thống.</footer>
+</main></div></body></html>

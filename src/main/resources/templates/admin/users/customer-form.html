@@ -1,0 +1,20 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Biểu mẫu khách hàng • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}">  <link rel="stylesheet" th:href="@{/css/admin-brand.css}">
+  <script defer th:src="@{/js/admin-shell.js}"></script>
+<link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body><div class="app"><aside th:replace="~{admin/fragments/nav :: menu('customers')}"></aside><main>
+<div class="top"><div><p class="eyebrow">CRM / Khách hàng</p><h1 th:text="${customerId == null ? 'Thêm khách hàng' : 'Sửa khách hàng'}">Khách hàng</h1></div>
+<a class="btn secondary" th:href="@{/admin/khach-hang}">← Danh sách</a></div>
+<div class="notice error" th:if="${error}" th:text="${error}"></div>
+<section class="panel"><form method="post" th:object="${form}"
+ th:action="${customerId == null} ? @{/admin/khach-hang/them} : @{/admin/khach-hang/{id}/sua(id=${customerId})}">
+<div class="grid">
+<label class="field">Họ tên *<input th:field="*{hoTen}" required minlength="2" maxlength="150"></label>
+<label class="field">Email<input th:field="*{email}" type="email" maxlength="254" placeholder="Không bắt buộc nếu có SĐT"></label>
+<label class="field">Số điện thoại<input th:field="*{sdt}" maxlength="20" placeholder="Không bắt buộc nếu có email"></label>
+<label class="field">Ngày sinh<input th:field="*{ngaySinh}" type="date"></label></div>
+<div class="buttons"><button type="submit">Lưu khách hàng</button><a class="btn secondary" th:href="@{/admin/khach-hang}">Hủy</a></div>
+</form></section>
+</main></div></body></html>
