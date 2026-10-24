@@ -13,8 +13,9 @@
         <div class="top">
             <div><p class="eyebrow">Ban hang / POS</p>
                 <h1>B&#225;n h&#224;ng t&#7841;i qu&#7847;y</h1>
-                <p class="hint">Ch&#7885;n v&#242;ng tay, &#225;p d&#7909;ng khuy&#7871;n m&#227;i + voucher, thu ti&#7873;n
-                    v&#224; t&#7841;o h&#243;a &#273;&#417;n.</p></div>
+<!--                <p class="hint">Ch&#7885;n v&#242;ng tay, &#225;p d&#7909;ng khuy&#7871;n m&#227;i + voucher, thu ti&#7873;n-->
+<!--                    v&#224; t&#7841;o h&#243;a &#273;&#417;n.</p>-->
+            </div>
             <a class="btn secondary" th:href="@{/admin/dashboard}">Dashboard</a></div>
         <div class="notice error" th:if="${error}" th:text="${error}"></div>
         <form id="posForm" method="post" th:action="@{/admin/ban-tai-quay/tao}"
@@ -24,8 +25,8 @@
             <div class="pos-grid">
                 <section class="panel">
                     <h2>1. Ch&#7885;n s&#7843;n ph&#7849;m</h2>
-                    <p class="hint">Gi&#225; hi&#7875;n th&#7883; &#273;&#227; t&#237;nh khuy&#7871;n m&#227;i &#273;ang
-                        hi&#7879;u l&#7921;c. Ch&#7881; b&#225;n bi&#7871;n th&#7875; c&#242;n h&#224;ng.</p>
+<!--                    <p class="hint">Gi&#225; hi&#7875;n th&#7883; &#273;&#227; t&#237;nh khuy&#7871;n m&#227;i &#273;ang-->
+<!--                        hi&#7879;u l&#7921;c. Ch&#7881; b&#225;n bi&#7871;n th&#7875; c&#242;n h&#224;ng.</p>-->
                     <div class="toolbar"><input type="search" id="variantSearch"
                                                 placeholder="Tim ten vong tay / mau / size..."
                                                 aria-label="Tim bien the">
@@ -73,7 +74,7 @@
                         </option>
                     </select></label>
                     <label class="field">M&#227; voucher<input type="text" th:field="*{voucherCode}"
-                                                               placeholder="VD: WELCOME10" maxlength="40"></label>
+                                                               placeholder="" maxlength="40"></label>
                     <label class="field">Ph&#432;&#417;ng th&#7913;c thanh to&#225;n *<select
                             th:field="*{paymentMethod}" id="paymentMethod">
                         <option value="TIEN_MAT">Ti&#7873;n m&#7863;t</option>
@@ -93,14 +94,14 @@
                     <div class="pos-total"><span>T&#7893;ng c&#7847;n thanh to&#225;n</span><strong id="previewTotal">0
                         VND</strong></div>
                     <p id="quoteError" class="notice error" style="display:none" role="alert"></p>
-                    <p class="hint">S&#7889; ti&#7873;n xem tr&#432;&#7899;c do m&#225;y ch&#7911; t&#237;nh. Khi ho&#224;n
-                        t&#7845;t s&#7869; ki&#7875;m tra l&#7841;i t&#7891;n kho, gi&#225; v&#224; h&#7841;n
-                        voucher.</p>
+<!--                    <p class="hint">S&#7889; ti&#7873;n xem tr&#432;&#7899;c do m&#225;y ch&#7911; t&#237;nh. Khi ho&#224;n-->
+<!--                        t&#7845;t s&#7869; ki&#7875;m tra l&#7841;i t&#7891;n kho, gi&#225; v&#224; h&#7841;n-->
+<!--                        voucher.</p>-->
                     <button id="checkoutButton" class="btn" type="submit" style="width:100%">Ho&#224;n t&#7845;t &amp;
                         xu&#7845;t h&#243;a &#273;&#417;n
                     </button>
-                    <p class="hint">H&#243;a &#273;&#417;n t&#7841;o ra s&#7869; c&#243; k&#234;nh OFFLINE v&#224; tr&#7841;ng
-                        th&#225;i HOAN_THANH.</p>
+<!--                    <p class="hint">H&#243;a &#273;&#417;n t&#7841;o ra s&#7869; c&#243; k&#234;nh OFFLINE v&#224; tr&#7841;ng-->
+<!--                        th&#225;i HOAN_THANH.</p>-->
                 </section>
             </div>
         </form>

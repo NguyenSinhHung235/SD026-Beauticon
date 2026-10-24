@@ -1,25 +1,72 @@
-<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Khách hàng • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}"></head>
-<body><div class="app"><aside th:replace="~{admin/fragments/nav :: menu('customers')}"></aside><main>
-<div class="top"><div><p class="eyebrow">Khách hàng / CRM</p><h1>Quản lý khách hàng</h1>
-<p class="hint">Hồ sơ, địa chỉ giao hàng và các đơn đã mua.</p></div>
-<a class="btn" th:href="@{/admin/khach-hang/them}">＋ Thêm khách hàng</a></div>
-<div class="notice" th:if="${success}" th:text="${success}"></div><div class="notice error" th:if="${error}" th:text="${error}"></div>
-<section class="panel"><form class="toolbar" method="get" th:action="@{/admin/khach-hang}">
-<input type="search" name="q" maxlength="80" th:value="${listing.query}" placeholder="Tìm tên, email, số điện thoại...">
-<button>Lọc</button><a class="btn secondary" th:href="@{/admin/khach-hang}">Xóa lọc</a></form>
-<p class="hint" th:text="|Tổng ${listing.count} khách hàng|">0 khách</p>
-<div class="table-scroll"><table><thead><tr><th>ID</th><th>Họ tên</th><th>Email</th><th>Số điện thoại</th><th>Số đơn</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
-<tbody><tr th:each="c : ${listing.rows}">
-<td th:text="|#${c.id}|">#1</td><td><strong th:text="${c.name}">Tên</strong></td><td th:text="${c.email ?: '—'}">Email</td>
-<td th:text="${c.phone ?: '—'}">SDT</td><td class="num" th:text="${c.orderCount}">0</td>
-<td><span class="pill" th:classappend="${c.active} ? ' on' : ' off'" th:text="${c.active} ? 'Đang hoạt động' : 'Đã ẩn'"></span></td>
-<td><div class="actions"><a class="btn tiny secondary" th:href="@{/admin/khach-hang/{id}(id=${c.id})}">Chi tiết</a>
-<a class="btn tiny secondary" th:href="@{/admin/khach-hang/{id}/sua(id=${c.id})}">Sửa</a></div></td>
-</tr><tr th:if="${#lists.isEmpty(listing.rows)}"><td colspan="7" class="empty">Không tìm thấy khách hàng.</td></tr></tbody></table></div>
-<div class="pagination" th:if="${listing.pages > 1}">
-<a class="btn tiny secondary" th:if="${listing.page > 1}" th:href="@{/admin/khach-hang(q=${listing.query},page=${listing.page - 1})}">← Trước</a>
-<span th:text="|Trang ${listing.page}/${listing.pages}|"></span>
-<a class="btn tiny secondary" th:if="${listing.page < listing.pages}" th:href="@{/admin/khach-hang(q=${listing.query},page=${listing.page + 1})}">Tiếp →</a></div>
-</section></main></div></body></html>
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Khách hàng • BeautIcon</title>
+    <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+</head>
+<body>
+<div class="app">
+    <aside th:replace="~{admin/fragments/nav :: menu('customers')}"></aside>
+    <main>
+        <div class="top">
+            <div><p class="eyebrow">Khách hàng / CRM</p>
+                <h1>Quản lý khách hàng</h1>
+<!--                <p class="hint">Hồ sơ, địa chỉ giao hàng và các đơn đã mua.</p></div>-->
+            <a class="btn" th:href="@{/admin/khach-hang/them}">＋ Thêm khách hàng</a></div>
+        <div class="notice" th:if="${success}" th:text="${success}"></div>
+        <div class="notice error" th:if="${error}" th:text="${error}"></div>
+        <section class="panel">
+            <form class="toolbar" method="get" th:action="@{/admin/khach-hang}">
+                <input type="search" name="q" maxlength="80" th:value="${listing.query}"
+                       placeholder="Tìm tên, email, số điện thoại...">
+                <button>Lọc</button>
+                <a class="btn secondary" th:href="@{/admin/khach-hang}">Xóa lọc</a></form>
+            <p class="hint" th:text="|Tổng ${listing.count} khách hàng|">0 khách</p>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>Số điện thoại</th>
+                        <th>Số đơn</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="c : ${listing.rows}">
+                        <td th:text="|#${c.id}|">#1</td>
+                        <td><strong th:text="${c.name}">Tên</strong></td>
+                        <td th:text="${c.email ?: '—'}">Email</td>
+                        <td th:text="${c.phone ?: '—'}">SDT</td>
+                        <td class="num" th:text="${c.orderCount}">0</td>
+                        <td><span class="pill" th:classappend="${c.active} ? ' on' : ' off'"
+                                  th:text="${c.active} ? 'Đang hoạt động' : 'Đã ẩn'"></span></td>
+                        <td>
+                            <div class="actions"><a class="btn tiny secondary"
+                                                    th:href="@{/admin/khach-hang/{id}(id=${c.id})}">Chi tiết</a>
+                                <a class="btn tiny secondary"
+                                   th:href="@{/admin/khach-hang/{id}/sua(id=${c.id})}">Sửa</a></div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(listing.rows)}">
+                        <td colspan="7" class="empty">Không tìm thấy khách hàng.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" th:if="${listing.pages > 1}">
+                <a class="btn tiny secondary" th:if="${listing.page > 1}"
+                   th:href="@{/admin/khach-hang(q=${listing.query},page=${listing.page - 1})}">← Trước</a>
+                <span th:text="|Trang ${listing.page}/${listing.pages}|"></span>
+                <a class="btn tiny secondary" th:if="${listing.page < listing.pages}"
+                   th:href="@{/admin/khach-hang(q=${listing.query},page=${listing.page + 1})}">Tiếp →</a></div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

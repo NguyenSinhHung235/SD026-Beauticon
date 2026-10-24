@@ -1,34 +1,84 @@
-<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nhân viên • BeautIcon</title><link rel="stylesheet" th:href="@{/css/admin-catalog.css}"></head>
-<body><div class="app"><aside th:replace="~{admin/fragments/nav :: menu('staff')}"></aside><main>
-<div class="top"><div><p class="eyebrow">Quản trị / Người dùng nội bộ</p><h1>Quản lý nhân viên</h1>
-<p class="hint">QUAN_LY có toàn quyền; NHAN_VIEN được bán hàng, xử lý đơn và quản lý thông tin khách.</p></div>
-<a class="btn" th:href="@{/admin/nhan-vien/them}">＋ Thêm nhân viên</a></div>
-<div class="notice" th:if="${success}" th:text="${success}"></div><div class="notice error" th:if="${error}" th:text="${error}"></div>
-<section class="panel">
-<form class="toolbar" method="get" th:action="@{/admin/nhan-vien}">
-  <input type="search" name="q" th:value="${listing.query}" placeholder="Tìm tên hoặc email..." maxlength="80">
-  <button>Lọc</button><a class="btn secondary" th:href="@{/admin/nhan-vien}">Xóa lọc</a>
-</form>
-<p class="hint" th:text="|Tổng ${listing.count} nhân viên|">0 nhân viên</p>
-<div class="table-scroll"><table><thead><tr><th>ID</th><th>Nhân viên</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
-<tbody>
-<tr th:each="e : ${listing.rows}">
-  <td class="num" th:text="|#${e.id}|">#1</td><td><strong th:text="${e.name}">Nhân viên</strong></td>
-  <td th:text="${e.email}">email</td><td th:text="${e.role == 'QUAN_LY' ? 'Quản lý' : 'Nhân viên'}">Vai trò</td>
-  <td><span class="pill" th:classappend="${e.active} ? ' on' : ' off'" th:text="${e.active} ? 'Đang hoạt động' : 'Đã khóa'"></span></td>
-  <td><div class="actions"><a class="btn tiny secondary" th:href="@{/admin/nhan-vien/{id}/sua(id=${e.id})}">Sửa / Đặt lại mật khẩu</a>
-    <form method="post" th:action="@{/admin/nhan-vien/{id}/trang-thai(id=${e.id})}" th:if="${e.id != signedInStaff.id()}">
-    <input type="hidden" name="active" th:value="${!e.active}">
-    <button class="tiny" th:classappend="${e.active} ? ' danger' : ' secondary'" type="submit"
-      th:text="${e.active} ? 'Khóa' : 'Mở khóa'" onclick="return confirm('Xác nhận thay đổi trạng thái nhân viên?')">Khóa</button></form>
-  </div></td>
-</tr><tr th:if="${#lists.isEmpty(listing.rows)}"><td colspan="6" class="empty">Chưa có nhân viên phù hợp.</td></tr>
-</tbody></table></div>
-<div class="pagination" th:if="${listing.pages > 1}">
-<a class="btn tiny secondary" th:if="${listing.page > 1}" th:href="@{/admin/nhan-vien(q=${listing.query},page=${listing.page - 1})}">← Trước</a>
-<span th:text="|Trang ${listing.page}/${listing.pages}|"></span>
-<a class="btn tiny secondary" th:if="${listing.page < listing.pages}" th:href="@{/admin/nhan-vien(q=${listing.query},page=${listing.page + 1})}">Tiếp →</a>
-</div><p class="hint">Khóa tài khoản là xóa mềm; hóa đơn và lịch sử xử lý vẫn được giữ nguyên.</p>
-</section></main></div></body></html>
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Nhân viên • BeautIcon</title>
+    <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+</head>
+<body>
+<div class="app">
+    <aside th:replace="~{admin/fragments/nav :: menu('staff')}"></aside>
+    <main>
+        <div class="top">
+            <div><p class="eyebrow">Quản trị / Người dùng nội bộ</p>
+                <h1>Quản lý nhân viên</h1>
+<!--                <p class="hint">QUAN_LY có toàn quyền; NHAN_VIEN được bán hàng, xử lý đơn và quản lý thông tin-->
+<!--                    khách.</p>-->
+            </div>
+            <a class="btn" th:href="@{/admin/nhan-vien/them}">＋ Thêm nhân viên</a></div>
+        <div class="notice" th:if="${success}" th:text="${success}"></div>
+        <div class="notice error" th:if="${error}" th:text="${error}"></div>
+        <section class="panel">
+            <form class="toolbar" method="get" th:action="@{/admin/nhan-vien}">
+                <input type="search" name="q" th:value="${listing.query}" placeholder="Tìm tên hoặc email..."
+                       maxlength="80">
+                <button>Lọc</button>
+                <a class="btn secondary" th:href="@{/admin/nhan-vien}">Xóa lọc</a>
+            </form>
+            <p class="hint" th:text="|Tổng ${listing.count} nhân viên|">0 nhân viên</p>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nhân viên</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="e : ${listing.rows}">
+                        <td class="num" th:text="|#${e.id}|">#1</td>
+                        <td><strong th:text="${e.name}">Nhân viên</strong></td>
+                        <td th:text="${e.email}">email</td>
+                        <td th:text="${e.role == 'QUAN_LY' ? 'Quản lý' : 'Nhân viên'}">Vai trò</td>
+                        <td><span class="pill" th:classappend="${e.active} ? ' on' : ' off'"
+                                  th:text="${e.active} ? 'Đang hoạt động' : 'Đã khóa'"></span></td>
+                        <td>
+                            <div class="actions"><a class="btn tiny secondary"
+                                                    th:href="@{/admin/nhan-vien/{id}/sua(id=${e.id})}">Sửa / Đặt lại mật
+                                khẩu</a>
+                                <form method="post" th:action="@{/admin/nhan-vien/{id}/trang-thai(id=${e.id})}"
+                                      th:if="${e.id != signedInStaff.id()}">
+                                    <input type="hidden" name="active" th:value="${!e.active}">
+                                    <button class="tiny" th:classappend="${e.active} ? ' danger' : ' secondary'"
+                                            type="submit"
+                                            th:text="${e.active} ? 'Khóa' : 'Mở khóa'"
+                                            onclick="return confirm('Xác nhận thay đổi trạng thái nhân viên?')">Khóa
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(listing.rows)}">
+                        <td colspan="6" class="empty">Chưa có nhân viên phù hợp.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" th:if="${listing.pages > 1}">
+                <a class="btn tiny secondary" th:if="${listing.page > 1}"
+                   th:href="@{/admin/nhan-vien(q=${listing.query},page=${listing.page - 1})}">← Trước</a>
+                <span th:text="|Trang ${listing.page}/${listing.pages}|"></span>
+                <a class="btn tiny secondary" th:if="${listing.page < listing.pages}"
+                   th:href="@{/admin/nhan-vien(q=${listing.query},page=${listing.page + 1})}">Tiếp →</a>
+            </div>
+<!--            <p class="hint">Khóa tài khoản là xóa mềm; hóa đơn và lịch sử xử lý vẫn được giữ nguyên.</p>-->
+        </section>
+    </main>
+</div>
+</body>
+</html>
