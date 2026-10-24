@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # BeautIcon — Admin web bán vòng tay nữ (Giai đoạn 1–6)
 
 ## Phạm vi
@@ -113,3 +114,6 @@ src/main/resources/templates/admin/people/      giao diện CRUD
 TROUBLESHOOT_404.md
 CHANGELOG_GD1_GD4.md                 tài liệu chi tiết các giai đoạn trước
 ```
+=======
+# SD026
+>>>>>>> f528d5eab6c1ac4f50d613e47eb557f61dbcbb84
