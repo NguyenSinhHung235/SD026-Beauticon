@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Biến thể • BeautIcon</title>
+  <link rel="stylesheet" th:href="@{/css/admin-catalog.css}">
+  <link rel="stylesheet" th:href="@{/css/admin-brand.css}">
+  <script defer th:src="@{/js/admin-shell.js}"></script>
+  <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body>
+<div class="app">
+  <aside th:replace="~{admin/fragments/nav :: menu('products')}"></aside>
+  <main>
+    <div class="breadcrumb">
+      <a th:href="@{/admin/san-pham}">Sản phẩm</a>
+      <span>/</span>
+      <a th:href="@{/admin/san-pham/{p}/bien-the(p=${productId})}" th:text="${product.tenSanPham}">Vòng tay</a>
+      <span>/</span>
+      <span>Biến thể</span>
+    </div>
+
+    <div class="top">
+      <div>
+        <h1 th:text="${variantId == null} ? 'Thêm biến thể' : 'Sửa biến thể'">Thêm biến thể</h1>
+      </div>
+    </div>
+
+    <div class="notice error" th:if="${error}" th:text="${error}"></div>
+
+    <div class="panel">
+      <form method="post" th:object="${form}"
+            th:action="${variantId == null} ? @{/admin/san-pham/{p}/bien-the/them(p=${productId})} : @{/admin/san-pham/{p}/bien-the/{id}/sua(p=${productId},id=${variantId})}">
+        <input type="hidden" th:field="*{expectedStock}">
+
+        <div class="grid">
+          <label class="field">Màu sắc *
+            <select th:field="*{idMauSac}" required>
+              <option value="">-- Chọn màu --</option>
+              <option th:each="o : ${colors}" th:value="${o.id}" th:text="${o.label + (o.active ? '' : ' (đã ẩn)')}">Bạc</option>
+            </select>
+          </label>
+
+          <label class="field">Kích thước *
+            <select th:field="*{idKichThuoc}" required>
+              <option value="">-- Chọn kích thước --</option>
+              <option th:each="o : ${sizes}" th:value="${o.id}" th:text="${o.label + (o.active ? '' : ' (đã ẩn)')}">Freesize</option>
+            </select>
+          </label>
+
+          <label class="field">Giá bán (VND) *
+            <input type="number" th:field="*{giaBan}" step="1000" min="0" required placeholder="249000">
+          </label>
+
+          <label class="field">Số lượng tồn *
+            <input type="number" th:field="*{soLuongTon}" step="1" min="0" required>
+          </label>
+
+          <label class="field">Phụ phí biến thể (VND)
+            <input type="number" id="phuPhiBienThe" th:field="*{phuPhiBienThe}" step="1000" min="0" placeholder="0">
+          </label>
+
+          <label class="field">Trạng thái
+            <select th:field="*{trangThai}">
+              <option value="true">Đang bán</option>
+              <option value="false">Đã ẩn</option>
+            </select>
+          </label>
+
+          <div class="field full" style="background:#f8f4ef;padding:12px;border-radius:8px;margin-bottom:8px">
+            <strong>Công thức tính giá tự động:</strong>
+            <span>
+              (Trọng lượng <b id="calcWeight" th:text="${product.trongLuongGram ?: 0}">0</b>g
+              × Đơn giá chất liệu <b id="calcRate" th:text="${#numbers.formatDecimal(materialRate, 1, 'POINT', 0, 'COMMA')}">0</b> ₫/g)
+              + Chi phí chế tác <b id="calcCraft" th:text="${#numbers.formatDecimal(product.chiPhiCheTac ?: 0, 1, 'POINT', 0, 'COMMA')}">0</b> ₫
+              + Phụ phí biến thể <b id="calcAddonDisplay" th:text="${#numbers.formatDecimal(form.phuPhiBienThe ?: 0, 1, 'POINT', 0, 'COMMA')}">0</b> ₫
+              = Giá gợi ý:
+              <strong id="calcSuggested"
+                      th:text="${#numbers.formatDecimal(suggestedVariantPrice != null ? suggestedVariantPrice : suggestedBasePrice, 1, 'POINT', 0, 'COMMA')}">0</strong> ₫
+            </span>
+            <button type="button" class="btn tiny secondary" id="applySuggestedPrice" style="margin-left:8px">
+              Áp dụng giá gợi ý
+            </button>
+          </div>
+        </div>
+
+        <div class="buttons">
+          <button type="submit">Lưu biến thể</button>
+          <a class="btn secondary" th:href="@{/admin/san-pham/{p}/bien-the(p=${productId})}">Hủy</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function () {
+    const parseVnNumber = (text) => {
+      if (!text) return 0;
+      const cleaned = text.trim().replace(/\s+/g, '').replace(/\./g, '').replace(/,/g, '.');
+      const num = Number(cleaned);
+      return Number.isFinite(num) ? num : 0;
+    };
+
+    const weight = parseVnNumber(document.getElementById('calcWeight')?.textContent);
+    const rate = parseVnNumber(document.getElementById('calcRate')?.textContent);
+    const craft = parseVnNumber(document.getElementById('calcCraft')?.textContent);
+
+    const addonInput = document.getElementById('phuPhiBienThe');
+    const addonDisplay = document.getElementById('calcAddonDisplay');
+    const suggestedDisplay = document.getElementById('calcSuggested');
+    const priceInput = document.querySelector('input[name="giaBan"]');
+    const applyBtn = document.getElementById('applySuggestedPrice');
+
+    function recalculate() {
+      const rawAddon = Number(addonInput?.value ?? 0);
+      const addon = Number.isFinite(rawAddon) && rawAddon > 0 ? rawAddon : 0;
+      const total = Math.max(0, Math.round(weight * rate + craft + addon));
+
+      if (addonDisplay) {
+        addonDisplay.textContent = Math.round(addon).toLocaleString('vi-VN');
+      }
+      if (suggestedDisplay) {
+        suggestedDisplay.textContent = total.toLocaleString('vi-VN');
+      }
+      return total;
+    }
+
+    if (addonInput) {
+      addonInput.addEventListener('input', recalculate);
+      addonInput.addEventListener('change', recalculate);
+    }
+
+    if (applyBtn && priceInput) {
+      applyBtn.addEventListener('click', () => {
+        priceInput.value = recalculate();
+        priceInput.dispatchEvent(new Event('input', { bubbles: true }));
+        priceInput.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    }
+
+    recalculate();
+  })();
+</script>
+</body>
+</html>
