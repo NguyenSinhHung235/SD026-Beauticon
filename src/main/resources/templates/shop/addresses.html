@@ -1,0 +1,27 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>&#272;&#7883;a ch&#7881; giao h&#224;ng | BeautIcon</title><link rel="stylesheet" th:href="@{/css/storefront.css}">
+<link rel="stylesheet" th:href="@{/css/shop-account.css}"><link rel="icon" th:href="@{/favicon.ico}">
+<script defer th:src="@{/js/storefront.js}"></script></head><body>
+<div th:replace="~{shop/fragments/header :: header}"></div>
+<main class="shop-page"><a class="shop-back" th:href="@{/tai-khoan}">&#8592; T&#224;i kho&#7843;n</a>
+<p class="page-kicker">SHIPPING DETAILS</p><h1 class="shop-page-title">&#272;&#7883;a ch&#7881; <em>giao h&#224;ng.</em></h1>
+<p class="shop-alert success" th:if="${success}" th:text="${success}">OK</p>
+<p class="shop-alert error" th:if="${error}" th:text="${error}">L&#7895;i</p>
+<div class="checkout-columns"><section class="customer-card"><h2>&#272;&#7883;a ch&#7881; &#273;&#227; l&#432;u</h2>
+ <p class="muted" th:if="${#lists.isEmpty(addresses)}">Ch&#432;a c&#243; &#273;&#7883;a ch&#7881; n&#224;o. H&#227;y th&#234;m &#273;&#7883;a ch&#7881; nh&#7853;n h&#224;ng.</p>
+ <div class="saved-address" th:each="a : ${addresses}"><p><strong th:text="${a.recipient}">Kh&#225;ch h&#224;ng</strong>
+ <small th:if="${a.isDefault()}" class="label-default">M&#7863;c &#273;&#7883;nh</small></p>
+ <p th:text="${a.phone}">0900000000</p><p th:text="${a.text}">&#272;&#7883;a ch&#7881;</p>
+ <form method="post" th:action="@{/tai-khoan/dia-chi/xoa}" onsubmit="return confirm('An dia chi nay khoi tai khoan?');">
+ <input type="hidden" name="idDiaChi" th:value="${a.id}"><button class="shop-quiet-button" type="submit">&#7848;n &#273;&#7883;a ch&#7881;</button></form></div>
+ </section>
+ <section class="customer-card"><h2>Th&#234;m &#273;&#7883;a ch&#7881;</h2>
+ <form method="post" th:action="@{/tai-khoan/dia-chi/them}" class="shop-form">
+  <label for="recipient">Ng&#432;&#7901;i nh&#7853;n</label><input id="recipient" name="tenNguoiNhan" maxlength="150" required>
+  <label for="phone">S&#7889; &#273;i&#7879;n tho&#7841;i</label><input id="phone" name="soDienThoai" type="tel" maxlength="20" required>
+  <label for="address">&#272;&#7883;a ch&#7881; chi ti&#7871;t</label><textarea id="address" name="diaChi" rows="4" maxlength="500" required></textarea>
+  <label class="checkbox-row"><input type="checkbox" name="macDinh" value="true"> &#272;&#7863;t l&#224;m &#273;&#7883;a ch&#7881; m&#7863;c &#273;&#7883;nh</label>
+  <button class="store-primary" type="submit">L&#432;u &#273;&#7883;a ch&#7881; &#8594;</button>
+ </form></section></div>
+</main><footer th:replace="~{shop/fragments/footer :: footer}"></footer></body></html>

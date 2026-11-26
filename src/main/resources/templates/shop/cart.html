@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gi&#7887; h&#224;ng | BeautIcon</title><link rel="stylesheet" th:href="@{/css/storefront.css}">
+<link rel="stylesheet" th:href="@{/css/shop-account.css}"><link rel="icon" th:href="@{/favicon.ico}">
+<script defer th:src="@{/js/storefront.js}"></script></head><body>
+<div th:replace="~{shop/fragments/header :: header}"></div>
+<main class="shop-page"><a class="shop-back" th:href="@{/bo-suu-tap}">&#8592; Ti&#7871;p t&#7909;c mua s&#7855;m</a>
+<p class="page-kicker">YOUR SELECTION</p><h1 class="shop-page-title">Gi&#7887; h&#224;ng <em>c&#7911;a b&#7841;n.</em></h1>
+<p class="shop-page-sub" th:text="|${basket.count} s&#7843;n ph&#7849;m &#273;&#227; ch&#7885;n|">S&#7843;n ph&#7849;m</p>
+<p class="shop-alert success" th:if="${success}" th:text="${success}">OK</p>
+<p class="shop-alert error" th:if="${error}" th:text="${error}">L&#7895;i</p>
+<div th:if="${#lists.isEmpty(basket.lines)}" class="customer-card shop-empty-state"><h2>Ch&#432;a c&#243; g&#236; trong gi&#7887;.</h2>
+ <p>H&#227;y b&#7855;t &#273;&#7847;u b&#7857;ng m&#7897;t m&#7851;u v&#242;ng tay h&#7907;p gu b&#7841;n.</p>
+ <a class="store-primary" th:href="@{/bo-suu-tap}">Xem b&#7897; s&#432;u t&#7853;p &#8594;</a></div>
+<div class="checkout-columns" th:unless="${#lists.isEmpty(basket.lines)}">
+ <section class="customer-card"><h2>Nh&#7919;ng m&#243;n &#273;&#227; ch&#7885;n</h2>
+  <article class="cart-item" th:each="item : ${basket.lines}">
+    <a class="cart-photo" th:href="@{/san-pham/{id}(id=${item.productId})}">
+     <img alt="Anh vong tay" th:if="${item.image != null}" th:src="${item.image}" th:alt="${item.name}" loading="lazy">
+     <span th:unless="${item.image != null}" class="no-image-small">B.</span></a>
+    <div class="cart-detail"><a th:href="@{/san-pham/{id}(id=${item.productId})}" class="cart-name" th:text="${item.name}">V&#242;ng tay</a>
+      <p class="muted" th:text="|${item.color} / ${item.sizeDescription()}|">M&#224;u v&#224; size</p>
+      <p class="size-note-display" th:if="${item.sizeNote != null and !#strings.isEmpty(item.sizeNote)}"
+         th:text="|Ghi chú số đo: ${item.sizeNote}|">Ghi chú</p>
+      <p class="cart-price" th:text="${item.priceText()}">0 &#8363;</p>
+      <p th:unless="${item.available}" class="stock-warning">Kích thước hoặc tồn kho của sản phẩm đã thay đổi. Vui lòng kiểm tra lại phiên bản trước khi đặt.</p>
+      <div class="cart-actions">
+       <form method="post" th:action="@{/gio-hang/cap-nhat}" class="quantity-form">
+        <input type="hidden" name="idChiTiet" th:value="${item.id}">
+        <label>S&#7889; l&#432;&#7907;ng <input type="number" name="soLuong" min="1" max="20" th:value="${item.quantity}" required></label>
+        <button type="submit" class="shop-quiet-button">C&#7853;p nh&#7853;t</button>
+       </form>
+       <form method="post" th:action="@{/gio-hang/xoa}">
+        <input type="hidden" name="idChiTiet" th:value="${item.id}">
+        <button type="submit" class="shop-quiet-button">B&#7887;</button>
+       </form>
+      </div>
+    </div><strong class="cart-total" th:text="${item.lineTotalText()}">0 &#8363;</strong>
+  </article>
+ </section>
+ <aside class="customer-card order-summary"><p class="page-kicker">BASKET SUMMARY</p><h2>T&#7841;m t&#237;nh</h2>
+  <div class="summary-row"><span>Ti&#7873;n h&#224;ng</span><strong th:text="${basket.subtotalText()}">0 &#8363;</strong></div>
+  <p class="muted">Gi&#7843;m gi&#225; theo ch&#432;&#417;ng tr&#236;nh &#273;&#227; &#273;&#432;&#7907;c t&#237;nh. Voucher v&#224; ph&#237; giao h&#224;ng t&#237;nh &#7903; b&#432;&#7899;c ti&#7871;p theo.</p>
+  <a th:if="${basket.canCheckout}" class="store-primary wide" th:href="@{/thanh-toan}">Ti&#7871;n h&#224;nh &#273;&#7863;t h&#224;ng &#8594;</a>
+  <p class="stock-warning" th:unless="${basket.canCheckout}">Cần kiểm tra lại kích thước hoặc tồn kho trước khi đặt hàng.</p>
+  <p class="fine-print">T&#7891;n kho ch&#7881; &#273;&#432;&#7907;c gi&#7919; khi b&#7841;n &#273;&#7863;t h&#224;ng th&#224;nh c&#244;ng.</p>
+ </aside>
+</div>
+</main><footer th:replace="~{shop/fragments/footer :: footer}"></footer></body></html>

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>Vòng tay nữ &amp; bộ sưu tập | BeautIcon</title>
+<meta content="Khám phá bộ sưu tập vòng tay BeautIcon theo chất liệu, màu sắc và kiểu dáng. Thông tin giá và biến thể lấy trực tiếp từ danh mục cửa hàng." name="description"/>
+<meta content="#f8f5f0" name="theme-color"/>
+<link href="../src/main/resources/static/css/storefront.css" rel="stylesheet" th:href="@{/css/storefront.css}"/>
+<script defer="" src="../src/main/resources/static/js/storefront.js" th:src="@{/js/storefront.js}"></script>
+<link href="#collection" rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
+</head>
+<body><div style="position:fixed;z-index:100;background:#72523c;color:#fff;right:0;top:0;padding:5px 10px;font:11px 'Times New Roman',serif;letter-spacing:.08em">DEMO GIAO DIEN / DU LIEU MINH HOA</div>
+<a class="skip-link" href="#collection">Bỏ qua menu</a>
+<div class="store-topnote">BEAUTICON STUDIO <span aria-hidden="true">·</span> SMALL DETAILS, PERSONAL STORIES</div>
+<header class="store-header">
+<a aria-label="BeautIcon - Trang chủ" class="store-brand" href="#collection" th:href="@{/}">
+<span aria-hidden="true" class="brand-mark">b<span>.</span></span>
+<span class="brand-name">BeautIcon<small>JEWELRY NOTES</small></span>
+</a>
+<nav aria-label="Menu cửa hàng" class="store-links">
+<a aria-current="page" href="#collection" th:href="@{/}">Trang chủ</a>
+<a href="#collection">Bộ sưu tập</a>
+<a href="#story">Câu chuyện</a>
+<a class="store-signin" href="#collection" th:href="@{/admin/dashboard}">Dành cho nhân viên <span aria-hidden="true">↗</span></a>
+</nav>
+</header>
+<main>
+<section aria-labelledby="hero-title" class="store-hero">
+<div class="hero-copy">
+<p class="store-eyebrow">THE LITTLE THINGS / 2026</p>
+<h1 id="hero-title">Một chút lấp lánh,<br/><em>rất riêng.</em></h1>
+<p class="hero-lead">Có những món phụ kiện không cần nổi bật, chỉ cần thật hợp với bạn. Chọn một chiếc vòng tay cho những ngày bình thường — và cả những ngày đáng nhớ.</p>
+<a class="store-primary" href="#collection">Khám phá bộ sưu tập <span aria-hidden="true">↗</span></a>
+<p class="hero-micro">MADE FOR THE MOMENTS THAT FEEL LIKE YOU</p>
+</div>
+<div aria-hidden="true" class="hero-art"><div class="art-paper">
+<span class="art-index">FIG. 01   /   THE EVERYDAY BRACELET</span>
+<div class="art-bracelet art-ring-outer"><div class="art-bracelet art-ring-inner"></div></div>
+<div class="art-pearls"><i></i><i></i><i></i><i></i><i></i></div>
+<span class="art-caption">a small detail, <em>a lasting impression.</em></span>
+</div></div>
+<div class="hero-side">BEAUTICON / THE EDITED COLLECTION</div>
+</section>
+<section aria-label="Gợi ý chọn vòng tay" class="store-ribbon">
+<span>01 / Chọn dáng vòng</span><span>02 / Tìm màu hợp gu</span><span>03 / Xem kích thước</span>
+</section>
+<section aria-labelledby="collection-title" class="collection" id="collection">
+<div class="collection-head">
+<div><p class="store-eyebrow">SELECTED FOR YOU</p><h2 id="collection-title">Bộ sưu tập <em>vòng tay.</em></h2>
+<p>Những thiết kế hiện có trong danh mục cửa hàng.</p></div>
+<div class="collection-count"><strong th:text="${collection.total}">08</strong><span>thiết kế</span></div>
+</div>
+<form class="store-filter" method="get" role="search" th:action="@{/bo-suu-tap}">
+<label for="shop-query">Tìm vòng tay</label>
+<div class="store-search-row"><input id="shop-query" maxlength="80" name="q" placeholder="Thử tên một thiết kế..." th:value="${collection.keyword}" type="search"/>
+<select aria-label="Lọc loại vòng tay" name="loai"><option value="">Tất cả dòng sản phẩm</option>
+<option th:each="c : ${collection.categories}" th:selected="${collection.category == c.id}" th:text="|${c.name} (${c.products})|" th:value="${c.id}">Dòng</option></select>
+<button type="submit">Tìm kiếm <span aria-hidden="true">→</span></button></div>
+</form>
+<div aria-label="Lọc nhanh theo dòng sản phẩm" class="shop-chipbar">
+<a href="#collection" th:classappend="${collection.category == null} ? ' is-current' : ''" th:href="@{/bo-suu-tap(q=${collection.keyword})}">Tất cả</a>
+<a href="#collection" th:classappend="${collection.category == c.id} ? ' is-current' : ''" th:each="c : ${collection.categories}" th:href="@{/bo-suu-tap(q=${collection.keyword},loai=${c.id})}" th:text="${c.name}">Loại</a>
+</div>
+<div class="shop-grid" th:unless="${#lists.isEmpty(collection.products)}">
+<a class="shop-card" href="#collection" th:each="p : ${collection.products}" th:href="@{/san-pham/{id}(id=${p.id})}">
+<div class="shop-product-visual">
+
+<div class="product-no-photo" th:unless="${p.image != null}"><span aria-hidden="true" class="bracelet-symbol"></span><small>BEAUTICON OBJECTS</small></div>
+
+<span aria-hidden="true" class="product-card-arrow">↗</span>
+</div>
+<div class="shop-product-meta"><div class="product-category" th:text="${p.category}">Vong charm</div>
+<h3 th:text="${p.name}">Dawn / 01</h3>
+<span class="product-material" th:if="${p.material != ''}" th:text="${p.material}">Chất liệu</span>
+<div class="product-price"><span>Từ</span> <strong th:text="${p.price}">290.000 ₫</strong></div></div>
+</a>
+<a class="shop-card" href="#collection" th:each="p : ${collection.products}" th:href="@{/san-pham/{id}(id=${p.id})}">
+<div class="shop-product-visual">
+
+<div class="product-no-photo" th:unless="${p.image != null}"><span aria-hidden="true" class="bracelet-symbol"></span><small>BEAUTICON OBJECTS</small></div>
+
+<span aria-hidden="true" class="product-card-arrow">↗</span>
+</div>
+<div class="shop-product-meta"><div class="product-category" th:text="${p.category}">Vong thoi trang</div>
+<h3 th:text="${p.name}">Silk / 02</h3>
+<span class="product-material" th:if="${p.material != ''}" th:text="${p.material}">Chất liệu</span>
+<div class="product-price"><span>Từ</span> <strong th:text="${p.price}">320.000 ₫</strong></div></div>
+</a><a class="shop-card" href="#collection" th:each="p : ${collection.products}" th:href="@{/san-pham/{id}(id=${p.id})}">
+<div class="shop-product-visual">
+
+<div class="product-no-photo" th:unless="${p.image != null}"><span aria-hidden="true" class="bracelet-symbol"></span><small>BEAUTICON OBJECTS</small></div>
+
+<span aria-hidden="true" class="product-card-arrow">↗</span>
+</div>
+<div class="shop-product-meta"><div class="product-category" th:text="${p.category}">Vong ngoc</div>
+<h3 th:text="${p.name}">Bloom / 03</h3>
+<span class="product-material" th:if="${p.material != ''}" th:text="${p.material}">Chất liệu</span>
+<div class="product-price"><span>Từ</span> <strong th:text="${p.price}">265.000 ₫</strong></div></div>
+</a><a class="shop-card" href="#collection" th:each="p : ${collection.products}" th:href="@{/san-pham/{id}(id=${p.id})}">
+<div class="shop-product-visual">
+
+<div class="product-no-photo" th:unless="${p.image != null}"><span aria-hidden="true" class="bracelet-symbol"></span><small>BEAUTICON OBJECTS</small></div>
+
+<span aria-hidden="true" class="product-card-arrow">↗</span>
+</div>
+<div class="shop-product-meta"><div class="product-category" th:text="${p.category}">Vong bac</div>
+<h3 th:text="${p.name}">Linea / 04</h3>
+<span class="product-material" th:if="${p.material != ''}" th:text="${p.material}">Chất liệu</span>
+<div class="product-price"><span>Từ</span> <strong th:text="${p.price}">345.000 ₫</strong></div></div>
+</a><a class="shop-card" href="#collection" th:each="p : ${collection.products}" th:href="@{/san-pham/{id}(id=${p.id})}">
+<div class="shop-product-visual">
+
+<div class="product-no-photo" th:unless="${p.image != null}"><span aria-hidden="true" class="bracelet-symbol"></span><small>BEAUTICON OBJECTS</small></div>
+
+<span aria-hidden="true" class="product-card-arrow">↗</span>
+</div>
+<div class="shop-product-meta"><div class="product-category" th:text="${p.category}">Vong da</div>
+<h3 th:text="${p.name}">Iris / 05</h3>
+<span class="product-material" th:if="${p.material != ''}" th:text="${p.material}">Chất liệu</span>
+<div class="product-price"><span>Từ</span> <strong th:text="${p.price}">220.000 ₫</strong></div></div>
+</a><a class="shop-card" href="#collection" th:each="p : ${collection.products}" th:href="@{/san-pham/{id}(id=${p.id})}">
+<div class="shop-product-visual">
+
+<div class="product-no-photo" th:unless="${p.image != null}"><span aria-hidden="true" class="bracelet-symbol"></span><small>BEAUTICON OBJECTS</small></div>
+
+<span aria-hidden="true" class="product-card-arrow">↗</span>
+</div>
+<div class="shop-product-meta"><div class="product-category" th:text="${p.category}">Vong charm</div>
+<h3 th:text="${p.name}">Muse / 06</h3>
+<span class="product-material" th:if="${p.material != ''}" th:text="${p.material}">Chất liệu</span>
+<div class="product-price"><span>Từ</span> <strong th:text="${p.price}">410.000 ₫</strong></div></div>
+</a><a class="shop-card" href="#collection" th:each="p : ${collection.products}" th:href="@{/san-pham/{id}(id=${p.id})}">
+<div class="shop-product-visual">
+
+<div class="product-no-photo" th:unless="${p.image != null}"><span aria-hidden="true" class="bracelet-symbol"></span><small>BEAUTICON OBJECTS</small></div>
+
+<span aria-hidden="true" class="product-card-arrow">↗</span>
+</div>
+<div class="shop-product-meta"><div class="product-category" th:text="${p.category}">Vong da</div>
+<h3 th:text="${p.name}">Petal / 07</h3>
+<span class="product-material" th:if="${p.material != ''}" th:text="${p.material}">Chất liệu</span>
+<div class="product-price"><span>Từ</span> <strong th:text="${p.price}">275.000 ₫</strong></div></div>
+</a><a class="shop-card" href="#collection" th:each="p : ${collection.products}" th:href="@{/san-pham/{id}(id=${p.id})}">
+<div class="shop-product-visual">
+
+<div class="product-no-photo" th:unless="${p.image != null}"><span aria-hidden="true" class="bracelet-symbol"></span><small>BEAUTICON OBJECTS</small></div>
+
+<span aria-hidden="true" class="product-card-arrow">↗</span>
+</div>
+<div class="shop-product-meta"><div class="product-category" th:text="${p.category}">Vong thoi trang</div>
+<h3 th:text="${p.name}">Halo / 08</h3>
+<span class="product-material" th:if="${p.material != ''}" th:text="${p.material}">Chất liệu</span>
+<div class="product-price"><span>Từ</span> <strong th:text="${p.price}">360.000 ₫</strong></div></div>
+</a></div>
+
+
+</section>
+<section class="brand-story" id="story"><div class="story-number">B / 01</div><div>
+<p class="store-eyebrow">ABOUT BEAUTICON</p>
+<h2>Phụ kiện nhỏ.<br/><em>Câu chuyện của riêng bạn.</em></h2>
+<p>BeautIcon là góc nhỏ dành cho những chiếc vòng tay được chọn theo phong cách của mỗi người. Tại đây, bạn có thể xem từng mẫu, màu sắc và kích thước trước khi quyết định.</p>
+<small>Trang bộ sưu tập hiện đang ở chế độ giới thiệu; chưa nhận đơn mua trực tuyến.</small>
+</div></section>
+</main>
+<footer class="store-footer"><a class="footer-logo" href="#collection" th:href="@{/}">BeautIcon<span>.</span></a>
+<p>Details, not distractions.</p><span>Copyright <span id="footer-year">2026</span> / BeautIcon</span>
+</footer>
+</body></html>

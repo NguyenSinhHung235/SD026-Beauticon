@@ -1,0 +1,93 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title th:text="${product.name + ' | BeautIcon'}">Chi ti&#7871;t v&#242;ng tay | BeautIcon</title>
+<meta name="description" th:content="${product.description != null and !#strings.isEmpty(product.description) ? #strings.abbreviate(product.description,155) : product.name + ' - BeautIcon'}" content="V&#242;ng tay BeautIcon">
+<link rel="stylesheet" th:href="@{/css/storefront.css}"><script defer th:src="@{/js/storefront.js}"></script><link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body><a class="skip-link" href="#product-main">B&#7887; qua menu</a>
+<div th:replace="~{shop/fragments/header :: header}"></div>
+<main id="product-main" class="detail-container">
+<nav class="detail-breadcrumb" aria-label="&#272;&#432;&#7901;ng d&#7851;n"><a th:href="@{/}">Trang ch&#7911;</a><span>/</span><a th:href="@{/bo-suu-tap}">B&#7897; s&#432;u t&#7853;p</a><span>/</span><span th:text="${product.name}">V&#242;ng tay</span></nav>
+<div class="detail-layout"><div class="detail-photo-stack">
+ <div class="detail-main-photo" id="detailPhotoBox">
+  <img id="detailMainPhoto" th:if="${product.image != null}" th:src="${product.image}" alt="Product image" th:alt="${product.name}">
+  <div class="product-no-photo" th:unless="${product.image != null}"><span class="bracelet-symbol" aria-hidden="true"></span><small>BEAUTICON OBJECTS</small></div>
+ </div>
+ <div class="detail-gallery" th:if="${product.gallery.size() > 1}">
+  <button type="button" th:each="image,i : ${product.gallery}" th:attr="data-img-src=${image},data-img-alt=|${product.name} - &#7843;nh ${i.count}|,aria-label=|Xem &#7843;nh ${i.count}|" th:classappend="${i.index == 0} ? ' selected' : ''"><img th:src="${image}" alt="Product image" th:alt="|&#7842;nh ${i.count}|" loading="lazy"></button>
+ </div>
+</div>
+<div class="detail-info">
+ <p class="store-eyebrow" th:text="${product.category}">V&#242;ng tay</p>
+ <h1 th:text="${product.name}">V&#242;ng tay</h1>
+ <p class="detail-dek">M&#7897;t chi ti&#7871;t d&#7877; ph&#7889;i c&#249;ng phong c&#225;ch ri&#234;ng c&#7911;a b&#7841;n.</p>
+ <div class="detail-price-label">Gi&#225; t&#7915; <strong th:text="${product.price}">0 &#8363;</strong></div>
+ <div class="detail-rule"></div>
+ <div class="detail-stock" th:if="${product.stock > 0}"><span class="stock-dot"></span> C&#242;n h&#224;ng trong danh m&#7909;c</div>
+ <div class="detail-stock sold" th:if="${product.stock == 0}"><span class="stock-dot"></span> T&#7841;m h&#7871;t h&#224;ng</div>
+ <div class="detail-variants"><h2>C&#225;c phi&#234;n b&#7843;n hi&#7879;n c&#243;</h2>
+  <div class="variant-head"><span>M&#224;u / k&#237;ch th&#432;&#7899;c</span><span>Gi&#225; &amp; t&#7891;n kho</span></div>
+  <div class="variant-line" th:each="v : ${product.variants}"><div><strong th:text="${v.color}">M&#224;u</strong><small th:text="${v.size}">K&#237;ch th&#432;&#7899;c</small></div>
+    <div><strong th:text="${v.price}">0 &#8363;</strong><small th:text="${v.stock > 0 ? 'C&#242;n ' + v.stock : 'T&#7841;m h&#7871;t'}">C&#242;n h&#224;ng</small></div></div>
+ </div>
+ <form class="detail-add-form bracelet-sizing-form" method="post" th:action="@{/gio-hang/them}"
+       th:attr="data-free-min=${product.freesizeMinCm},data-free-max=${product.freesizeMaxCm}">
+   <fieldset class="size-mode-switch" id="size-mode-switch">
+     <legend>1. Chọn hình thức kích thước</legend>
+     <label class="size-mode-option"><input type="radio" name="kieuKichThuoc" value="CO_SAN" checked>
+       <span><strong>Có sẵn</strong><small>Chọn size theo mẫu</small></span></label>
+     <label class="size-mode-option"><input type="radio" name="kieuKichThuoc" value="FREESIZE">
+       <span><strong>Freesize</strong><small>Có thể điều chỉnh</small></span></label>
+     <label class="size-mode-option"><input type="radio" name="kieuKichThuoc" value="THEO_YEU_CAU">
+       <span><strong>Theo yêu cầu</strong><small>Làm theo số đo</small></span></label>
+   </fieldset>
+   <label for="buy-variant">2. Chọn màu sắc và phiên bản</label>
+   <select id="buy-variant" name="idBienThe" required>
+     <option value="">-- Chọn phiên bản --</option>
+     <option th:each="v : ${product.variants}" th:if="${v.stock > 0}"
+             th:value="${v.id}" th:attr="data-size-mode=${v.mode}"
+             th:text="|${v.color} / ${v.size} - ${v.price} (còn ${v.stock})|">Phiên bản</option>
+   </select>
+   <p id="size-choice-message" class="size-choice-message" role="status" aria-live="polite"></p>
+   <div class="free-range-panel" id="free-range-panel" hidden>
+     <strong>Khoảng điều chỉnh thực tế</strong>
+     <span th:if="${product.freesizeMinCm != null and product.freesizeMaxCm != null}"
+           th:text="|Từ ${product.freesizeMinCm} cm đến ${product.freesizeMaxCm} cm|">14–20 cm</span>
+     <span th:unless="${product.freesizeMinCm != null and product.freesizeMaxCm != null}">Shop chưa xác nhận khoảng điều chỉnh cho mẫu này.</span>
+   </div>
+   <div class="custom-size-fields" id="custom-size-fields" hidden>
+     <label for="wrist-cm">Chu vi cổ tay của bạn (cm) *</label>
+     <input id="wrist-cm" name="chuViCoTayCm" type="number" min="10" max="30" step="0.1"
+            inputmode="decimal" placeholder="Ví dụ: 16.5" disabled>
+     <label for="fit-preference">Bạn muốn đeo thế nào? *</label>
+     <select id="fit-preference" name="doRongDeo" disabled>
+       <option value="">-- Chọn độ rộng đeo --</option>
+       <option value="OM">Đeo ôm cổ tay</option>
+       <option value="VUA">Đeo vừa, thoải mái</option>
+       <option value="RONG">Đeo rộng hơn</option>
+     </select>
+     <label for="size-note">Ghi chú kích thước (không bắt buộc)</label>
+     <textarea id="size-note" name="ghiChuKichThuoc" rows="2" maxlength="300"
+               placeholder="Ví dụ: Cổ tay 16,5 cm, muốn hơi rộng; vui lòng liên hệ xác nhận..." disabled></textarea>
+     <p class="size-confirm-note">Cửa hàng sẽ xác nhận khả năng gia công và số đo trước khi xử lý đơn hàng.</p>
+   </div>
+   <label for="buy-count">3. Số lượng</label>
+   <input id="buy-count" type="number" name="soLuong" value="1" min="1" max="20" required>
+   <button id="buy-submit" type="submit" class="store-primary" th:disabled="${product.stock == 0}">
+     <span th:text="${product.stock > 0} ? 'Thêm vào giỏ hàng' : 'Tạm hết hàng'">Thêm vào giỏ</span>
+   </button>
+   <p class="form-note">Giá được kiểm tra lại lúc đặt hàng. Vui lòng đăng nhập để lưu sản phẩm vào giỏ.</p>
+ </form>
+ <details class="size-help"><summary>Hướng dẫn đo và chọn kích thước <span aria-hidden="true">+</span></summary>
+  <p>Dùng thước dây đo quanh cổ tay, không siết quá chặt. Số đo cổ tay không nhất thiết bằng chiều dài vòng: khoảng cộng thêm phụ thuộc thiết kế và độ rộng muốn đeo. Freesize chỉ dùng được khi sản phẩm có cơ cấu điều chỉnh và cửa hàng công bố khoảng điều chỉnh.</p>
+ </details>
+ <div class="detail-description" th:if="${product.description != null and !#strings.isEmpty(product.description)}"><h2>Chi ti&#7871;t thi&#7871;t k&#7871;</h2><p th:text="${product.description}">M&#244; t&#7843;.</p></div>
+ <dl class="detail-facts"><div th:if="${product.material != ''}"><dt>Ch&#7845;t li&#7879;u</dt><dd th:text="${product.material}">-</dd></div>
+ <div th:if="${product.brand != ''}"><dt>Th&#432;&#417;ng hi&#7879;u</dt><dd th:text="${product.brand}">-</dd></div>
+ <div><dt>M&#227; m&#7851;u</dt><dd th:text="|BI-${product.id}|"></dd></div></dl>
+ <p class="detail-note">Thanh to&#225;n COD ho&#7863;c ch&#7885;n chuy&#7875;n kho&#7843;n ch&#7901; nh&#226;n vi&#234;n x&#225;c nh&#7853;n. Ch&#432;a t&#237;ch h&#7907;p c&#7893;ng thanh to&#225;n t&#7921; &#273;&#7897;ng.</p>
+ <a class="store-primary" th:href="@{/bo-suu-tap}">&#8592; Ti&#7871;p t&#7909;c kh&#225;m ph&#225;</a>
+</div></div>
+<section class="detail-bottom"><p class="store-eyebrow">A NOTE FROM BEAUTICON</p><p>M&#7895;i chi&#7871;c v&#242;ng tay &#273;&#7873;u c&#243; m&#7897;t c&#225;ch xu&#7845;t hi&#7879;n r&#7845;t ri&#234;ng trong ng&#224;y c&#7911;a b&#7841;n.</p></section>
+</main><footer th:replace="~{shop/fragments/footer :: footer}"></footer>
+</body></html>

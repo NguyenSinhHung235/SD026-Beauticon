@@ -1,0 +1,63 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thanh to&#225;n &amp; &#273;&#7863;t h&#224;ng | BeautIcon</title><link rel="stylesheet" th:href="@{/css/storefront.css}">
+<link rel="stylesheet" th:href="@{/css/shop-account.css}"><link rel="icon" th:href="@{/favicon.ico}">
+<script defer th:src="@{/js/storefront.js}"></script></head><body>
+<div th:replace="~{shop/fragments/header :: header}"></div>
+<main class="shop-page"><a class="shop-back" th:href="@{/gio-hang}">&#8592; Quay l&#7841;i gi&#7887; h&#224;ng</a>
+<p class="page-kicker">THE FINAL DETAILS</p><h1 class="shop-page-title">Ho&#224;n t&#7845;t <em>&#273;&#417;n h&#224;ng.</em></h1>
+<p class="shop-alert error" th:if="${error}" th:text="${error}">L&#7895;i</p>
+<p class="shop-alert success" th:if="${success}" th:text="${success}">OK</p>
+<form method="get" th:action="@{/thanh-toan}" class="voucher-preview customer-card">
+ <div><label for="voucher">M&#227; &#432;u &#273;&#227;i</label>
+ <p class="muted">Nh&#7853;p m&#227; v&#224; b&#7845;m &#8220;&#193;p d&#7909;ng&#8221; &#273;&#7875; xem t&#7841;m t&#237;nh.</p></div>
+ <input id="voucher" name="voucher" maxlength="40" th:value="${quote.voucherCode}" placeholder="Nh&#7853;p m&#227; voucher">
+ <button type="submit">&#193;p d&#7909;ng</button>
+</form>
+<form method="post" th:action="@{/thanh-toan/dat-hang}" class="checkout-columns" id="shop-checkout-form">
+ <input type="hidden" name="maYeuCau" th:value="${checkoutToken}">
+ <input type="hidden" name="maVoucher" th:value="${quote.voucherCode}">
+ <div class="checkout-main">
+  <section class="customer-card"><p class="page-kicker">01 / DELIVERY</p><h2>&#272;&#7883;a ch&#7881; nh&#7853;n h&#224;ng</h2>
+   <div th:if="${!#lists.isEmpty(addresses)}" class="address-choice">
+    <label th:each="a,stat : ${addresses}" class="radio-card">
+     <input type="radio" name="idDiaChi" th:value="${a.id}" th:checked="${stat.index == 0}">
+     <span><strong th:text="${a.recipient}">Ng&#432;&#7901;i nh&#7853;n</strong>
+      <small th:text="|${a.phone} - ${a.text}|">&#272;&#7883;a ch&#7881;</small></span>
+    </label>
+   </div>
+   <label class="radio-card"><input type="radio" name="idDiaChi" value="" th:checked="${#lists.isEmpty(addresses)}">
+     <span><strong>Giao &#273;&#7871;n &#273;&#7883;a ch&#7881; m&#7899;i</strong><small>&#272;&#7883;a ch&#7881; m&#7899;i s&#7869; &#273;&#432;&#7907;c l&#432;u v&#224;o t&#224;i kho&#7843;n.</small></span></label>
+   <div class="new-address-fields shop-form"><p class="muted">Ch&#7881; &#273;i&#7873;n th&#244;ng tin n&#224;y n&#7871;u ch&#7885;n &#273;&#7883;a ch&#7881; m&#7899;i.</p>
+    <label for="recipient">Ng&#432;&#7901;i nh&#7853;n</label><input id="recipient" name="tenNguoiNhan" maxlength="150" autocomplete="name">
+    <label for="phone">S&#7889; &#273;i&#7879;n tho&#7841;i</label><input id="phone" type="tel" name="soDienThoai" maxlength="20" autocomplete="tel">
+    <label for="address">&#272;&#7883;a ch&#7881; &#273;&#7847;y &#273;&#7911;</label><textarea id="address" rows="3" name="diaChi" maxlength="500" autocomplete="street-address"></textarea>
+   </div>
+  </section>
+  <section class="customer-card"><p class="page-kicker">02 / PAYMENT</p><h2>Ph&#432;&#417;ng th&#7913;c thanh to&#225;n</h2>
+   <label class="radio-card"><input type="radio" name="phuongThuc" value="TIEN_MAT" checked><span><strong>Thanh to&#225;n khi nh&#7853;n h&#224;ng (COD)</strong><small>Nh&#226;n vi&#234;n s&#7869; x&#225;c nh&#7853;n ti&#7873;n sau khi thu.</small></span></label>
+   <label class="radio-card"><input type="radio" name="phuongThuc" value="CHUYEN_KHOAN"><span><strong>Chuy&#7875;n kho&#7843;n (x&#225;c nh&#7853;n th&#7911; c&#244;ng)</strong><small>Ch&#432;a k&#7871;t n&#7889;i ng&#226;n h&#224;ng; nh&#226;n vi&#234;n s&#7869; cung c&#7845;p h&#432;&#7899;ng d&#7851;n v&#224; &#273;&#7889;i so&#225;t. &#272;&#417;n ch&#432;a &#273;&#432;&#7907;c t&#237;nh l&#224; &#273;&#227; thanh to&#225;n.</small></span></label>
+  </section>
+  <section class="customer-card shop-form"><p class="page-kicker">03 / NOTES</p><h2>Ghi ch&#250; (n&#7871;u c&#243;)</h2>
+   <textarea id="note" name="ghiChu" rows="3" maxlength="1000" placeholder="L&#432;u &#253; v&#7873; &#273;&#417;n h&#224;ng, th&#7901;i gian nh&#7853;n..."></textarea>
+  </section>
+ </div>
+ <aside class="customer-card order-summary"><p class="page-kicker">ORDER REVIEW</p><h2>Ki&#7875;m tra &#273;&#417;n h&#224;ng</h2>
+  <div class="checkout-item" th:each="item : ${basket.lines}">
+   <span><strong th:text="${item.name}">Vòng tay</strong>
+    <small th:text="|${item.color} / ${item.sizeDescription()} ×${item.quantity}|"></small>
+    <small class="size-note-display" th:if="${item.sizeNote != null and !#strings.isEmpty(item.sizeNote)}"
+          th:text="|Ghi chú số đo: ${item.sizeNote}|"></small></span>
+   <strong th:text="${item.lineTotalText()}">0 &#8363;</strong>
+  </div>
+  <p class="fine-print">Nếu có sản phẩm đặt kích thước theo yêu cầu, nhân viên sẽ xác nhận số đo trước khi xử lý đơn.</p>
+  <div class="summary-row"><span>Ti&#7873;n h&#224;ng</span><strong th:text="${quote.subtotalText()}">0 &#8363;</strong></div>
+  <div class="summary-row"><span>Gi&#7843;m voucher</span><strong th:text="|-${quote.discountText()}|"></strong></div>
+  <div class="summary-row"><span>Ph&#237; giao h&#224;ng</span><strong th:text="${quote.shippingText()}">0 &#8363;</strong></div>
+  <p class="fine-print">Mi&#7877;n ph&#237; giao h&#224;ng n&#7897;i &#273;&#7883;a cho &#273;&#417;n t&#7915; 500.000 &#8363; (demo). Ph&#237; c&#243; th&#7875; &#273;i&#7873;u ch&#7881;nh tr&#432;&#7899;c khi v&#7853;n h&#224;nh th&#7921;c t&#7871;.</p>
+  <div class="summary-row grand"><span>T&#7893;ng thanh to&#225;n</span><strong th:text="${quote.totalText()}">0 &#8363;</strong></div>
+  <button type="submit" class="store-primary wide" id="shop-submit-order">X&#225;c nh&#7853;n &#273;&#7863;t h&#224;ng &#8594;</button>
+  <p class="fine-print">Gi&#225;, voucher v&#224; t&#7891;n kho &#273;&#432;&#7907;c ki&#7875;m tra l&#7841;i tr&#234;n m&#225;y ch&#7911;. Nh&#7855;n &#8220;&#272;&#7863;t h&#224;ng&#8221; kh&#244;ng &#273;&#7891;ng ngh&#297;a &#273;&#227; thanh to&#225;n.</p>
+ </aside>
+</form>
+</main><footer th:replace="~{shop/fragments/footer :: footer}"></footer></body></html>

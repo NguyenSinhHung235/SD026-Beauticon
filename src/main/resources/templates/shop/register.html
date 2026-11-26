@@ -1,0 +1,29 @@
+<!DOCTYPE html><html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T&#7841;o t&#224;i kho&#7843;n | BeautIcon</title><link rel="stylesheet" th:href="@{/css/storefront.css}">
+<link rel="stylesheet" th:href="@{/css/shop-account.css}"><link rel="icon" th:href="@{/favicon.ico}">
+<script defer th:src="@{/js/storefront.js}"></script></head><body>
+<div th:replace="~{shop/fragments/header :: header}"></div>
+<main class="shop-page"><div class="customer-card auth-layout">
+ <div class="auth-intro"><p class="store-eyebrow">AN ACCOUNT OF YOUR OWN</p>
+  <h1>Nh&#7919;ng &#273;i&#7873;u nh&#7887;, <em>d&#224;nh ri&#234;ng cho b&#7841;n.</em></h1>
+  <p>T&#7841;o t&#224;i kho&#7843;n &#273;&#7875; &#273;&#7863;t v&#242;ng tay, l&#432;u gi&#7887; h&#224;ng v&#224; ki&#7875;m tra tr&#7841;ng th&#225;i giao h&#224;ng.</p>
+  <a th:href="@{/dang-nhap}" class="shop-inline-link">&#272;&#227; c&#243; t&#224;i kho&#7843;n? &#272;&#259;ng nh&#7853;p &#8594;</a>
+ </div>
+ <div class="auth-form"><h2>&#272;&#259;ng k&#253;</h2>
+  <p class="shop-alert error" th:if="${error}" th:text="${error}">L&#7895;i</p>
+  <form method="post" th:action="@{/dang-ky}">
+   <label for="full-name">H&#7885; v&#224; t&#234;n</label>
+   <input id="full-name" name="hoTen" maxlength="150" autocomplete="name" th:value="${hoTen}" required>
+   <label for="reg-email">Email</label>
+   <input id="reg-email" type="email" name="email" maxlength="254" autocomplete="email" th:value="${email}" required>
+   <label for="phone">S&#7889; &#273;i&#7879;n tho&#7841;i (kh&#244;ng b&#7855;t bu&#7897;c)</label>
+   <input id="phone" type="tel" name="sdt" maxlength="20" autocomplete="tel" th:value="${sdt}">
+   <label for="password">M&#7853;t kh&#7849;u (t&#7915; 12 k&#253; t&#7921;)</label>
+   <input id="password" type="password" name="matKhau" minlength="12" autocomplete="new-password" required>
+   <label for="repeat">Nh&#7853;p l&#7841;i m&#7853;t kh&#7849;u</label>
+   <input id="repeat" type="password" name="xacNhanMatKhau" minlength="12" autocomplete="new-password" required>
+   <button type="submit" class="store-primary wide">T&#7841;o t&#224;i kho&#7843;n &#8594;</button>
+  </form><p class="fine-print">M&#7853;t kh&#7849;u &#273;&#432;&#7907;c m&#227; h&#243;a m&#7897;t chi&#7873;u b&#7857;ng BCrypt.</p>
+ </div>
+</div></main><footer th:replace="~{shop/fragments/footer :: footer}"></footer></body></html>
