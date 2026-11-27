@@ -104,12 +104,14 @@ public class ShopCartService {
             int stock = ((Number) r.get("stock")).intValue();
             String mode = (String) r.get("sizeMode");
             BigDecimal wrist = (BigDecimal) r.get("wristCm");
+            String fit = (String) r.get("fit");
+            String sizeName = (String) r.get("size");
             boolean ok = Boolean.TRUE.equals(r.get("productActive"))
                     && Boolean.TRUE.equals(r.get("variantActive")) && stock >= perVariant.get(id)
                     && (!("FREESIZE".equals(mode))
                     || (r.get("freeMin") != null && r.get("freeMax") != null));
             BigDecimal baseUnitPrice = CustomCmPricing.resolvePrice(
-                    mode, wrist,
+                    mode, wrist, fit, sizeName,
                     (BigDecimal) r.get("gramMoiCm"),
                     (BigDecimal) r.get("weightGram"),
                     (BigDecimal) r.get("materialRate"),
@@ -120,9 +122,9 @@ public class ShopCartService {
             BigDecimal total = price.multiply(BigDecimal.valueOf(quantity));
             lines.add(new Line(((Number) r.get("lineId")).longValue(), id,
                     ((Number) r.get("productId")).longValue(), (String) r.get("name"),
-                    (String) r.get("color"), (String) r.get("size"),
+                    (String) r.get("color"), sizeName,
                     mode, wrist,
-                    (String) r.get("fit"), (String) r.get("sizeNote"), (String) r.get("image"),
+                    fit, (String) r.get("sizeNote"), (String) r.get("image"),
                     quantity, stock, ok, price, total));
             subtotal = subtotal.add(total);
             count += quantity;
