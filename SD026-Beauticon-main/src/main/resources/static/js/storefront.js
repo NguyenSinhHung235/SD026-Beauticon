@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const adjustable = sizeForm.querySelector('#free-range-panel');
     const button = sizeForm.querySelector('#buy-submit');
     const wristInput = sizeForm.querySelector('#wrist-cm');
+    const fitSelect = sizeForm.querySelector('#fit-preference');
     const calcGramEl = sizeForm.querySelector('#calc-cm-gram');
     const calcPriceEl = sizeForm.querySelector('#calc-cm-price');
     const livePriceEl = document.getElementById('detailLivePrice');
@@ -32,6 +33,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const craftCost = Number(sizeForm.dataset.craftCost || 0) || 0;
     const freeReady = Boolean(sizeForm.dataset.freeMin && sizeForm.dataset.freeMax);
     const fmtMoney = (n) => Math.round(n).toLocaleString('vi-VN') + ' \u20ab';
+
+    const fitDeltaCm = (fit) => {
+      switch ((fit || '').toUpperCase()) {
+        case 'OM_SAT':
+        case 'SAT':
+          return -0.5;
+        case 'THOAI_MAI':
+        case 'RONG':
+          return 1.0;
+        default:
+          return 0.0;
+      }
+    };
 
     const updateCmPrice = (mode) => {
       const chosen = variantSelect.selectedOptions[0];
@@ -45,15 +59,16 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const cm = Number(wristInput?.value || 0);
-      if (!Number.isFinite(cm) || cm <= 0) {
+      const rawCm = Number(wristInput?.value || 0);
+      if (!Number.isFinite(rawCm) || rawCm <= 0) {
         if (calcGramEl) calcGramEl.textContent = '0 g';
         if (calcPriceEl) calcPriceEl.textContent = fmtMoney(rawPrice > 0 ? rawPrice : craftCost + surcharge);
         return;
       }
 
+      const effectiveCm = Math.max(1, rawCm + fitDeltaCm(fitSelect?.value));
       const gramPerCm = gramPerCmSetting > 0 ? gramPerCmSetting : (baseWeight > 0 ? (baseWeight / 16) : 1);
-      const estGram = Math.round(cm * gramPerCm * 100) / 100;
+      const estGram = Math.round(effectiveCm * gramPerCm * 100) / 100;
       const estPrice = materialRate > 0
           ? Math.max(0, Math.round(estGram * materialRate + craftCost + surcharge))
           : Math.max(0, Math.round((rawPrice > 0 ? rawPrice : craftCost) + surcharge));
@@ -118,6 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCmPrice(current ? current.value : '');
       });
       wristInput.addEventListener('change', () => {
+        const current = radios.find(r => r.checked && !r.disabled);
+        updateCmPrice(current ? current.value : '');
+      });
+    }
+    if (fitSelect) {
+      fitSelect.addEventListener('change', () => {
         const current = radios.find(r => r.checked && !r.disabled);
         updateCmPrice(current ? current.value : '');
       });

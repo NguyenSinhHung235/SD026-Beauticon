@@ -1,6 +1,7 @@
 package com.example.vongtay.showroom;
 
 import java.math.BigDecimal;
+import com.example.vongtay.shop.CustomCmPricing;
 import com.example.vongtay.shop.SizeSelection;
 import java.text.NumberFormat;
 import java.util.List;
@@ -145,12 +146,18 @@ public class ShowroomService {
             WHERE b.id_san_pham=:id AND b.trang_thai=1
             ORDER BY b.gia_ban,b.id_bien_the
             """,Map.of("id",id),(rs,i)->{
-            BigDecimal rawPrice = rs.getBigDecimal("gia_ban");
+            String sizeName = rs.getString("ten_kich_thuoc");
+            String mode = SizeSelection.modeFor(sizeName);
+            BigDecimal dbPrice = rs.getBigDecimal("gia_ban");
             BigDecimal surcharge = rs.getBigDecimal("phu_phi_bien_the");
+            BigDecimal displayPrice = CustomCmPricing.resolvePrice(
+                    mode, null, null, sizeName,
+                    base.gramMoiCm(), base.weightGram(),
+                    base.materialRate(), base.craftCost(),
+                    surcharge, dbPrice);
             return new Variant(rs.getLong("id_bien_the"),
-                    rs.getString("ten_mau_sac"),rs.getString("ten_kich_thuoc"),
-                    SizeSelection.modeFor(rs.getString("ten_kich_thuoc")),
-                    money(rawPrice), rawPrice, surcharge, rs.getLong("so_luong_ton"));
+                    rs.getString("ten_mau_sac"), sizeName,
+                    mode, money(displayPrice), displayPrice, surcharge, rs.getLong("so_luong_ton"));
         });
         String price = variants.isEmpty() ? "" : variants.get(0).price();
         long stock = variants.stream().mapToLong(Variant::stock).sum();
